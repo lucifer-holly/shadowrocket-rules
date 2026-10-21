@@ -1,0 +1,6 @@
+{
+  "never_block_suffixes": ["com.cn", "net.cn", "org.cn", "gov.cn", "edu.cn", "co.uk", "org.uk", "ac.uk", "com.hk", "com.tw", "co.jp", "co.kr", "com.au", "co.in", "co.nz", "co.za", "com.br", "com.sg", "com.my", "github.io", "githubusercontent.com", "cloudfront.net", "amazonaws.com", "azurewebsites.net", "workers.dev", "pages.dev", "vercel.app", "netlify.app", "appspot.com", "googleapis.com", "aliyuncs.com", "myqcloud.com", "qcloud.com"],
+  "max_source_change_ratio": 0.20,
+  "max_source_age_days": 14,
+  "max_module_bytes": 8000000
+}

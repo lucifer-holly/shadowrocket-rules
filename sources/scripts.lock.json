@@ -1,0 +1,11 @@
+{
+  "scripts": [
+    {
+      "path": "scripts/response-cleaner.js",
+      "sha256": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
+      "license": "GPL-3.0-only",
+      "review": "Original implementation reviewed: exact JSON endpoints; pass-through on unknown shapes/errors; no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified."
+    }
+  ],
+  "archives": []
+}

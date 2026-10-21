@@ -1,0 +1,7 @@
+{"rules": [
+  {"type":"DOMAIN","domain":"optimus-ads.amap.com","reason":"原附件广告专用主机"},
+  {"type":"DOMAIN","domain":"cm.ad.bilibili.com","reason":"原附件广告专用主机"},
+  {"type":"DOMAIN","domain":"cm.adcommon.bilibili.com","reason":"原附件广告专用主机"},
+  {"type":"DOMAIN","domain":"ads-img-qc.xhscdn.com","reason":"原附件广告素材主机"},
+  {"type":"DOMAIN","domain":"ads-video-qc.xhscdn.com","reason":"原附件广告素材主机"}
+]}

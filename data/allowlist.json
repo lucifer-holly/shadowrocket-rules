@@ -1,0 +1,179 @@
+{
+  "entries": [
+    {
+      "domain": "apple.com",
+      "scope": "subtree",
+      "reason": "Apple 登录、系统服务、App Store"
+    },
+    {
+      "domain": "icloud.com",
+      "scope": "subtree",
+      "reason": "iCloud 同步"
+    },
+    {
+      "domain": "mzstatic.com",
+      "scope": "subtree",
+      "reason": "App Store 资源"
+    },
+    {
+      "domain": "paypal.com",
+      "scope": "subtree",
+      "reason": "支付"
+    },
+    {
+      "domain": "alipay.com",
+      "scope": "subtree",
+      "reason": "支付宝支付"
+    },
+    {
+      "domain": "tenpay.com",
+      "scope": "subtree",
+      "reason": "微信支付"
+    },
+    {
+      "domain": "stripe.com",
+      "scope": "subtree",
+      "reason": "支付"
+    },
+    {
+      "domain": "unionpay.com",
+      "scope": "subtree",
+      "reason": "银联支付"
+    },
+    {
+      "domain": "github.com",
+      "scope": "subtree",
+      "reason": "仓库与更新"
+    },
+    {
+      "domain": "githubusercontent.com",
+      "scope": "subtree",
+      "reason": "自身规则与脚本更新"
+    },
+    {
+      "domain": "dmit.io",
+      "scope": "subtree",
+      "reason": "服务器管理"
+    },
+    {
+      "domain": "accounts.google.com",
+      "scope": "host",
+      "reason": "Google 登录"
+    },
+    {
+      "domain": "login.microsoftonline.com",
+      "scope": "host",
+      "reason": "Microsoft 登录"
+    },
+    {
+      "domain": "login.taobao.com",
+      "scope": "host",
+      "reason": "淘宝登录"
+    },
+    {
+      "domain": "passport.jd.com",
+      "scope": "host",
+      "reason": "京东登录"
+    },
+    {
+      "domain": "passport.bilibili.com",
+      "scope": "host",
+      "reason": "哔哩哔哩登录"
+    },
+    {
+      "domain": "titan.pinduoduo.com",
+      "scope": "host",
+      "reason": "原附件候选项；可能承担通信，未证实广告专用"
+    },
+    {
+      "domain": "apm.pinduoduo.com",
+      "scope": "host",
+      "reason": "原附件候选项；诊断用途，不作为广告规则"
+    },
+    {
+      "domain": "acs.m.taobao.com",
+      "scope": "host",
+      "reason": "混合业务 API，使用路径级重写"
+    },
+    {
+      "domain": "api.m.jd.com",
+      "scope": "host",
+      "reason": "混合业务 API，使用路径级重写"
+    },
+    {
+      "domain": "edith.xiaohongshu.com",
+      "scope": "host",
+      "reason": "混合业务 API，使用路径级重写"
+    },
+    {
+      "domain": "api.zhihu.com",
+      "scope": "host",
+      "reason": "混合业务 API，使用路径级重写"
+    },
+    {
+      "domain": "app.bilibili.com",
+      "scope": "host",
+      "reason": "混合业务 API，使用响应脚本"
+    },
+    {
+      "domain": "api.bilibili.com",
+      "scope": "host",
+      "reason": "混合业务 API，使用路径级重写"
+    },
+    {
+      "domain": "sqt.meituan.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "acs.m.goofish.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "g-acs.m.goofish.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "amap-aos-info-nogw.amap.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "adstrategy.biz.weibo.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "api.pinduoduo.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "api.yangkeduo.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "cn-acs.m.cainiao.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "api.gotokeep.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "m.ctrip.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "sso.ifanr.com",
+      "scope": "host",
+      "reason": "混合 API 使用路径级规则；保留非广告请求"
+    }
+  ]
+}

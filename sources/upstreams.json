@@ -1,0 +1,30 @@
+{
+  "sources": [
+    {
+      "id": "anti-ad",
+      "repository": "privacy-protection-tools/anti-AD",
+      "ref": "master",
+      "path": "anti-ad-surge.txt",
+      "format": "surge",
+      "snapshot": "vendor/anti-ad-surge.txt",
+      "license_path": "LICENSE",
+      "license_file": "licenses/anti-ad-MIT.txt",
+      "spdx": "MIT",
+      "min_rules": 50000,
+      "max_rules": 250000
+    },
+    {
+      "id": "hagezi-light",
+      "repository": "hagezi/dns-blocklists",
+      "ref": "main",
+      "path": "wildcard/light-onlydomains.txt",
+      "format": "suffix-domains",
+      "snapshot": "vendor/hagezi-light.txt",
+      "license_path": "LICENSE",
+      "license_file": "licenses/hagezi-GPL-3.0.txt",
+      "spdx": "GPL-3.0",
+      "min_rules": 20000,
+      "max_rules": 150000
+    }
+  ]
+}

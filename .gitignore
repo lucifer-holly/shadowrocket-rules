@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.pyc
+.cache/
+private/
+.env
+*.p12
+*.pfx
+*.pem
+*.key
+default.conf
+node_modules/

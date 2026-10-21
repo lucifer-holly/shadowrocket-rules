@@ -1,0 +1,181 @@
+{
+  "app_modules": 14,
+  "base_rules": 143417,
+  "covered_by_parent": 9303,
+  "device_verified": false,
+  "exceptions": [
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,advertising.apple.com"
+    },
+    {
+      "reason": "混合 API 使用路径级规则；保留非广告请求",
+      "rule": "DOMAIN-SUFFIX,amap-aos-info-nogw.amap.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,api-adservices.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,app-events.infoapps.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,autolinkmaker.itunes.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,banners.itunes.apple.com"
+    },
+    {
+      "reason": "混合 API 使用路径级规则；保留非广告请求",
+      "rule": "DOMAIN-SUFFIX,biz.weibo.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,books-analytics-events.apple.com"
+    },
+    {
+      "reason": "支付",
+      "rule": "DOMAIN-SUFFIX,c6.paypal.com"
+    },
+    {
+      "reason": "支付宝支付",
+      "rule": "DOMAIN-SUFFIX,collect.alipay.com"
+    },
+    {
+      "reason": "仓库与更新",
+      "rule": "DOMAIN-SUFFIX,collector.github.com"
+    },
+    {
+      "reason": "自身规则与脚本更新",
+      "rule": "DOMAIN-SUFFIX,copilot-telemetry-service.githubusercontent.com"
+    },
+    {
+      "reason": "自身规则与脚本更新",
+      "rule": "DOMAIN-SUFFIX,copilot-telemetry.githubusercontent.com"
+    },
+    {
+      "reason": "支付",
+      "rule": "DOMAIN-SUFFIX,data.news.paypal.com"
+    },
+    {
+      "reason": "支付",
+      "rule": "DOMAIN-SUFFIX,data.service.paypal.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,drupalmetrics.ppg.apple.com"
+    },
+    {
+      "reason": "iCloud 同步",
+      "rule": "DOMAIN-SUFFIX,feedbackws.icloud.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,graffiti-tags.apple.com"
+    },
+    {
+      "reason": "支付",
+      "rule": "DOMAIN-SUFFIX,i.paypal.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,iad.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,iadcontent.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,iadmoo.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,iadsdk.apple.com"
+    },
+    {
+      "reason": "支付宝支付",
+      "rule": "DOMAIN-SUFFIX,loggw-ex.alipay.com"
+    },
+    {
+      "reason": "支付宝支付",
+      "rule": "DOMAIN-SUFFIX,loggw-exsdk.alipay.com"
+    },
+    {
+      "reason": "支付宝支付",
+      "rule": "DOMAIN-SUFFIX,loggw.alipay.com"
+    },
+    {
+      "reason": "iCloud 同步",
+      "rule": "DOMAIN-SUFFIX,metrics-config.icloud.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,metrics.apple.com"
+    },
+    {
+      "reason": "iCloud 同步",
+      "rule": "DOMAIN-SUFFIX,metrics.icloud.com"
+    },
+    {
+      "reason": "App Store 资源",
+      "rule": "DOMAIN-SUFFIX,metrics.mzstatic.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,notes-analytics-events.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,piwik-bz.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,prd-usw2-requestattribution-iad.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,proxy.advp.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,searchads.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,securemetrics.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,stocks-analytics-events.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,supportmetrics.apple.com"
+    },
+    {
+      "reason": "支付",
+      "rule": "DOMAIN-SUFFIX,t.paypal.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,weather-analytics-events.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,widgets.itunes.apple.com"
+    }
+  ],
+  "lite_rules": 66401,
+  "protected_removed": 41,
+  "response_routes": 3,
+  "source_counts": {
+    "anti-ad": 103677,
+    "hagezi-light": 66425
+  },
+  "unique_before_policy": 152761,
+  "url_rewrites": 15
+}

@@ -1,0 +1,12 @@
+#!name=Personal 闲鱼 (Experimental)
+#!desc=自维护去广告；需 HTTPS 解密；逐个启用验证
+#!category=去广告
+#!system=ios
+# SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
+
+[URL Rewrite]
+# 闲鱼 (xianyu); 真机效果未验证
+^https?://(?:g-)?acs\.m\.goofish\.com/gw/mtop\.taobao\.idlecommerce\.splash(?:/|\?|$) - reject-dict
+
+[MITM]
+hostname = %APPEND% acs.m.goofish.com, g-acs.m.goofish.com

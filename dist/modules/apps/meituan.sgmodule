@@ -1,0 +1,12 @@
+#!name=Personal 美团 (Experimental)
+#!desc=自维护去广告；需 HTTPS 解密；逐个启用验证
+#!category=去广告
+#!system=ios
+# SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
+
+[URL Rewrite]
+# 美团 (meituan); 真机效果未验证
+^https?://sqt\.meituan\.com/s/gateway/mweb/api/marketingResource/show(?:\?|$) - reject-dict
+
+[MITM]
+hostname = %APPEND% sqt.meituan.com

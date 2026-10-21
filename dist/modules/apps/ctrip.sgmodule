@@ -1,0 +1,12 @@
+#!name=Personal 携程 (Experimental)
+#!desc=自维护去广告；需 HTTPS 解密；逐个启用验证
+#!category=去广告
+#!system=ios
+# SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
+
+[URL Rewrite]
+# 携程 (ctrip); 真机效果未验证
+^https?://m\.ctrip\.com/restapi/soa2/13916/json/tripAds(?:\?|$) - reject-200
+
+[MITM]
+hostname = %APPEND% m.ctrip.com

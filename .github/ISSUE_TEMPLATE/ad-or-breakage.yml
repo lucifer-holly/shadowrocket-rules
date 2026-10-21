@@ -1,0 +1,26 @@
+name: 广告残留或误拦截
+description: 提供可复现现象；请勿上传登录凭据、完整抓包或私人配置。
+title: '[规则反馈] '
+labels: []
+body:
+  - type: input
+    id: app
+    attributes:
+      label: App/网站及版本
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤、广告位置、启用的模块
+    validations:
+      required: true
+  - type: textarea
+    id: minimal
+    attributes:
+      label: 已脱敏的域名、路径、错误信息
+      description: 删除 Cookie、Authorization、账号、订单、设备标识与查询参数值。不要提交完整抓包。
+  - type: textarea
+    id: comparison
+    attributes:
+      label: 关闭对应模块后是否恢复？

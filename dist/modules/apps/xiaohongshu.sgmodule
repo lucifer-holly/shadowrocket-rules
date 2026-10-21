@@ -1,0 +1,12 @@
+#!name=Personal 小红书 (Experimental)
+#!desc=自维护去广告；需 HTTPS 解密；逐个启用验证
+#!category=去广告
+#!system=ios
+# SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
+
+[URL Rewrite]
+# 小红书 (xiaohongshu); 真机效果未验证
+^https?://edith\.xiaohongshu\.com/api/sns/v\d+/system_service/splash_config(?:\?|$) - reject-dict
+
+[MITM]
+hostname = %APPEND% edith.xiaohongshu.com

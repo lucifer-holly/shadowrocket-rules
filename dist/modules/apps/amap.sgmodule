@@ -1,0 +1,13 @@
+#!name=Personal 高德地图 (Experimental)
+#!desc=自维护去广告；需 HTTPS 解密；逐个启用验证
+#!category=去广告
+#!system=ios
+# SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
+
+[URL Rewrite]
+# 高德地图 (amap); 真机效果未验证
+^https?://amap-aos-info-nogw\.amap\.com/ws/aos/alimama/splash_screen_rt(?:\?|$) - reject-dict
+^https?://m\d+\.amap\.com/ws/shield/dsp/app/startup/init(?:\?|$) - reject-dict
+
+[MITM]
+hostname = %APPEND% amap-aos-info-nogw.amap.com, m*.amap.com

@@ -1,0 +1,266 @@
+{
+  "taobao": {
+    "name": "淘宝",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://acs\\.m\\.taobao\\.com/gw/mtop\\.alibaba\\.advertisementservice\\.getadv(?:/|\\?|$)",
+        "hosts": [
+          "acs.m.taobao.com"
+        ],
+        "positive": [
+          "https://acs.m.taobao.com/gw/mtop.alibaba.advertisementservice.getadv/1.0/"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "jd": {
+    "name": "京东",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://api\\.m\\.jd\\.com/client\\.action\\?(?:[^#]*&)?functionId=(?:xview2Config|queryMaterialAdverts)(?:&|$)",
+        "hosts": [
+          "api.m.jd.com"
+        ],
+        "positive": [
+          "https://api.m.jd.com/client.action?client=apple&functionId=xview2Config&body=demo"
+        ],
+        "action": "reject-200"
+      }
+    ]
+  },
+  "xiaohongshu": {
+    "name": "小红书",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://edith\\.xiaohongshu\\.com/api/sns/v\\d+/system_service/splash_config(?:\\?|$)",
+        "hosts": [
+          "edith.xiaohongshu.com"
+        ],
+        "positive": [
+          "https://edith.xiaohongshu.com/api/sns/v3/system_service/splash_config"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "meituan": {
+    "name": "美团",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://sqt\\.meituan\\.com/s/gateway/mweb/api/marketingResource/show(?:\\?|$)",
+        "hosts": [
+          "sqt.meituan.com"
+        ],
+        "positive": [
+          "https://sqt.meituan.com/s/gateway/mweb/api/marketingResource/show"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "zhihu": {
+    "name": "知乎",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://api\\.zhihu\\.com/commercial_api/(?:launch_v\\d+|real_time_launch_v\\d+)(?:/|\\?|$)",
+        "hosts": [
+          "api.zhihu.com"
+        ],
+        "positive": [
+          "https://api.zhihu.com/commercial_api/launch_v2"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "xianyu": {
+    "name": "闲鱼",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://(?:g-)?acs\\.m\\.goofish\\.com/gw/mtop\\.taobao\\.idlecommerce\\.splash(?:/|\\?|$)",
+        "hosts": [
+          "acs.m.goofish.com",
+          "g-acs.m.goofish.com"
+        ],
+        "positive": [
+          "https://acs.m.goofish.com/gw/mtop.taobao.idlecommerce.splash/1.0/"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "amap": {
+    "name": "高德地图",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://amap-aos-info-nogw\\.amap\\.com/ws/aos/alimama/splash_screen_rt(?:\\?|$)",
+        "hosts": [
+          "amap-aos-info-nogw.amap.com"
+        ],
+        "positive": [
+          "https://amap-aos-info-nogw.amap.com/ws/aos/alimama/splash_screen_rt"
+        ],
+        "action": "reject-dict"
+      },
+      {
+        "pattern": "^https?://m\\d+\\.amap\\.com/ws/shield/dsp/app/startup/init(?:\\?|$)",
+        "hosts": [
+          "m*.amap.com"
+        ],
+        "positive": [
+          "https://m5.amap.com/ws/shield/dsp/app/startup/init?a=1"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "weibo": {
+    "name": "微博",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://adstrategy\\.biz\\.weibo\\.com/v2/strategy/ad(?:\\?|$)",
+        "hosts": [
+          "adstrategy.biz.weibo.com"
+        ],
+        "positive": [
+          "https://adstrategy.biz.weibo.com/v2/strategy/ad?uid=example"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "bilibili": {
+    "name": "哔哩哔哩",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://api\\.bilibili\\.com/x/mengqi/v\\d+/resource(?:\\?|$)",
+        "hosts": [
+          "api.bilibili.com"
+        ],
+        "positive": [
+          "https://api.bilibili.com/x/mengqi/v1/resource?build=1"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "pdd": {
+    "name": "拼多多",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "user-supplied initial repository; re-scoped endpoints",
+    "rules": [
+      {
+        "pattern": "^https?://api\\.(?:pinduoduo|yangkeduo)\\.com/api/cappuccino/splash(?:\\?|$)",
+        "hosts": [
+          "api.pinduoduo.com",
+          "api.yangkeduo.com"
+        ],
+        "positive": [
+          "https://api.pinduoduo.com/api/cappuccino/splash"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "cainiao": {
+    "name": "菜鸟",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "fmz200/wool_scripts (selected static endpoints; GPL-3.0)",
+    "rules": [
+      {
+        "pattern": "^https?://cn-acs\\.m\\.cainiao\\.com/gw/mtop\\.cainiao\\.adkeyword\\.get\\.cn(?:/|\\?|$)",
+        "hosts": [
+          "cn-acs.m.cainiao.com"
+        ],
+        "positive": [
+          "https://cn-acs.m.cainiao.com/gw/mtop.cainiao.adkeyword.get.cn/1.0/"
+        ],
+        "action": "reject-dict"
+      }
+    ]
+  },
+  "keep": {
+    "name": "Keep",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "fmz200/wool_scripts (selected static endpoints; GPL-3.0)",
+    "rules": [
+      {
+        "pattern": "^https?://api\\.gotokeep\\.com/ads/v\\d/ads/preload(?:\\?|$)",
+        "hosts": [
+          "api.gotokeep.com"
+        ],
+        "positive": [
+          "https://api.gotokeep.com/ads/v1/ads/preload"
+        ],
+        "action": "reject"
+      }
+    ]
+  },
+  "ctrip": {
+    "name": "携程",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "fmz200/wool_scripts (selected static endpoints; GPL-3.0)",
+    "rules": [
+      {
+        "pattern": "^https?://m\\.ctrip\\.com/restapi/soa2/13916/json/tripAds(?:\\?|$)",
+        "hosts": [
+          "m.ctrip.com"
+        ],
+        "positive": [
+          "https://m.ctrip.com/restapi/soa2/13916/json/tripAds"
+        ],
+        "action": "reject-200"
+      }
+    ]
+  },
+  "appso": {
+    "name": "AppSo",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "fmz200/wool_scripts (selected static endpoints; GPL-3.0)",
+    "rules": [
+      {
+        "pattern": "^https?://sso\\.ifanr\\.com/jiong/IOS/appso/splash/",
+        "hosts": [
+          "sso.ifanr.com"
+        ],
+        "positive": [
+          "https://sso.ifanr.com/jiong/IOS/appso/splash/index"
+        ],
+        "action": "reject"
+      }
+    ]
+  }
+}

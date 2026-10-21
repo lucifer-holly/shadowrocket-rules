@@ -1,0 +1,78 @@
+name: Upstream candidate update
+on:
+  schedule:
+    - cron: '17 4 * * *' # 12:17 Asia/Shanghai, best effort
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: upstream-candidate
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Verify main and fetch data-only upstream candidates
+        run: |
+          python3 tools/validate.py
+          python3 tools/upstream.py
+          python3 tools/build.py
+          python3 tools/validate.py
+          python3 -m unittest discover -s tests -v
+          node --test tests/response-cleaner.test.cjs
+      - name: Create a candidate PR after all checks pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- vendor sources/upstreams.lock.json dist reports; then
+            echo 'No rule changes.'
+            exit 0
+          fi
+          existing=$(gh pr list --state open --json headRefName --jq '[.[] | select(.headRefName | startswith("automation/upstream-"))] | length')
+          if [ "$existing" != 0 ]; then
+            echo 'An update PR already awaits human review. Leaving it unchanged.'
+            exit 0
+          fi
+          branch="automation/upstream-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add vendor/anti-ad-surge.txt vendor/hagezi-light.txt sources/upstreams.lock.json dist reports
+          git commit -m 'chore: propose reviewed-source rule refresh'
+          git push origin "$branch"
+          bodyfile=$(mktemp)
+          cat > "$bodyfile" <<'BODY'
+          上游静态数据发生变化。本分支已通过离线构建、规则与响应脚本测试。
+
+          请审阅原始快照增删、许可哈希、reports/update.md 和 reports/update.json，然后手动合并。未进行 iOS 真机测试。不会自动合并，也不会下载或执行上游 JavaScript。
+
+          GITHUB_TOKEN 创建的 PR 可能生成等待批准的 CI：请在 PR 页面点击 Approve workflows to run。创建 PR 前已完成上面的测试；若未出现检查，也可在 Validate 的 Run workflow 选择本分支手动运行。
+          BODY
+          gh pr create --base main --head "$branch" --title 'chore: upstream rule update (review required)' --body-file "$bodyfile"
+      - name: Publish availability and change report
+        if: always()
+        run: |
+          if [ -f .cache/update.md ]; then cat .cache/update.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Retain the diagnostic report even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: upstream-report-${{ github.run_id }}
+          path: |
+            .cache/update.md
+            .cache/update.json
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 14

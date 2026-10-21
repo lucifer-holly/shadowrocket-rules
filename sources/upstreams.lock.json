@@ -1,0 +1,20 @@
+{
+  "sources": {
+    "anti-ad": {
+      "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-surge.txt",
+      "sha256": "2f48571736a7936c0f0a4cbb391072448ec4f49844ff82f520387f4c9ca6e880",
+      "license_sha256": "e38459549a64f11ecf1477053768ef89eb2939a9aa5573f51a31461086357a34",
+      "bytes": 3434385,
+      "observed_at": "2026-10-21T09:21:05+00:00",
+      "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative."
+    },
+    "hagezi-light": {
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/light-onlydomains.txt",
+      "sha256": "4caa6dc2c5b7f30b0d4c25f75d56decce4b56549d466fb7c666fa366e07e9e56",
+      "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 1398563,
+      "observed_at": "2026-10-21T09:21:05+00:00",
+      "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative."
+    }
+  }
+}
