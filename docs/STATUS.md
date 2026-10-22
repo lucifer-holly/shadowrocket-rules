@@ -36,6 +36,6 @@
 
 ## 自动化
 
-- `Upstream auto update`（`.github/workflows/update.yml`）每天 04:17 UTC 运行，通过全部检查后直接提交到 main；来源异常时开「上游自动更新需要关注」Issue，恢复后自动关闭；第三方脚本有新版本时开审核 Issue。
+- `Upstream auto update`（`.github/workflows/update.yml`）每天 04:17 UTC 运行，通过全部检查后以主人身份直接提交到 main；来源异常时开「上游自动更新需要关注」Issue，恢复后自动关闭；第三方脚本有新版本时开审核 Issue。
 - `Validate`（`.github/workflows/validate.yml`）在每次推送时运行。
 - Dependabot 已按主人要求关闭。

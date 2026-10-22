@@ -30,8 +30,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Commit as the repository owner (GitHub noreply address) so the contributor list stays the owner alone.
+          git config user.name '${{ github.repository_owner }}'
+          git config user.email '${{ github.repository_owner_id }}+${{ github.repository_owner }}@users.noreply.github.com'
           for attempt in 1 2 3; do
             python3 tools/validate.py
             # Exit 3: some sources were blocked and kept their old snapshots; the healthy ones are still published.

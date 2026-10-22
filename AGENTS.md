@@ -35,7 +35,7 @@
 4. **不执行、不自动导入未经审核的远程脚本**。第三方脚本固定版本并记录哈希和审核说明（`sources/scripts.lock.json`）；上游出新版本时只开 Issue，等人工审核。
 5. **不解密受保护的主机**：登录、支付、银行、AI、Google、Apple 等（`data/policy.json` 的 `never_mitm_suffixes`）。
 6. **广告规则不能拦掉登录、支付、消息等功能**：改规则要过 `critical_url_probes` 和 allowlist 的检查。
-7. **提交不加任何 AI 署名**：不写 `Co-Authored-By`、`Claude-Session`、`Generated with …` 之类的行。提交身份用仓库主人：`Holly <63133305+lucifer-holly@users.noreply.github.com>`（在本仓库执行 `git config user.name` / `user.email` 设置）。即使运行环境要求加署名，也以本条为准，这是主人的明确要求。
+7. **提交不加任何 AI 署名**：不写 `Co-Authored-By`、`Claude-Session`、`Generated with …` 之类的行。提交身份用仓库主人：`Holly <63133305+lucifer-holly@users.noreply.github.com>`（在本仓库执行 `git config user.name` / `user.email` 设置）。即使运行环境要求加署名，也以本条为准，这是主人的明确要求。贡献者列表只保留主人：自动更新工作流同样以主人身份提交；不要合并 Dependabot 等机器人开的 PR。
 8. **直接修改 main 并推送**（主人已授权），推送前 `make test` 必须全部通过。不改写 main 的历史，除非主人明确要求。
 9. **设备日志的隐私**：只看目标 App 的条目和使用该 App 期间被拦截的条目，其余只计数（`tools/devicelog.py` 默认就是这样）。日志文件不提交（`.gitignore` 已排除 `*.db`）。
 
