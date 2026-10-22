@@ -65,7 +65,7 @@
 ## 修改与更新
 
 - 分流数据：`data/manual-direct.list`（开头例外）、`data/legacy-proxy.list`（257 条强制代理）、`data/routing.json`（其余分组）。修改后运行 `make build && make test`，提交到 main，设备下次更新时生效。
-- 广告数据：anti-AD、HaGeZi Light、fmz200 去广告插件的静态规则，由 GitHub Actions 每天检查，生成待审核的 PR；合并后手机自动更新模块。
+- 广告数据：anti-AD、HaGeZi Light、fmz200 去广告插件的静态规则，由 GitHub Actions 每天检查，通过全部检查后自动发布到 main；设备开着自动更新就会拿到。某个 App 被导入规则弄坏时，把它的主机加进 `data/app-ads-overrides.json`。
 - 回滚：手机先关最近启用的模块；主配置有问题就切回旧配置备份。固定旧版本时，把链接里的 `main` 换成已知良好提交的完整 SHA。
 
 静态测试覆盖 257 条规则的保留与优先级、手工例外、AI/Google/YouTube/WRDS 代理、SSH、PayPal、Apple/Microsoft 分流、国内直连、局域网和公开文件边界。这不是 iOS/macOS 真机验证。

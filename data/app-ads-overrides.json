@@ -1,0 +1,5 @@
+{
+  "description": "Owner opt-outs for automatically imported app-ad rules. exclude_hosts: no imported block, rewrite or decryption on these hosts and their subdomains (use when an app breaks). exclude_patterns: exact imported rewrite patterns to drop. Own rules in data/apps.json are not affected.",
+  "exclude_hosts": [],
+  "exclude_patterns": []
+}

@@ -29,7 +29,7 @@ python3 tools/configure.py --repo YOUR-USERNAME/shadowrocket-rules
 make test
 ```
 
-把 `YOUR-USERNAME/shadowrocket-rules` 换成你决定使用的公开仓库。上传前再次运行测试。仓库地址已配置为 `lucifer-holly/shadowrocket-rules`。发布后在 Actions 查看校验结果；后续规则更新经拉取请求审核后合并。
+把 `YOUR-USERNAME/shadowrocket-rules` 换成你决定使用的公开仓库。上传前再次运行测试。仓库地址已配置为 `lucifer-holly/shadowrocket-rules`。发布后在 Actions 查看校验结果；上游规则此后每天自动更新。
 
 [订阅地址表](docs/SUBSCRIPTIONS.md) 会随上面的命令自动生成。基础模块订阅形式：
 
@@ -41,15 +41,12 @@ https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/mod
 
 ## 自动更新如何工作
 
-GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：anti-AD、HaGeZi Light、fmz200 去广告插件。GitHub 定时触发可能延迟，首次上传后先手动运行一次 `Upstream candidate update`。
+GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：anti-AD、HaGeZi Light、fmz200 去广告插件。全部检查和测试通过后，**自动提交到 main**，设备下次自动更新配置/模块时生效，不需要人工合并。
 
-更新只下载纯文本规则和 LICENSE。通过格式、体积、时间、数量、许可哈希及增删幅度检查后，重建本仓库产物并运行完整测试，然后创建**等待你审核的 Pull Request（拉取请求）**；你合并后，设备下次自动更新模块时生效。
-
-- 源失联、HTML 错误页、空列表、格式变更、过期、许可变化或超过 20% 的规则增删，均阻止候选发布，保留旧版。
-- fmz200 插件只导入静态 REJECT 域名/IP、`reject` 系列 URL 重写和插件自己列出的解密主机；脚本、jq、正文改写、跳转和账号/权益相关内容一律不导入。解密主机进一步收窄到被导入规则实际需要的范围，并排除登录、支付、银行、AI、Google、Apple 等受保护主机。
-- 已有待审更新 PR 时，不覆盖其分支；本轮仍生成健康报告。
-- 分流数据（`data/`）由你人工维护，不受上游更新影响。
-- 设置见 [维护说明](docs/MAINTENANCE.md)，包含 Actions 权限、分支保护、失联处理和回滚。
+- 源失联、HTML 错误页、空列表、格式变更、过期、许可变化或单次超过 20% 的增删，只拦住出问题的那个来源，它继续使用旧快照；其他来源照常更新。
+- 出现拦截或检查失败时，仓库会自动开出「上游自动更新需要关注」Issue，恢复正常后自动关闭。平时不需要看。
+- fmz200 插件只导入静态 REJECT 域名/IP、`reject` 系列 URL 重写和插件自己列出的解密主机；脚本、jq、正文改写、跳转和账号/权益相关内容一律不导入。解密主机收窄到被导入规则实际需要的范围，并排除登录、支付、银行、AI、Google、Apple 等受保护主机。
+- 分流数据（`data/`）由你维护，不受上游更新影响。新增或排除覆盖范围见 [维护说明](docs/MAINTENANCE.md#调整覆盖范围)。
 
 ## 常用维护入口
 
@@ -57,13 +54,14 @@ GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：
 |---|---|
 | 增加广告域名 | `data/extra-domains.json`，写明原因 |
 | 修复误杀 | `data/allowlist.json`，添加精确例外并重建 |
+| 自动导入的规则让某 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` |
 | 新增 App 路径 | `data/apps.json`，补充正反样例和限定 MITM 主机 |
 | 调整分流 | `data/manual-direct.list`、`data/legacy-proxy.list`、`data/routing.json` |
 | 查看规则是否匹配 | `python3 tools/explain.py ads.example.com`（含 app-ads） |
 | 离线重建 | `make build` |
 | 全部离线检查 | `make test` |
 | 只检查上游，不改快照 | `python3 tools/upstream.py --check` |
-| 本地准备更新候选 | `make update`，审查 Git diff 后自行提交 |
+| 本地手动跑一次上游更新 | `make update` |
 | 上传后检查自己的 Raw 链接 | `python3 tools/check_links.py` |
 
 文件职责与具体命令见 [维护说明](docs/MAINTENANCE.md)。[调研与筛选](docs/RESEARCH.md) 记录了来源、维护证据、许可和取舍；[验收与故障排查](docs/TROUBLESHOOTING.md) 说明技术限制。

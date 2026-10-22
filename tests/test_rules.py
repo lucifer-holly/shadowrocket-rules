@@ -141,20 +141,24 @@ class UpdaterTests(unittest.TestCase):
     def test_excessive_churn_rejected(self):
         b=b'#VER=20261021000000\nDOMAIN,new.one.com\nDOMAIN,new.two.com\n'
         with self.assertRaises(ValueError):self.update(self.fetcher(b))
-    def test_one_source_failure_prevents_all_writes(self):
+    def test_one_source_failure_keeps_only_that_source_and_updates_the_rest(self):
         second=dict(self.s,id='second',repository='example/second',snapshot='vendor/second.txt')
         self.write('sources/upstreams.json',{'sources':[self.s,second]})
         lock=read_json(self.root/'sources/upstreams.lock.json')
         lock['sources']['second']=dict(lock['sources']['test'])
         self.write('sources/upstreams.lock.json',lock)
         (self.root/'vendor/second.txt').write_bytes(self.body)
-        old=(self.root/'sources/upstreams.lock.json').read_bytes()
+        newer=self.body+b'DOMAIN-SUFFIX,ads.three.com\n'
         def mixed(url):
             if '/second/' in url:raise OSError('outage')
-            return self.lic if url.endswith('/LICENSE') else self.body+b'DOMAIN-SUFFIX,ads.three.com\n'
-        with self.assertRaises(ValueError):self.update(mixed)
-        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.body)
-        self.assertEqual((self.root/'sources/upstreams.lock.json').read_bytes(),old)
+            return self.lic if url.endswith('/LICENSE') else newer
+        with self.assertRaises(upstream.PartialFailure):self.update(mixed)
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),newer)
+        self.assertEqual((self.root/'vendor/second.txt').read_bytes(),self.body)
+        locked=read_json(self.root/'sources/upstreams.lock.json')['sources']
+        self.assertEqual(locked['test']['sha256'],sha256(newer))
+        self.assertEqual(locked['second']['sha256'],sha256(self.body))
+        self.assertEqual(len(read_json(self.root/'reports/update.json')['errors']),1)
     def test_redirect_and_unapproved_url_rejected(self):
         for u in ['http://raw.githubusercontent.com/a/b/main/r','https://evil.test/r','https://raw.githubusercontent.com/a/b/main/r?token=x']:
             with self.assertRaises(ValueError):upstream.fetch(u)

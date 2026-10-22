@@ -155,16 +155,22 @@ def _mitm_entry_ok(entry, never_mitm):
     return not any(within(sample, s) or within(s, entry.lstrip('*.')) for s in never_mitm)
 
 
-def select(data, policy, probes=()):
-    """Choose importable rules: no protected hosts, no critical-URL matches, decryption only where the plugin itself decrypts."""
-    never_mitm = policy['never_mitm_suffixes']
+def select(data, policy, probes=(), exclude_hosts=(), exclude_patterns=()):
+    """Choose importable rules: no protected hosts, no critical-URL matches, decryption only where the plugin itself decrypts.
+
+    exclude_hosts / exclude_patterns are the owner's opt-outs: nothing is blocked, rewritten or decrypted there."""
+    never_mitm = [*policy['never_mitm_suffixes'], *exclude_hosts]
+    excluded = lambda host: any(within(host, h) for h in exclude_hosts)
     entries = [e for e in data['mitm'] if _mitm_entry_ok(e, never_mitm)]
     exact = set(entries)
-    report = {'dropped_protected_domain': 0, 'dropped_probe': 0, 'dropped_no_mitm': 0, 'dropped_bad_example': 0}
+    report = {'dropped_protected_domain': 0, 'dropped_override': 0, 'dropped_probe': 0, 'dropped_no_mitm': 0,
+              'dropped_bad_example': 0}
     domains = []
     for rule in sorted(data['domains']):
         if exception_for(rule, policy):
             report['dropped_protected_domain'] += 1
+        elif excluded(rule[1]):
+            report['dropped_override'] += 1
         else:
             domains.append(rule)
     rewrites, hosts = [], set()
@@ -176,6 +182,9 @@ def select(data, policy, probes=()):
         https, fixed = https_hosts(pattern)
         if https is None or not example_urls(pattern):
             report['dropped_bad_example'] += 1
+            continue
+        if pattern in exclude_patterns or any(excluded(urlsplit(u).hostname) for u in example_urls(pattern)):
+            report['dropped_override'] += 1
             continue
         needed, ok = set(), True
         for host in https:

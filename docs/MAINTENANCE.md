@@ -1,4 +1,4 @@
-# 维护、审核与回滚
+# 维护、自动更新与回滚
 
 ## 文件职责
 
@@ -16,9 +16,10 @@
 | `scripts/response-cleaner.js` | 原创 JSON 过滤代码，不访问网络、存储或凭据 |
 | `sources/scripts.lock.json` | 当前脚本审核指纹和历史脚本保留清单 |
 | `data/allowlist.json` | 从广告库中移除的域名例外；不输出 DIRECT，不改变路由 |
+| `data/app-ads-overrides.json` | 你对自动导入的 App 广告规则的排除项（主机或单条规则） |
 | `data/policy.json` | 公共后缀/共享根保护、禁止解密的主机、关键网址探针、更新幅度、时效和大小阈值 |
 | `dist/` | 自动生成的手机用文件及完整性清单 |
-| `reports/` | 构建统计、已准备候选的完整域名增删 |
+| `reports/` | 构建统计、最近一次自动更新的完整增删 |
 | `.cache/` | 本轮检测日志和失败诊断，不提交 |
 | `private/` | 本地私人配置输出，不提交、不进入交付 ZIP |
 
@@ -37,27 +38,44 @@ make test
 
 ## GitHub Actions 设置
 
-1. 先用 `tools/configure.py --repo owner/repo` 设置真实地址再上传到 `main`，进入 Actions 允许运行工作流。CI 会拒绝 project.json 地址与当前仓库不一致的构建，避免发布失效订阅。
-2. 在 Settings → Actions → General 的 Workflow permissions 中，允许 Actions 创建 Pull Request。更新作业需要 `contents: write` 和 `pull-requests: write`；普通 CI（Continuous Integration，持续集成）只读内容。
-3. 手动运行 `Upstream candidate update`，确认日志与报告正常。
-4. 建议保护 `main`，要求 PR 合并；关闭自动合并。个人仓库如设置必须由另一名审核者批准，唯一维护者可能无法自己完成合并，按实际协作人数配置。
-5. 工作流使用固定提交版本的官方 checkout/upload-artifact，并由 Dependabot 提议升级；没有执行上游脚本或在线转换器。
-
-**GitHub Token 的行为：** 根据当前 GitHub 文档，默认 `GITHUB_TOKEN` 创建/更新 PR 时，相应 pull_request 检查会以等待批准的状态创建；在 PR 合并框中点击 **Approve workflows to run** 后运行。更新作业也已在创建 PR 前完成全部检查；若没有出现独立检查，在 Actions → Validate → Run workflow 中选择候选分支手动运行。不要为解决这个问题改用 `pull_request_target` 执行不可信 PR 代码。
+1. Settings → Actions → General → Workflow permissions 选 **Read and write permissions**。更新作业需要 `contents: write`（直接提交到 main）和 `issues: write`（异常提醒）；普通 CI（Continuous Integration，持续集成）只读。
+2. `main` 不要设置“必须通过 PR 合并”的分支保护，或者在保护规则里允许 GitHub Actions 推送；否则自动发布会被拒绝并开出提醒 Issue。
+3. 合并后手动运行一次 `Upstream auto update`，确认日志与报告正常。
+4. 工作流使用固定提交版本的官方 checkout/upload-artifact，并由 Dependabot 提议升级；不执行上游脚本或在线转换器。
 
 参考：[GitHub 工作流触发说明](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)。
 
-每日北京时间 12:17 是计划时间，GitHub 可能延迟。公共仓库长时间无活动，定时工作流可能暂停；留意 Actions 状态。没有 GitHub 登录凭据的 ZIP 项目不会自行开始定时任务。
+## 自动更新与异常提醒
 
-工作流只从受信任 `main` 构建；网络输入只有严格解析的规则文本与 LICENSE。候选分支为 `automation/upstream-<run id>`，不强推，也不覆盖已有待审 PR。已有待审 PR 时仍检查最新来源并保留本轮报告，但等你处理后才发布下一份候选。
+每天北京时间约 12:17（GitHub 可能延迟）运行 `Upstream auto update`：
 
-## 审核更新
+1. 先校验当前 main；再下载三个来源的纯文本数据和 LICENSE，逐个检查格式、体积、时间、数量、许可哈希和增删幅度（单次不超过 20%）。
+2. 通过检查的来源更新快照；**未通过的来源继续用旧快照**，不影响其他来源。
+3. 重建全部产物，跑完整校验和测试，全部通过后以 `github-actions[bot]` 身份直接提交并推送到 main。推送时 main 若被别人改过，就从最新 main 重新跑，最多三次，不覆盖他人的提交。
+4. 有来源被拦截或任何检查失败时，运行会标红，并在仓库开出（或追加到）标题为「上游自动更新需要关注」的 Issue，附带报告；之后某次运行全部正常，会自动关闭这个 Issue。
 
-查看 `reports/update.json` 的新增/删除及 `reports/build.json` 的保护项变化，再检查 Git diff。特别留意登录/支付/常用 CDN 是否被加入，或者大量规则突然消失。失败报告在工作流 Summary 和附件 `upstream-report-...` 中，现有发布文件仍可用。
+设备端：手机和 Mac 打开 Shadowrocket 的配置/模块自动更新，就会在下次更新时拿到新规则。
 
-许可字节变化会硬失败；即便只改年份，也需读新文本、确认再分发条件后手动更新许可文件与锁的 `license_sha256`。不要用一键“批准所有基线”掩盖来源变化。
+需要你处理的情况只有 Issue 里列出的几类：
 
-上游中断时，继续使用已经托管的快照；超过 14 天未生成会报警，不把广告域名的 NXDOMAIN 当成自动删除理由。更换来源需核对许可与格式，手动下载、建立快照/哈希，并调整最小数量边界。输入快照和锁文件需一起提交。更新过程中网络/检查失败不会写入输入；极端进程中断若发生在多文件替换之间，下次哈希校验会拒绝构建，重新检出上一有效提交恢复。
+- **许可变化**：读新许可、确认可以再分发后，更新 `licenses/` 文件和 `sources/upstreams.lock.json` 的 `license_sha256`。
+- **增删超过 20% 或格式变化**：先看上游是否出错。确认是正常改版，就在本地运行 `make update` 时临时调整 `data/policy.json` 的阈值或 `sources/upstreams.json` 的数量边界，检查 diff 后提交。
+- **长期失联**：继续使用已托管的快照，不把广告域名的 NXDOMAIN 当成删除理由；需要换源时核对许可与格式，建立快照与哈希后一起提交。
+
+每次自动提交都写入 `reports/update.md` 和 `reports/update.json`（增删明细），需要追查时看提交历史即可。极端情况下进程在多文件替换之间中断，下次哈希校验会拒绝构建并报警，检出上一有效提交即可恢复。
+
+## 调整覆盖范围
+
+| 想做的事 | 改哪里 |
+|---|---|
+| 新出现的广告域名，直接拦 | `data/extra-domains.json`（进入 base/lite） |
+| 某 App 的广告接口，按路径拦 | `data/apps.json`，附正样例和同主机登录/支付负样例 |
+| 某个域名被误拦 | `data/allowlist.json`（base、lite、app-ads 都会放行） |
+| 自动导入的规则让某个 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` 填该 App 的主机（包含子域），该主机不再被导入规则拦截、重写或解密；只想去掉某一条时填 `exclude_patterns` |
+| 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会自动合并进 app-ads |
+| 永不解密或永不误拦的关键站点 | `data/policy.json` 的 `never_mitm_suffixes`、`critical_url_probes` |
+
+改完运行 `make build && make test`，提交到 main。
 
 ## 添加 App 与响应脚本
 
@@ -72,9 +90,8 @@ make test
 ## 版本回滚
 
 - 紧急恢复：手机关闭最近启用的 App/脚本模块；通用模块有误杀则关闭 base，或换 lite。
-- GitHub 回滚：对引入问题的合并提交执行 Revert PR（回退拉取请求），测试通过后手动合并；手机更新模块并重连。
+- GitHub 回滚：对引入问题的提交执行 `git revert`，测试通过后推送到 main；设备更新配置/模块并重连。自动更新若再次带回同一问题，用 `data/allowlist.json` 或 `data/app-ads-overrides.json` 永久排除。
 - 临时固定历史：把模块 Raw URL 中的 `main` 改为已知良好提交的完整 SHA，再导入该模块。域名模块已内嵌规则，因此可直接固定整份版本；旧脚本通过保留的哈希文件继续可用。
-- 若使用规则集接入，`RULE-SET` 的 URL 也要固定同一个旧提交；单独回退主配置而仍引用 `main` 规则集并不能固定规则。
 
 ## 发布前
 

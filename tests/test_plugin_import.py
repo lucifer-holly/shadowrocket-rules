@@ -70,6 +70,16 @@ class PluginImportTests(unittest.TestCase):
         self.assertEqual(https_hosts(r'^https?:\/\/(a|b)\.example\.com\/')[1], True)
         self.assertEqual(https_hosts(r'^https?:\/\/a\d+\.example\.com\/')[1], False)
 
+    def test_owner_opt_outs_remove_blocks_rewrites_and_decryption(self):
+        out = select(self.data, self.policy, PROBES, exclude_hosts=['cdn.example.com'],
+                     exclude_patterns=[r'^https?:\/\/img\d+\.example\.com\/ad\/'])
+        self.assertEqual(out['rewrites'], [])
+        self.assertEqual(out['mitm'], [])
+        self.assertEqual(out['report']['dropped_override'], 2)
+        out = select(self.data, self.policy, PROBES, exclude_hosts=['example.com'])
+        self.assertNotIn(('DOMAIN-SUFFIX', 'ads.example.com'), out['domains'])
+        self.assertNotIn('*.example.com', out['mitm'])
+
     def test_layout_change_fails_closed(self):
         with self.assertRaises(ValueError):
             parse_plugin(b'[Rule]\nDOMAIN,ad.example.com,REJECT\n')

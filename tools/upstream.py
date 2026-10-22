@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download data-only candidates; validate all sources before replacing any snapshot."""
+"""Download data-only upstream updates; a source that fails any check keeps its old snapshot."""
 import argparse
 import concurrent.futures
 import datetime as dt
@@ -112,17 +112,15 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
             rows.append(f"| {watch['id']} | {status} | — | — |")
         except Exception as exc:
             rows.append(f"| {watch['id']} | 参考源无法获取：{type(exc).__name__}（不影响已有快照） | — | — |")
-    report='\n'.join(['# 上游候选更新报告','',f"检查时间：{now.isoformat(timespec='seconds')}",'',
-        '只产生候选更新；不自动合并。原始快照、许可和规则差异均需审阅。','',
+    report='\n'.join(['# 上游自动更新报告','',f"检查时间：{now.isoformat(timespec='seconds')}",'',
+        '通过检查的来源自动更新；未通过的来源保留旧快照，其余来源照常更新。','',
         '| 来源 | 状态 | 规则数 | 新增 / 删除 |','|---|---|---:|---:|',*rows,'',
-        *(['失败；所有发布输入保持原样。',*['- '+e for e in errors]] if errors else ['所有数据源预检通过。']),
-        '', '详细增删见同目录 update.json；GitHub PR 的 Files changed 显示完整快照差异。',''])
-    # Reports always go to ignored cache on check/failure, so a failure cannot publish stale/partial inputs.
+        *(['以下来源被安全检查拦截，继续使用旧快照：',*['- '+e for e in errors]] if errors else ['所有数据源预检通过。']),
+        '', '详细增删见同目录 update.json；提交记录的文件差异显示完整快照变化。',''])
+    # Reports always go to ignored cache; a failed source never replaces its snapshot.
     cache=root/'.cache';cache.mkdir(exist_ok=True)
     (cache/'update.md').write_text(report,encoding='utf-8')
     (cache/'update.json').write_text(json_text({'errors':errors,'changes':changes}),encoding='utf-8')
-    if errors:
-        raise ValueError('upstream preflight failed; see .cache/update.md')
     if proposals and not check:
         proposals['sources/upstreams.lock.json']=json_text(lock).encode()
         # Network/format/license checks finish before filesystem mutation.
@@ -136,13 +134,23 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
             finally:
                 if os.path.exists(temp):os.unlink(temp)
         (root/'reports/update.md').write_text(report,encoding='utf-8')
-        (root/'reports/update.json').write_text(json_text({'errors':[],'changes':changes}),encoding='utf-8')
+        (root/'reports/update.json').write_text(json_text({'errors':errors,'changes':changes}),encoding='utf-8')
+    if errors:
+        raise PartialFailure('upstream sources blocked: '+', '.join(e.split(':')[0] for e in errors)+'; see .cache/update.md')
     return bool(proposals)
+
+
+class PartialFailure(ValueError):
+    """Some sources failed their checks and kept their old snapshots; healthy sources were still applied."""
+
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true');a=p.parse_args()
     try:
         changed=update(check=a.check)
-        print('Upstream data changed; '+('check only.' if a.check else 'candidate snapshots prepared.')) if changed else print('No upstream data change.')
+        print('Upstream data changed; '+('check only.' if a.check else 'snapshots updated.')) if changed else print('No upstream data change.')
+    except PartialFailure as exc:
+        # Exit 3: publish what passed, then alert about the blocked sources.
+        print(str(exc));raise SystemExit(3)
     except (ValueError,OSError) as exc:
         print(str(exc));raise SystemExit(1)

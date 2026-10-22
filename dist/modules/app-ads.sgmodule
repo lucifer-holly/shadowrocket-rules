@@ -2660,7 +2660,7 @@ IP-CIDR6,2402:db40:5100:1011::5/128,REJECT,no-resolve
 ^https?://m\.ctrip\.com/restapi/soa2/13916/json/tripAds(?:\?|$) - reject-200
 # AppSo (appso); 真机效果未验证
 ^https?://sso\.ifanr\.com/jiong/IOS/appso/splash/ - reject
-# fmz200/wool_scripts blockAds 的静态拒绝规则（GPL-3.0）；自动跟踪，未导入脚本
+# 自动跟踪的第三方插件静态拒绝规则（见 THIRD_PARTY_NOTICES.md）；未导入脚本
 ^https?:\/\/gab\.122\.gov\.cn\/eapp\/m\/sysquery\/adver$ - reject
 ^https?:\/\/api\.21jingji\.com\/ad\/ - reject
 ^https?:\/\/ad\.life\.360\.cn\/v2\/app\/advertisement\/config\?sdk_ver= - reject-dict

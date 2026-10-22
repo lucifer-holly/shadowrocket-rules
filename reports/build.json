@@ -182,14 +182,17 @@
     }
   ],
   "imported_app_ads": {
-    "domains": 2590,
-    "dropped_bad_example": 7,
-    "dropped_no_mitm": 145,
-    "dropped_probe": 0,
-    "dropped_protected_domain": 14,
-    "mitm_hosts": 730,
-    "networks": 34,
-    "rewrites": 1133
+    "fmz-blockads": {
+      "domains": 2590,
+      "dropped_bad_example": 7,
+      "dropped_no_mitm": 145,
+      "dropped_override": 0,
+      "dropped_probe": 0,
+      "dropped_protected_domain": 14,
+      "mitm_hosts": 730,
+      "networks": 34,
+      "rewrites": 1133
+    }
   },
   "lite_rules": 66400,
   "protected_removed": 44,

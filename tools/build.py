@@ -2,7 +2,7 @@
 """Deterministic offline build from hashed local snapshots. Never fetches or executes JS."""
 import argparse
 from pathlib import Path
-from common import ROOT, read_json, json_text, sha256, load_inputs, load_policy, optimize, repo_base
+from common import ROOT, read_json, json_text, sha256, load_inputs, load_policy, optimize, repo_base, domain
 from profiles import profile
 from plugin_import import parse_plugin, select
 
@@ -30,7 +30,7 @@ def app_sections(apps, imported=None):
     rules = []
     if imported:
         own = {line.split(' - ')[0] for line in seen}
-        rewrites.append('# fmz200/wool_scripts blockAds 的静态拒绝规则（GPL-3.0）；自动跟踪，未导入脚本')
+        rewrites.append('# 自动跟踪的第三方插件静态拒绝规则（见 THIRD_PARTY_NOTICES.md）；未导入脚本')
         rewrites += [f'{p} - {a}' for p, a in imported['rewrites'] if p not in own]
         rules = [','.join(r) + ',REJECT' for r in imported['domains']] + imported['networks']
         hosts.update(imported['mitm'])
@@ -38,16 +38,28 @@ def app_sections(apps, imported=None):
 
 
 def imported_app_ads(root, policy):
-    """Static subset of the tracked app-ad plugin; the snapshot hash is verified first."""
+    """Static subset of every tracked app-ad plugin, merged; each snapshot hash is verified first."""
     lock = read_json(root/'sources/upstreams.lock.json')['sources']
+    overrides = read_json(root/'data/app-ads-overrides.json')
+    for host in overrides['exclude_hosts']:
+        domain(host)
+    merged = {'domains': set(), 'networks': set(), 'rewrites': {}, 'mitm': set(), 'report': {}}
     for source in read_json(root/'sources/upstreams.json')['sources']:
         if source.get('role') != 'app-ads':
             continue
         body = (root/source['snapshot']).read_bytes()
         if sha256(body) != lock[source['id']]['sha256']:
             raise ValueError(source['id']+': snapshot does not match lock')
-        return select(parse_plugin(body), policy, policy['critical_url_probes'])
-    raise ValueError('app-ad plugin source missing')
+        part = select(parse_plugin(body), policy, policy['critical_url_probes'],
+                      overrides['exclude_hosts'], overrides['exclude_patterns'])
+        merged['domains'].update(part['domains']); merged['networks'].update(part['networks'])
+        for pattern, action in part['rewrites']:
+            merged['rewrites'].setdefault(pattern, action)
+        merged['mitm'].update(part['mitm']); merged['report'][source['id']] = part['report']
+    if not merged['report']:
+        raise ValueError('app-ad plugin source missing')
+    return {'domains': sorted(merged['domains']), 'networks': sorted(merged['networks']),
+            'rewrites': list(merged['rewrites'].items()), 'mitm': sorted(merged['mitm']), 'report': merged['report']}
 
 
 def outputs(root=ROOT):
