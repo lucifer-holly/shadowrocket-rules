@@ -10,3 +10,9 @@ private/
 *.key
 default.conf
 node_modules/
+
+# Shadowrocket log exports and copies (may hold other apps' hosts)
+*.db
+*.db-wal
+*.db-shm
+*.db_*

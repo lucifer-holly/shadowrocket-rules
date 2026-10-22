@@ -15,8 +15,11 @@
 | `data/script-routes.json` | 原创响应过滤器的 3 个限定入口 |
 | `scripts/response-cleaner.js` | 原创 JSON 过滤代码，不访问网络、存储或凭据 |
 | `sources/scripts.lock.json` | 当前脚本审核指纹和历史脚本保留清单 |
+| `data/extra-domains.json` | 自己加的广告域名，进入 base/lite；每条写明原因 |
 | `data/allowlist.json` | 从广告库中移除的域名例外；不输出 DIRECT，不改变路由 |
-| `data/app-ads-overrides.json` | 你对自动导入的 App 广告规则的排除项（主机或单条规则） |
+| `data/app-ads-overrides.json` | 对自动导入的 App 广告规则的排除项（主机或单条规则），以及临时「只解密」的排查主机 `observe_hosts` |
+| `tools/devicelog.py` | 分析 Shadowrocket 导出的请求日志，只显示目标 App 的条目，见 [设备日志](DEVICE_LOGS.md) |
+| `AGENTS.md`、`docs/STATUS.md` | 接手维护的说明与当前进度；`CLAUDE.md`、`.github/copilot-instructions.md` 只指向 `AGENTS.md` |
 | `data/policy.json` | 公共后缀/共享根保护、禁止解密的主机、关键网址探针、更新幅度、时效和大小阈值 |
 | `dist/` | 自动生成的手机用文件及完整性清单 |
 | `reports/` | 构建统计、最近一次自动更新的完整增删 |

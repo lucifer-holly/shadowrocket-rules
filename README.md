@@ -2,7 +2,7 @@
 
 个人 Shadowrocket 规则仓库：**手机和 Mac 共用一个远程主配置**（国内直连、国外代理、旧配置要求代理的站点全部继续代理），手机再加去广告模块（域名拦截、开屏与应用内广告）。保留自己的 DMIT 节点和「配置」路由模式。所有文件都放在本仓库，第三方规则以快照形式保存并由 GitHub Actions 每天跟踪；仓库不包含节点、账号、证书或私人服务器地址。
 
-当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；anti-AD + HaGeZi Light 约 14 万条广告域名（每天自动更新）；`app-ads` 模块含 fmz200 去广告插件的约 1,100 条静态拒绝重写、约 2,600 条广告域名，以及 15 条自维护路径规则；另有哔哩哔哩与知乎的 3 条 JSON 响应处理。全部为**离线检查与合成样例验证，尚未进行真机验证**。规则数量不等于广告拦截率。
+当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；anti-AD + HaGeZi Light 约 14 万条广告域名（每天自动更新）；`app-ads` 模块含 fmz200 去广告插件的约 1,100 条静态拒绝重写、约 2,600 条广告域名，以及 15 条自维护路径规则；另有哔哩哔哩与知乎的 3 条 JSON 响应处理。已在主人的 iPhone 上用真实请求日志验证了部分 App（见 [真机验收记录](docs/DEVICE_RESULTS.md)），其余只经过离线检查与合成样例测试。规则数量不等于广告拦截率。
 
 ## 先用起来
 
@@ -60,6 +60,7 @@ GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：
 | 新增 App 路径 | `data/apps.json`，补充正反样例和限定 MITM 主机 |
 | 调整分流 | `data/manual-direct.list`、`data/legacy-proxy.list`、`data/routing.json` |
 | 查看规则是否匹配 | `python3 tools/explain.py ads.example.com`（含 app-ads） |
+| 分析手机导出的请求日志 | `python3 tools/devicelog.py 日志.db --app huya --check`，见 [设备日志](docs/DEVICE_LOGS.md) |
 | 离线重建 | `make build` |
 | 全部离线检查 | `make test` |
 | 只检查上游，不改快照 | `python3 tools/upstream.py --check` |
@@ -67,6 +68,10 @@ GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：
 | 上传后检查自己的 Raw 链接 | `python3 tools/check_links.py` |
 
 文件职责与具体命令见 [维护说明](docs/MAINTENANCE.md)。[调研与筛选](docs/RESEARCH.md) 记录了来源、维护证据、许可和取舍；[验收与故障排查](docs/TROUBLESHOOTING.md) 说明技术限制。
+
+## 给接手维护的 AI agent
+
+先读 [AGENTS.md](AGENTS.md)（维护规则、命令、流程），再读 [docs/STATUS.md](docs/STATUS.md)（当前进度和待办）。设备日志的抓取与分析见 [docs/DEVICE_LOGS.md](docs/DEVICE_LOGS.md)。
 
 ## 能做到的范围
 
