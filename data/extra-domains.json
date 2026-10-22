@@ -9,5 +9,6 @@
   {"type":"DOMAIN-SUFFIX","domain":"kadmimage.biz.weibo.com","reason":"微博广告图片素材（2026-10-22 设备日志）"},
   {"type":"DOMAIN-SUFFIX","domain":"sdkaction.biz.weibo.com","reason":"微博广告 SDK 行为上报（2026-10-22 设备日志）"},
   {"type":"DOMAIN-SUFFIX","domain":"sdkclick.biz.weibo.com","reason":"微博广告 SDK 点击上报（2026-10-22 设备日志）"},
-  {"type":"DOMAIN","domain":"sdkmonitor.biz.weibo.com","reason":"微博广告 SDK 曝光监测（2026-10-22 设备日志）；故意保留 DOMAIN 写法作对照，确认它能否压过主配置的 weibo.com 直连"}
+  {"type":"DOMAIN","domain":"sdkmonitor.biz.weibo.com","reason":"微博广告 SDK 曝光监测（2026-10-22 设备日志）；故意保留 DOMAIN 写法作对照，确认它能否压过主配置的 weibo.com 直连"},
+  {"type":"DOMAIN-SUFFIX","domain":"business-qnpcdn.msstatic.com","reason":"虎牙开屏广告素材的 P2P 加速节点；主地址 business.msstatic.com 已拦（2026-10-22 设备日志）"}
 ]}

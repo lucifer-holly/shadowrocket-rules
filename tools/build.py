@@ -35,7 +35,10 @@ def app_sections(apps, imported=None):
         rewrites += [f'{p} - {a}' for p, a in imported['rewrites'] if p not in own]
         rules = [','.join(r) + ',REJECT' for r in imported['domains']] + imported['networks']
         hosts.update(imported['mitm'])
-    return [('Rule', rules), ('URL Rewrite', rewrites), ('MITM', ['hostname = %APPEND% ' + ', '.join(sorted(hosts))])]
+    mitm = ['hostname = %APPEND% ' + ', '.join(sorted(hosts))]
+    if imported and imported['observed']:
+        mitm.insert(0, '# 只解密、不拦截（排查用，日志里能看到完整地址）：' + ', '.join(imported['observed']))
+    return [('Rule', rules), ('URL Rewrite', rewrites), ('MITM', mitm)]
 
 
 def imported_app_ads(root, policy):
@@ -44,6 +47,13 @@ def imported_app_ads(root, policy):
     overrides = read_json(root/'data/app-ads-overrides.json')
     for host in overrides['exclude_hosts']:
         domain(host)
+    # Decrypt-only hosts make the device log show full URLs while an ad endpoint is located; nothing is blocked there.
+    observed = set()
+    for item in overrides.get('observe_hosts', []):
+        host = domain(item['host'])
+        if not item['reason'] or any(host == h or host.endswith('.' + h) for h in overrides['exclude_hosts']):
+            raise ValueError('observed host needs a reason and must not be an excluded host: ' + host)
+        observed.add(host)
     merged = {'domains': set(), 'networks': set(), 'rewrites': {}, 'mitm': set(), 'report': {}}
     for source in read_json(root/'sources/upstreams.json')['sources']:
         if source.get('role') != 'app-ads':
@@ -60,7 +70,8 @@ def imported_app_ads(root, policy):
     if not merged['report']:
         raise ValueError('app-ad plugin source missing')
     return {'domains': sorted(merged['domains']), 'networks': sorted(merged['networks']),
-            'rewrites': list(merged['rewrites'].items()), 'mitm': sorted(merged['mitm']), 'report': merged['report']}
+            'rewrites': list(merged['rewrites'].items()), 'mitm': sorted(merged['mitm'] | observed),
+            'observed': sorted(observed), 'report': merged['report']}
 
 
 API_TOKENS = ('$httpClient', 'fetch(', '$persistentStore', '$prefs', '$notification', '$notify(', '$task',
@@ -141,7 +152,7 @@ def outputs(root=ROOT):
     report = {'source_counts':counts,'unique_before_policy':len(rules),'protected_removed':len(removed),
               'covered_by_parent':compressed,'base_rules':len(merged),'lite_rules':len(light),
               'app_modules':len(apps),'url_rewrites':sum(len(x['rules']) for x in apps.values()),
-              'imported_app_ads':imported['report'],
+              'imported_app_ads':imported['report'],'observed_mitm_hosts':imported['observed'],
               'response_routes':len(routes),'device_verified':False,
               'exceptions': [{'rule':','.join(k),'reason':v} for k,v in sorted(removed.items())]}
     subscription_rows = [

@@ -73,6 +73,7 @@ make test
 | 某个域名被误拦 | `data/allowlist.json`（base、lite、app-ads 都会放行） |
 | 自动导入的规则让某个 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` 填该 App 的主机（包含子域），该主机不再被导入规则拦截、重写或解密；只想去掉某一条时填 `exclude_patterns` |
 | 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会自动合并进 app-ads |
+| 想在日志里看到某个主机的完整地址（找广告接口） | `data/app-ads-overrides.json` 的 `observe_hosts`：只解密，不拦截也不改写；规则写好后删掉这一项 |
 | 永不解密或永不误拦的关键站点 | `data/policy.json` 的 `never_mitm_suffixes`、`critical_url_probes` |
 
 改完运行 `make build && make test`，提交到 main。

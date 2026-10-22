@@ -6,7 +6,7 @@ import unittest
 from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from common import ROOT, load_policy, is_blocked
+from common import ROOT, load_inputs, load_policy, optimize, is_blocked
 from plugin_import import parse_plugin, select, items, https_hosts
 from build import imported_app_ads
 
@@ -100,7 +100,8 @@ class RealSnapshotTests(unittest.TestCase):
 
     def test_every_kept_rewrite_is_decrypted_by_an_upstream_mitm_entry(self):
         upstream = [h for h in parse_plugin((ROOT / 'vendor/fmz-blockads.plugin').read_bytes())['mitm']]
-        for host in self.out['mitm']:
+        # Owner-listed observe_hosts are the only decryption not taken from the plugin.
+        for host in sorted(set(self.out['mitm']) - set(self.out['observed'])):
             with self.subTest(host=host):
                 self.assertTrue(host in upstream or any(fnmatch.fnmatchcase(host, e) for e in upstream))
         for pattern, _ in self.out['rewrites']:
@@ -117,6 +118,23 @@ class RealSnapshotTests(unittest.TestCase):
             with self.subTest(host=host):
                 self.assertFalse(is_blocked(host, self.out['domains']))
         self.assertGreater(len(self.out['rewrites']), 500)
+
+    def test_observed_hosts_are_only_decrypted(self):
+        mitm = next(l for l in self.module.splitlines() if l.startswith('hostname = %APPEND% '))
+        for host in self.out['observed']:
+            with self.subTest(host=host):
+                self.assertIn(host, mitm.split('= %APPEND% ')[1].split(', '))
+                self.assertFalse(is_blocked(host, self.out['domains']))
+                for pattern, _ in self.out['rewrites']:
+                    self.assertNotIn(host, https_hosts(pattern)[0])
+        self.assertIn('# 只解密、不拦截', self.module)
+
+    def test_safari_fraud_warning_service_is_not_blocked(self):
+        base = optimize(load_inputs()[0], self.policy)[0]
+        for host in ['safebrowsing.apple', 'token.safebrowsing.apple', 'proxy.safebrowsing.apple', 'safebrowsing.g.applimg.com',
+                     'safebrowsing.googleapis.com', 'safebrowsing.urlsec.qq.com']:
+            with self.subTest(host=host):
+                self.assertFalse(is_blocked(host, self.out['domains']) or is_blocked(host, base))
 
 
 if __name__ == '__main__':

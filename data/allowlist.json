@@ -199,6 +199,26 @@
       "domain": "apppush.xiaohongshu.com",
       "scope": "host",
       "reason": "小红书消息/推送长连接；拦截后消息页显示未连接（anti-AD issue #865、#721）"
+    },
+    {
+      "domain": "safebrowsing.apple",
+      "scope": "subtree",
+      "reason": "Safari「欺诈性网站警告」等安全浏览服务（中国大陆地区由腾讯提供，其他地区为 Google，经 Apple 转发）；拦掉后钓鱼网站不再提示"
+    },
+    {
+      "domain": "safebrowsing.g.applimg.com",
+      "scope": "host",
+      "reason": "Safari「欺诈性网站警告」等安全浏览服务（中国大陆地区由腾讯提供，其他地区为 Google，经 Apple 转发）；拦掉后钓鱼网站不再提示"
+    },
+    {
+      "domain": "safebrowsing.googleapis.com",
+      "scope": "host",
+      "reason": "Safari「欺诈性网站警告」等安全浏览服务（中国大陆地区由腾讯提供，其他地区为 Google，经 Apple 转发）；拦掉后钓鱼网站不再提示"
+    },
+    {
+      "domain": "safebrowsing.urlsec.qq.com",
+      "scope": "host",
+      "reason": "Safari「欺诈性网站警告」等安全浏览服务（中国大陆地区由腾讯提供，其他地区为 Google，经 Apple 转发）；拦掉后钓鱼网站不再提示"
     }
   ]
 }

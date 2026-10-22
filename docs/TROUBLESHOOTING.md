@@ -39,6 +39,7 @@ python3 tools/explain.py 'https://api.m.jd.com/client.action?functionId=xview2Co
 - **证书锁定（Certificate Pinning，证书绑定）**：App 不接受个人 CA 时无法读取 HTTPS 路径与响应；仍可拦广告专用域名，但不能整域拦截混合业务 API。
 - **HTTP/3（Hypertext Transfer Protocol version 3，超文本传输协议第 3 版）/QUIC**：实际能否解密取决于客户端及应用行为。必要时仅针对目标应用测试是否可回退 TCP；本项目不全局禁止 UDP/443，避免影响 DMIT 或其他应用。
 - **自有解析/直连 IP**：域名规则可能失去可见性；本项目不盲目封禁公共 DNS、HTTPDNS 或共享 CDN IP。
+- **虎牙直播**：多数接口（`cdnws.api.huya.com`、`wsapi.huya.com`）是私有二进制格式，广告和内容从同一个接口返回，只能拦单独的广告素材地址和第三方广告 SDK；fmz200 也把它列为不能完全去广告的 App。
 - **Protobuf / gRPC / 加密响应**：当前原创脚本只处理 JSON，不把二进制响应强行按字符串修改。
 - **服务端插入视频广告（SSAI，Server-Side Ad Insertion，服务端广告插入）**：与视频共用媒体流时，网络规则难以稳定区分；可能需要播放器端支持。YouTube/抖音等不承诺全面去除。
 - **本地素材、创作者植入、App 自营推荐**：没有独立可拦截网络请求，或与正常内容难以区分。

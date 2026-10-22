@@ -1,5 +1,19 @@
 {
-  "description": "Owner opt-outs for automatically imported app-ad rules. exclude_hosts: no imported block, rewrite or decryption on these hosts and their subdomains (use when an app breaks). exclude_patterns: exact imported rewrite patterns to drop. Own rules in data/apps.json are not affected.",
+  "description": "Owner opt-outs for automatically imported app-ad rules. exclude_hosts: no imported block, rewrite or decryption on these hosts and their subdomains (use when an app breaks). exclude_patterns: exact imported rewrite patterns to drop. Own rules in data/apps.json are not affected. observe_hosts: decrypt only, never block or rewrite, so the device log shows full URLs while an ad endpoint is being located; remove the entry once the rule is written.",
   "exclude_hosts": [],
-  "exclude_patterns": []
+  "exclude_patterns": [],
+  "observe_hosts": [
+    {
+      "host": "hd.huya.com",
+      "reason": "虎牙启动后的活动弹窗疑似从这里加载网页；查清路径后删除"
+    },
+    {
+      "host": "diy-front.cdn.huya.com",
+      "reason": "虎牙启动时加载的网页资源，可能属于未成年提示或活动弹窗；查清后删除"
+    },
+    {
+      "host": "diy-assets.msstatic.com",
+      "reason": "同上，弹窗网页的图片等资源；查清后删除"
+    }
+  ]
 }

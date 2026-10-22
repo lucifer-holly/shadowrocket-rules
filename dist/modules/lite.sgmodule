@@ -14785,6 +14785,7 @@ DOMAIN-SUFFIX,bushletflecked.cfd,REJECT
 DOMAIN-SUFFIX,busilybeware.cyou,REJECT
 DOMAIN-SUFFIX,business-metrics-agent-app-a-eu-alt.veeva-vcrm.com,REJECT
 DOMAIN-SUFFIX,business-metrics-agent-app-eu-alt.veeva-vcrm.com,REJECT
+DOMAIN-SUFFIX,business-qnpcdn.msstatic.com,REJECT
 DOMAIN-SUFFIX,business.samsungusa.com,REJECT
 DOMAIN-SUFFIX,businessclick.ch,REJECT
 DOMAIN-SUFFIX,businessclick.com,REJECT
@@ -48673,7 +48674,6 @@ DOMAIN-SUFFIX,safeaccessapp.com,REJECT
 DOMAIN-SUFFIX,safealbedos.cyou,REJECT
 DOMAIN-SUFFIX,safebooru.com,REJECT
 DOMAIN-SUFFIX,safebrowsdv.com,REJECT
-DOMAIN-SUFFIX,safebrowsing.urlsec.qq.com,REJECT
 DOMAIN-SUFFIX,safelinkconverter.com,REJECT
 DOMAIN-SUFFIX,safelistextreme.com,REJECT
 DOMAIN-SUFFIX,safepal.com.co,REJECT

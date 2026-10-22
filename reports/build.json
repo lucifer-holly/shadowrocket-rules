@@ -153,6 +153,10 @@
       "rule": "DOMAIN-SUFFIX,proxy.advp.apple.com"
     },
     {
+      "reason": "Safari「欺诈性网站警告」等安全浏览服务（中国大陆地区由腾讯提供，其他地区为 Google，经 Apple 转发）；拦掉后钓鱼网站不再提示",
+      "rule": "DOMAIN-SUFFIX,safebrowsing.urlsec.qq.com"
+    },
+    {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,searchads.apple.com"
     },
@@ -187,24 +191,29 @@
   ],
   "imported_app_ads": {
     "fmz-blockads": {
-      "domains": 2590,
+      "domains": 2584,
       "dropped_bad_example": 7,
       "dropped_no_mitm": 145,
       "dropped_override": 0,
       "dropped_probe": 0,
-      "dropped_protected_domain": 14,
+      "dropped_protected_domain": 20,
       "mitm_hosts": 730,
       "networks": 34,
       "rewrites": 1133
     }
   },
   "lite_rules": 67811,
-  "protected_removed": 45,
+  "observed_mitm_hosts": [
+    "diy-assets.msstatic.com",
+    "diy-front.cdn.huya.com",
+    "hd.huya.com"
+  ],
+  "protected_removed": 46,
   "response_routes": 3,
   "source_counts": {
     "anti-ad": 103677,
     "hagezi-light": 67831
   },
-  "unique_before_policy": 154122,
+  "unique_before_policy": 154123,
   "url_rewrites": 15
 }

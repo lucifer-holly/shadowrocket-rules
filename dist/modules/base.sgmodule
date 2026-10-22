@@ -26072,6 +26072,7 @@ DOMAIN-SUFFIX,business-metrics-agent-app-a-eu-alt.veeva-vcrm.com,REJECT
 DOMAIN-SUFFIX,business-metrics-agent-app-eu-alt.veeva-vcrm.com,REJECT
 DOMAIN-SUFFIX,business-pages.edfenergy.com,REJECT
 DOMAIN-SUFFIX,business-path-55.com,REJECT
+DOMAIN-SUFFIX,business-qnpcdn.msstatic.com,REJECT
 DOMAIN-SUFFIX,business.92wy.com,REJECT
 DOMAIN-SUFFIX,business.crib.in,REJECT
 DOMAIN-SUFFIX,business.face2.io,REJECT
@@ -102920,7 +102921,6 @@ DOMAIN-SUFFIX,safealbedos.cyou,REJECT
 DOMAIN-SUFFIX,safeanalytics.net,REJECT
 DOMAIN-SUFFIX,safebooru.com,REJECT
 DOMAIN-SUFFIX,safebrowsdv.com,REJECT
-DOMAIN-SUFFIX,safebrowsing.urlsec.qq.com,REJECT
 DOMAIN-SUFFIX,safecoprograms.com,REJECT
 DOMAIN-SUFFIX,safeglimmerlongitude.com,REJECT
 DOMAIN-SUFFIX,safeguardemergency.com,REJECT

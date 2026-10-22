@@ -60,6 +60,13 @@ class IntegrationTests(unittest.TestCase):
         self.assertRegex('https://adstrategy.biz.weibo.com/v3/strategy/ad?reqid=x&sign=y',p)
         for url in ['https://adstrategy.biz.weibo.com/v3/strategy/adx','https://adstrategy.biz.weibo.com/v3/strategy/config','https://api.weibo.cn/v3/strategy/ad']:
             with self.subTest(url=url):self.assertIsNone(re.search(p,url))
+    def test_huya_hosts_from_device_log(self):
+        # Huya 13.5 cold starts (2026-10-22 log): the splash image came from the P2P mirror of business.msstatic.com.
+        app=build.imported_app_ads(ROOT,load_policy())['domains']
+        self.assertTrue(is_blocked('business-qnpcdn.msstatic.com',self.rules))
+        self.assertTrue(is_blocked('business.msstatic.com',app))
+        for h in ['live-cover.msstatic.com','tx-live-cover.msstatic.com','huyaimg.msstatic.com','anchorpost.msstatic.com','s1-static.msstatic.com','cdnws.api.huya.com','wsapi.huya.com','wswup.cdn.huya.com','hs.p2p.huya.com','fileserver.cdn.huya.com','p2td-cv.cdn.huya.com','hd.huya.com','diy-front.cdn.huya.com','diy-assets.msstatic.com']:
+            with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules) or is_blocked(h,app))
     def test_all_app_positive_fixtures(self):
         for ident,app in self.apps.items():
             for r in app['rules']:
