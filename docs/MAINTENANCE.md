@@ -41,7 +41,7 @@ make test
 1. Settings → Actions → General → Workflow permissions 选 **Read and write permissions**。更新作业需要 `contents: write`（直接提交到 main）和 `issues: write`（异常提醒）；普通 CI（Continuous Integration，持续集成）只读。
 2. `main` 不要设置“必须通过 PR 合并”的分支保护，或者在保护规则里允许 GitHub Actions 推送；否则自动发布会被拒绝并开出提醒 Issue。
 3. 合并后手动运行一次 `Upstream auto update`，确认日志与报告正常。
-4. 工作流使用固定提交版本的官方 checkout/upload-artifact，并由 Dependabot 提议升级；不执行上游脚本或在线转换器。
+4. 工作流使用固定提交版本的官方 checkout/upload-artifact，不自动升级（已关闭 Dependabot）；GitHub 淘汰旧运行环境导致运行失败时，提醒 Issue 会报出来，届时手动升级版本号。不执行上游脚本或在线转换器。
 
 参考：[GitHub 工作流触发说明](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)。
 
