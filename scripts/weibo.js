@@ -81,12 +81,15 @@
 
   var REC_PHRASES = /推荐优质博主|可能感兴趣|感兴趣的人|推荐关注|为你推荐/;
 
-  // Recommendation modules inserted into feeds and profile pages; posts and profile headers are never matched.
+  // Recommendation modules inserted into feeds and profile pages; posts and profile headers are never matched,
+  // and a group holding posts is matched only by its trend name, never by wording.
   function isRecommendModule(item) {
     if (!isObj(item) || item.category === 'feed' || isPost(postOf(item))) return false;
     var json = JSON.stringify(item);
     if (json.indexOf('profile_top') > -1) return false;
-    return /^(?:super_topic_recommend_card|recommend_video_card)$/.test(str(item.trend_name)) || REC_PHRASES.test(json);
+    if (/^(?:super_topic_recommend_card|recommend_video_card)$/.test(str(item.trend_name))) return true;
+    var holdsPosts = Array.isArray(item.items) && item.items.some(function (x) { return isPost(postOf(x)); });
+    return !holdsPosts && REC_PHRASES.test(json);
   }
 
   // Older timelines: { statuses: [post], ad: [], advertises: [], trends: ... }.
@@ -210,10 +213,14 @@
     return prune(o, 'items', function (x) { return isObj(x) && (x.type === 'trend' || isAdPost(x.data)); });
   }
 
-  var REC_TEXT = /推荐|感兴趣/;
-
   function isRecUser(c) { return isObj(c) && isObj(c.user) && c.user.following === false; }
-  function isRecHeading(c) { return isObj(c) && !isObj(c.user) && REC_TEXT.test(label(c)); }
+  function isRecHeading(c) { return isObj(c) && !isObj(c.user) && REC_PHRASES.test(label(c)); }
+
+  // A whole section such as 「根据你的兴趣推荐优质博主」 goes only when nobody in it is followed.
+  function isRecSection(c) {
+    return isObj(c) && Array.isArray(c.card_group) && REC_PHRASES.test(label(c)) &&
+      !c.card_group.some(function (x) { return isObj(x) && isObj(x.user) && x.user.following === true; });
+  }
 
   // Your own following list: anyone you do not follow, and the headings above them, are recommendations.
   function followingList(o) {
@@ -227,7 +234,7 @@
       }
     });
     return prune(o, 'cards', function (c) {
-      return emptied.indexOf(c) > -1 || isRecUser(c) || (isRecHeading(c) && !Array.isArray(c.card_group));
+      return emptied.indexOf(c) > -1 || isRecUser(c) || isRecSection(c) || (isRecHeading(c) && !Array.isArray(c.card_group));
     }) || changed;
   }
 

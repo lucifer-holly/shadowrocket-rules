@@ -80,12 +80,17 @@
       {"card_type": 58, "desc": "为你推荐"},
       {"card_type": 10, "user": {"id": 4, "following": false}},
       {"card_type": 11, "card_group": []},
-      {"card_type": 10, "user": {"id": 5}}
+      {"card_type": 10, "user": {"id": 5}},
+      {"card_type": 11, "title": "根据你的兴趣推荐优质博主", "card_group": [{"card_type": 10, "user": {"id": 6}}]},
+      {"card_type": 11, "title": "推荐关注", "card_group": [{"card_type": 10, "user": {"id": 7, "following": true}}]},
+      {"card_type": 11, "desc": "按推荐排序", "card_group": [{"card_type": 10, "user": {"id": 8}}]}
     ]},
     "expected": {"cardlistInfo": {"containerid": "231093_-_selffollowed", "total": 2}, "cards": [
       {"card_type": 11, "card_group": [{"card_type": 10, "user": {"id": 1, "following": true}}]},
       {"card_type": 11, "card_group": []},
-      {"card_type": 10, "user": {"id": 5}}
+      {"card_type": 10, "user": {"id": 5}},
+      {"card_type": 11, "title": "推荐关注", "card_group": [{"card_type": 10, "user": {"id": 7, "following": true}}]},
+      {"card_type": 11, "desc": "按推荐排序", "card_group": [{"card_type": 10, "user": {"id": 8}}]}
     ]}
   },
   {
@@ -108,12 +113,14 @@
       {"category": "group", "header": {"title": {"content": "推荐关注"}}, "items": []},
       {"category": "feed", "data": {"id": 2, "text": "为你推荐一本书", "user": {"id": 3}}},
       {"data": {"mblogid": "x", "text": "可能感兴趣的人都在这"}},
-      {"category": "card", "data": {"title": "关注的人最新动态"}}
+      {"category": "card", "data": {"title": "关注的人最新动态"}},
+      {"category": "group", "items": [{"category": "feed", "data": {"mblogid": "y", "text": "为你推荐的好物"}}]}
     ]},
     "expected": {"items": [
       {"category": "feed", "data": {"id": 2, "text": "为你推荐一本书", "user": {"id": 3}}},
       {"data": {"mblogid": "x", "text": "可能感兴趣的人都在这"}},
-      {"category": "card", "data": {"title": "关注的人最新动态"}}
+      {"category": "card", "data": {"title": "关注的人最新动态"}},
+      {"category": "group", "items": [{"category": "feed", "data": {"mblogid": "y", "text": "为你推荐的好物"}}]}
     ]}
   },
   {
