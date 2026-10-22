@@ -262,33 +262,5 @@
         "action": "reject"
       }
     ]
-  },
-  "weibolite": {
-    "name": "微博轻享版",
-    "status": "experimental-unverified-on-device",
-    "risk": "medium",
-    "source": "fmz200/wool_scripts Loon/plugin/weibo.plugin lines 67 and 76 (GPL-3.0); narrowed to the splash and daily-tip endpoints",
-    "rules": [
-      {
-        "pattern": "^https?://api\\.weibo\\.cn/\\d+/ad/weibointl\\?",
-        "hosts": [
-          "api.weibo.cn"
-        ],
-        "positive": [
-          "https://api.weibo.cn/2/ad/weibointl?gsid=example&from=example"
-        ],
-        "action": "reject-dict"
-      },
-      {
-        "pattern": "^https?://api\\.weibo\\.cn/\\d+/push/daily(?:\\?|$)",
-        "hosts": [
-          "api.weibo.cn"
-        ],
-        "positive": [
-          "https://api.weibo.cn/2/push/daily?gsid=example"
-        ],
-        "action": "reject-dict"
-      }
-    ]
   }
 }

@@ -11,7 +11,7 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | 较小域名库（与 base 二选一） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/lite.sgmodule |
 | 开屏与应用内广告（手机，需证书，推荐） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule |
 | 仅自维护 App 路径规则（与 app-ads 二选一） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps-all.sgmodule |
-| 哔哩哔哩/知乎/微博响应处理（实验） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule |
+| 哔哩哔哩/知乎响应处理（实验） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule |
 | 主配置示例（优先保留原配置） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/adblock-example.conf |
 | 主配置合并片段 | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/adblock.fragment.conf |
 | 淘宝（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/taobao.sgmodule |
@@ -28,7 +28,6 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | Keep（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/keep.sgmodule |
 | 携程（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/ctrip.sgmodule |
 | AppSo（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/appso.sgmodule |
-| 微博轻享版（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/weibolite.sgmodule |
 
 脚本只引用本仓库按内容哈希命名的文件；更新需要先审阅合并，再在手机更新模块/配置。
 模块内嵌域名表；不依赖手机另行拉取上游规则。规则集方式仅访问本仓库。

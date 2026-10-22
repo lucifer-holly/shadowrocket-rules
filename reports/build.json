@@ -1,5 +1,5 @@
 {
-  "app_modules": 15,
+  "app_modules": 14,
   "base_rules": 144657,
   "covered_by_parent": 9415,
   "device_verified": false,
@@ -200,11 +200,11 @@
   },
   "lite_rules": 67806,
   "protected_removed": 45,
-  "response_routes": 4,
+  "response_routes": 3,
   "source_counts": {
     "anti-ad": 103677,
     "hagezi-light": 67831
   },
   "unique_before_policy": 154117,
-  "url_rewrites": 17
+  "url_rewrites": 15
 }

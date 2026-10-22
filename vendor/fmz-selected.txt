@@ -7,7 +7,3 @@
 ^https?:\/\/api\.gotokeep\.com\/ads\/v\d\/ads\/preload reject
 # original line 7250
 ^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/13916\/json\/tripAds reject-200
-# Loon/plugin/weibo.plugin original line 67 (only the ad/weibointl branch is adapted)
-^https?:\/\/api\.weibo\.c(n|om)\/\d\/(cardlist\?v_f=\d|ad\/weibointl\?) reject-dict
-# Loon/plugin/weibo.plugin original line 76
-^https?:\/\/m?api\.weibo\.c(n|om)\/\d/push\/daily reject-dict
