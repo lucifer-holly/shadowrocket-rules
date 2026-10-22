@@ -4,18 +4,19 @@
 
 | 路径 | 用途 |
 |---|---|
-| `sources/upstreams.json` | 两个自动更新的纯数据源、格式、路径、体积边界和许可 |
+| `sources/upstreams.json` | 三个自动跟踪的数据源（anti-AD、HaGeZi Light、fmz200 插件）的格式、路径、体积/时效边界和许可 |
 | `sources/upstreams.lock.json` | 原始数据和 LICENSE 的 SHA-256；首次快照未解析 Git commit ID，不伪造提交锁 |
-| `vendor/`、`licenses/` | 可离线重建的原始快照和许可；fmz 文件仅保留 4 条静态端点 |
-| `sources/watch.json` | fmz 整包字节指纹，仅提醒人工复核；不导入/执行 |
+| `vendor/`、`licenses/` | 可离线重建的原始快照和许可；`fmz-blockads.plugin` 是整份插件快照，构建时只解析静态部分 |
+| `tools/plugin_import.py` | 从 fmz 插件快照提取静态 REJECT 域名/IP 与 `reject` 系列重写，按需收窄解密主机；从不导入脚本 |
 | `data/apps.json` | 14 个实验 App 模块的端点、解密主机、正样例和来源 |
-| `data/routing.json`、`tools/profiles.py` | 两端共用主配置的公开服务分流与构建；不导入私人配置 |
-| `tools/personalize.py` | 在本地合并私人直连和旧配置全部显式 PROXY 规则；拒绝把输出写入公开仓库目录 |
+| `data/manual-direct.list` | 旧配置开头的手工直连例外，原样保留在主配置最前面；不写私人服务器 IP/私人域名 |
+| `data/legacy-proxy.list` | 旧配置全部 257 条显式 PROXY 规则，原样、原顺序，排在国内直连之前 |
+| `data/routing.json`、`tools/profiles.py` | 其余代理/直连分组、已改走代理的旧海外直连名单，以及主配置构建 |
 | `data/script-routes.json` | 原创响应过滤器的 3 个限定入口 |
 | `scripts/response-cleaner.js` | 原创 JSON 过滤代码，不访问网络、存储或凭据 |
 | `sources/scripts.lock.json` | 当前脚本审核指纹和历史脚本保留清单 |
 | `data/allowlist.json` | 从广告库中移除的域名例外；不输出 DIRECT，不改变路由 |
-| `data/policy.json` | 公共后缀/共享根保护、更新幅度、时效和大小阈值 |
+| `data/policy.json` | 公共后缀/共享根保护、禁止解密的主机、关键网址探针、更新幅度、时效和大小阈值 |
 | `dist/` | 自动生成的手机用文件及完整性清单 |
 | `reports/` | 构建统计、已准备候选的完整域名增删 |
 | `.cache/` | 本轮检测日志和失败诊断，不提交 |
@@ -32,7 +33,7 @@ make test
 
 规则例外优先于拒绝：如父后缀会命中需要保留的登录主机，会移除整个父拒绝项。这样牺牲该父项的覆盖范围，保留更精确的广告子域规则。`never_block_suffixes` 是显式共享根保护表，**不是完整 Public Suffix List（公共后缀列表）**。扩大来源或支持全新域后缀时需要补充保护和审查，不能仅靠语法检查保证无误杀。
 
-检查能发现语法错误、重复、样例上的重写/脚本相互覆盖、被域名规则提前拒绝的目标 API、产物漂移、缺失脚本依赖及常见密钥。它不能证明所有正则互不相交，不能替代业务实测，也不是通用恶意 JS 检测器。
+检查能发现语法错误、重复、样例上的重写/脚本相互覆盖、被域名规则提前拒绝的目标 API、产物漂移、缺失脚本依赖及常见密钥；主配置还检查 257 条代理规则是否完整且排在国内直连之前、是否误写入可路由的私人 DIRECT 地址、是否依赖远程规则集；广告模块检查重写是否命中 `critical_url_probes` 里的登录/支付/内容网址，解密主机是否落在 `never_mitm_suffixes`。它不能证明所有正则互不相交，不能替代业务实测，也不是通用恶意 JS 检测器。
 
 ## GitHub Actions 设置
 
@@ -62,7 +63,7 @@ make test
 
 先从自己设备获取最小必要的、脱敏的域名和接口信息，确认是不是广告专用。混合业务 API 不整域拒绝。每条路径至少增加正样例，以及同主机登录、支付、订单不匹配的负样例；保持 App 模块独立，以便一键关闭。
 
-`data/apps.json` 中的既有状态都是 `experimental-unverified-on-device`。iOS 验收后请记录 App 版本、iOS/Shadowrocket 版本、日期及广告位置到 `docs/DEVICE_RESULTS.md`，不要只写“永久有效”。fmz 的 4 条路径与自写脚本是人工维护项；该项目不宣称能自动修复所有 App 接口改动。
+`data/apps.json` 中的既有状态都是 `experimental-unverified-on-device`。iOS 验收后请记录 App 版本、iOS/Shadowrocket 版本、日期及广告位置到 `docs/DEVICE_RESULTS.md`，不要只写“永久有效”。自写规则与脚本是人工维护项；fmz 插件的静态规则随上游自动跟踪。该项目不宣称能自动修复所有 App 接口改动。
 
 修改响应脚本时，读完代码和 diff，确认限定入口及未知结构原样返回，再扩展 `tests/fixtures/responses.json`。修改 `sources/scripts.lock.json` 当前 SHA-256 与审核说明之前需人工审核，不提供“下载远程 JS 然后自动批准”的命令。
 

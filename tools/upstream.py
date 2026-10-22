@@ -50,6 +50,9 @@ def source_date(body):
     m = re.search(r'^# Last modified: (.+?) UTC\s*$',text,re.M)
     if m:
         return dt.datetime.strptime(m[1],'%d %b %Y %H:%M').replace(tzinfo=dt.timezone.utc)
+    m = re.search(r'^#!date\s*=\s*(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\s*$',text,re.M)
+    if m:  # Loon plugin header, written in Beijing time
+        return dt.datetime.strptime(m[1],'%Y-%m-%d %H:%M:%S').replace(tzinfo=dt.timezone(dt.timedelta(hours=8)))
     raise ValueError('upstream generation timestamp missing: review format change')
 
 
@@ -58,7 +61,7 @@ def validate_candidate(source, old, body, license_body, policy, now):
         raise ValueError('LICENSE CHANGED: manual redistribution review required')
     stamp = source_date(body)
     age = (now-stamp).total_seconds()/86400
-    if age > policy['max_source_age_days'] or age < -2:
+    if age > source.get('max_age_days', policy['max_source_age_days']) or age < -2:
         raise ValueError('source timestamp stale or implausibly in the future')
     rules = parse_rules(body,source['format'])
     if not source['min_rules'] <= len(rules) <= source['max_rules']:
@@ -95,7 +98,8 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
                     proposals[source['snapshot']]=body
                     entry=dict(old);entry.update(sha256=sha256(body),bytes=len(body),observed_at=now.isoformat(timespec='seconds'),source_timestamp=stamp.isoformat())
                     lock['sources'][sid]=entry
-                    changes.append({'source':sid,'added':[','.join(x) for x in sorted(rules-old_rules)],'removed':[','.join(x) for x in sorted(old_rules-rules)]})
+                    changes.append({'source':sid,'change_ratio':round(len(delta)/max(len(old_rules),1),4),
+                                'added':[','.join(x) for x in sorted(rules-old_rules)],'removed':[','.join(x) for x in sorted(old_rules-rules)]})
             except Exception as exc:
                 # Do not write remote body/tracebacks/URLs into logs.
                 errors.append(f'{sid}: {type(exc).__name__}: {str(exc)[:180]}')

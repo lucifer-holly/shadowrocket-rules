@@ -1,19 +1,4 @@
 {
-  "sources": [
-    {
-      "id": "fmz-static-reference",
-      "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/plugin/blockAds.plugin",
-      "sha256": "1a0b83a76719531544153f3fdc31b7a05213b9ed0a827f6b49ba5adedb625ef1",
-      "mode": "watch-only",
-      "license": "GPL-3.0",
-      "license_file": "licenses/fmz200-GPL-3.0.txt",
-      "selected_lines": [
-        4421,
-        4654,
-        5579,
-        7250
-      ],
-      "note": "Never import scripts, entitlement changes, jq or Loon syntax. Whole-file change is a manual review signal only."
-    }
-  ]
+  "sources": [],
+  "note": "fmz200 blockAds is now an automatically tracked data source (sources/upstreams.json); no watch-only entries remain."
 }

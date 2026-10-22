@@ -2,7 +2,8 @@
   "files": {
     "dist/config/adblock-example.conf": "97c210cb506447239ef51befcb66da533730aaf66e3cce92b99a68adacf78d3c",
     "dist/config/adblock.fragment.conf": "921de47b3095586ad6cad3a295f7b8e5113fc3a20fec59e10785293c63ce6693",
-    "dist/config/main.conf": "5222c3de98a949d07358f19c7d4334a3e04ff1b314892b16b569986a2539bbf1",
+    "dist/config/main.conf": "adacc3093e3842e23f7e4834b0f8bfc8463023cc3593bd0871a6dc258231658f",
+    "dist/modules/app-ads.sgmodule": "adcefbb02be6c0a590506a7fa6f7dd66a4b9ae3741eae6643cf69184cf63e76e",
     "dist/modules/apps-all.sgmodule": "aae5f90de2f2db034d640aebece9afb34f8c195c241ca147489ebddf06fcb599",
     "dist/modules/apps/amap.sgmodule": "cf31779a26917995a6c3a7380555e1f167700084456e2d607cf3cffbba1eb768",
     "dist/modules/apps/appso.sgmodule": "08a8177e6d80cffa5d16630a265bfe2085e9cc3efceac46eb59e779d3482adf1",
@@ -23,8 +24,6 @@
     "dist/modules/response-cleaner.sgmodule": "e22303b8626f10df69786b9876c9a515821770abd41c699c03eb44cd844ed353",
     "dist/rules/base.list": "6b8b8335456dccd4f3cb4dfbaca63294d2d655703a24e3b7d42a117e60244546",
     "dist/rules/lite.list": "180fe91ec7bb7509520aa2b6a70ac8f542de6ec0ac8209ef96a02c72efd78e29",
-    "dist/rules/routing-direct.list": "a5480ccd13a32e3399663f55d068edcb2d7020723c6951fd52136d5637f25d70",
-    "dist/rules/routing-proxy.list": "d41883ee501984815c2280f13541de43e1a3a2f48daa822b120e3e49e9bffe9c",
     "dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc"
   },
   "format_version": 1,
@@ -37,6 +36,15 @@
       "observed_at": "2026-10-21T09:21:05+00:00",
       "sha256": "2f48571736a7936c0f0a4cbb391072448ec4f49844ff82f520387f4c9ca6e880",
       "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-surge.txt"
+    },
+    "fmz-blockads": {
+      "bytes": 410069,
+      "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
+      "observed_at": "2026-10-22T03:30:00+00:00",
+      "sha256": "1a0b83a76719531544153f3fdc31b7a05213b9ed0a827f6b49ba5adedb625ef1",
+      "source_timestamp": "2026-09-10T13:10:39+00:00",
+      "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/plugin/blockAds.plugin"
     },
     "hagezi-light": {
       "bytes": 1398563,

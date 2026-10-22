@@ -36,6 +36,12 @@ def within(host, parent):
     return host == parent or host.endswith('.' + parent)
 
 def parse_rules(body, fmt):
+    if fmt == 'loon-plugin-static':
+        from plugin_import import items  # Lazy import: plugin_import depends on this module.
+        result = items(body)
+        if not result:
+            raise ValueError('empty rules')
+        return result
     text = body.decode('utf-8-sig')
     if '<html' in text[:500].lower() or '<!doctype' in text[:500].lower():
         raise ValueError('HTML returned instead of rules')
@@ -107,7 +113,8 @@ def load_inputs(root=ROOT, subset=None):
     all_rules, counts = set(), {}
     for source in manifest:
         sid = source['id']
-        if subset is not None and sid not in subset:
+        # App-ad plugin data has its own module; only plain domain lists feed base/lite.
+        if source.get('role', 'domains') != 'domains' or subset is not None and sid not in subset:
             continue
         entry = lock[sid]
         body = (root / source['snapshot']).read_bytes()

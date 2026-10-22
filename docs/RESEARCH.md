@@ -6,7 +6,7 @@
 |---|---|---|---|
 | [anti-AD](https://github.com/privacy-protection-tools/anti-AD) | 可下载 `anti-ad-surge.txt`，版本 `20261020063107`，103,677 条原始规则；GitHub 元数据 pushed_at 为 2026-10-19 UTC | MIT；保留原版权文本 | 收录为中文场景主源，直接解析 Surge DOMAIN/DOMAIN-SUFFIX 语法 |
 | [HaGeZi DNS Blocklists](https://github.com/hagezi/dns-blocklists) | Light 快照 Last modified 为 2026-10-20 14:52 UTC，66,425 条；README 提供多档列表 | GPL-3.0；保留完整文本 | 仅选 Light 作通用补充，与 anti-AD 规范化去重；单独生成 Lite |
-| [fmz200/wool_scripts](https://github.com/fmz200/wool_scripts) | API 元数据 pushed_at 为 2026-10-01 UTC；实际插件头日期 2026-09-10，当前可下载 | GPL-3.0；项目同时汇集多来源功能 | 只摘录 4 条广告静态端点、限制边界并转换；不直接启用整包，监控变化供人工复核 |
+| [fmz200/wool_scripts](https://github.com/fmz200/wool_scripts) | API 元数据 pushed_at 为 2026-10-01 UTC；实际插件头日期 2026-09-10，当前可下载 | GPL-3.0；项目同时汇集多来源功能 | 2026-10-22 起作为第三个自动跟踪源：只导入静态 REJECT 与 `reject` 系列重写（约 1,100 条）及所需解密主机；脚本、jq、正文改写和权益相关内容不导入 |
 | [Cats-Team/AdRules](https://github.com/Cats-Team/AdRules) | API 元数据 pushed_at 为 2026-10-21 UTC；默认分支 `script` | 默认分支合并工具为 0BSD，不能据此把输出分支及所有上游规则认作 0BSD | 不叠加；已有两源重叠很多，减少许可与格式链条 |
 | [AdGuardSDNSFilter](https://github.com/AdguardTeam/AdGuardSDNSFilter) | API 元数据 pushed_at 为 2026-10-21 UTC | GPL-3.0 | 备选来源；当前无需再堆叠第三份通用聚合表 |
 | [ddgksf2013/Rewrite](https://github.com/ddgksf2013/Rewrite) / [Scripts](https://github.com/ddgksf2013/Scripts) | API 元数据显示 Rewrite 最近推送 2026-06-15，Scripts 为 2026-10-14 UTC | 本次检查未确认可用于本项目公开再分发的通用脚本许可 | 仅调研，不打包、不远程引用其脚本 |
@@ -17,7 +17,7 @@
 
 Loon 的 `[Argument]`、`http-response` 行、jq、mock-response，Quantumult X 的 rewrite 格式和 API，并不等同于 Shadowrocket 原生配置。本次 fmz 插件还包含非去广告的账号/权益相关逻辑；即使整包能解析，也不符合本任务范围。
 
-因此自动渠道只接收指定格式的数据，不吸收脚本 URL。4 条新增静态路径保留原始片段、来源和许可，转换为 Shadowrocket 原生 `pattern - action`，每条附正样例及同主机关键业务负样例。已有十个 App 的路径来自附件，也重新限制边界。使用者仍需真机验证。
+因此自动渠道只接收指定格式的数据，不吸收脚本 URL。fmz 插件的静态拒绝规则由 `tools/plugin_import.py` 转换为 Shadowrocket 原生 `pattern - action`，每次构建用 `critical_url_probes` 检查登录/支付/内容网址不被命中，解密主机只取被导入规则需要的部分。较早摘录的 4 条路径保留原始片段、来源和许可，并附正样例及同主机关键业务负样例。已有十个 App 的路径来自附件，也重新限制边界。使用者仍需真机验证。
 
 原创 JSON 过滤器只做明确广告标记删除与两个已知开屏数组清空，失败时不改响应。对于当前 Bilibili App 走 gRPC 而非对应 JSON 入口的情况，此脚本不会生效；没有把 JSON 样例测试当成全版本覆盖证明。
 

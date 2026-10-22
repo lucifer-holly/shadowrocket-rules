@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Offline lint, reproducibility, supply-chain boundaries and public secret scan."""
 import fnmatch
+import ipaddress
 import os
 import re
 from urllib.parse import urlsplit
-from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain
-from build import run
-from profiles import LAN_ROUTES, routing_references
+from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain,within
+from build import run, imported_app_ads
+from profiles import sections as routing_sections
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
 
@@ -16,10 +17,11 @@ def check_script(text):
         raise ValueError('script contains an unapproved execution/network/storage API')
 
 
-def check_public_profile(text, base):
-    allowed_sections = {'General', 'Rule', 'Host'}
+def check_public_profile(text, base, root=ROOT):
+    allowed_sections = {'General', 'Rule', 'Host', 'URL Rewrite'}
     section = None
     active = []
+    update_url = f'update-url = {base}/dist/config/main.conf'
     for raw in text.splitlines():
         line = raw.strip()
         if not line or line.startswith('#'):
@@ -29,27 +31,47 @@ def check_public_profile(text, base):
             if section not in allowed_sections:
                 raise ValueError('public profile contains nodes, scripts or decryption settings')
             continue
+        if section == 'General' and line.startswith('update-url') and line != update_url:
+            raise ValueError('profile update URL must point to this repository')
+        if section == 'URL Rewrite' and not re.fullmatch(r"'\^https\?://\S+' 'https://\S+' 30[27]", line):
+            raise ValueError('public profile may only carry plain redirects')
+        if section != 'Rule':
+            continue
         active.append(line)
-        if section == 'General' and line.startswith('update-url'):
-            if line != f'update-url = {base}/dist/config/main.conf':
-                raise ValueError('profile update URL must point to this repository')
-        if section == 'Rule':
-            fields = line.split(',')
-            if fields[0] == 'IP-CIDR' and fields[1] not in LAN_ROUTES:
-                raise ValueError('public profile contains a non-LAN address')
-            if fields[0] == 'RULE-SET' and line not in routing_references(base)[:2]:
-                raise ValueError('public profile has an unexpected rule-set dependency')
-            if fields[0] == 'SCRIPT' or 'REJECT' in fields:
-                raise ValueError('shared routing profile must not enable advertising or script processing')
-    if 'FINAL,PROXY' not in active or 'DST-PORT,22,DIRECT' not in active:
-        raise ValueError('missing fallback or standard SSH direct rule')
-    if f'update-url = {base}/dist/config/main.conf' not in active:
+        fields = line.split(',')
+        if fields[0] in {'IP-CIDR', 'IP-CIDR6'} and fields[2] == 'DIRECT' and ipaddress.ip_network(fields[1], strict=False).is_global:
+            raise ValueError('public profile contains a routable DIRECT address; keep private servers out of the repository')
+        if fields[0] in {'RULE-SET', 'DOMAIN-SET', 'SCRIPT'} or any(f.strip().startswith('REJECT') for f in fields[2:]):
+            raise ValueError('shared routing profile must be self-contained and must not block or run scripts')
+    if not active or active[-1] != 'FINAL,PROXY' or 'DST-PORT,22,DIRECT' not in active or 'GEOIP,CN,DIRECT' not in active:
+        raise ValueError('missing fallback, mainland IP or standard SSH direct rule')
+    if update_url not in text.splitlines():
         raise ValueError('missing persistent configuration update URL')
-    references = routing_references(base)
-    if any(line not in active for line in references):
-        raise ValueError('missing public service routing reference')
-    if [active.index(line) for line in references] != sorted(active.index(line) for line in references):
+    parts = routing_sections(root)
+    legacy = parts[1][1]
+    first_direct_group = next(rows[0] for title, rows in parts[2:] if rows and rows[0].endswith(',DIRECT'))
+    if any(row not in active for row in legacy) or first_direct_group not in active:
+        raise ValueError('missing original mandatory proxy rules')
+    if max(active.index(row) for row in legacy) > active.index(first_direct_group):
         raise ValueError('mandatory proxy routing must precede domestic direct routing')
+
+
+def check_rewrite(line, probes):
+    pattern, sep, action = line.rpartition(' - ')
+    if not sep or not pattern.startswith('^http') or action not in {'reject','reject-200','reject-dict','reject-img','reject-array'}:
+        raise ValueError('unsafe rewrite: '+line[:120])
+    compiled = re.compile(pattern)
+    if any(compiled.search(url) for url in probes):
+        raise ValueError('rewrite matches a critical login/payment/content URL: '+pattern[:120])
+
+
+def check_mitm_host(host, never_mitm):
+    if re.fullmatch(r'[\d.*]+', host) or host.count('*') > 1:
+        raise ValueError('MITM host requires separate review: '+host)
+    domain(host.replace('*', 'x1'))
+    sample = host.replace('*', 'x1')
+    if any(within(sample, s) or within(s, host.lstrip('*.')) for s in never_mitm):
+        raise ValueError('MITM would decrypt a protected login/payment/AI host: '+host)
 
 def scan_public(root=ROOT):
     patterns=[re.compile(r'-----BEGIN (?:[A-Z ]*PRIVATE KEY|PKCS12)-----'),
@@ -71,7 +93,7 @@ def validate(root=ROOT):
     if os.environ.get('GITHUB_ACTIONS') == 'true' and cfg['repository'] != os.environ.get('GITHUB_REPOSITORY'):
         raise ValueError('project.json repository differs from this GitHub repository; run tools/configure.py --repo owner/repo')
     run(root,check=True)
-    check_public_profile((root/'dist/config/main.conf').read_text(),base)
+    check_public_profile((root/'dist/config/main.conf').read_text(),base,root)
     policy=load_policy(root)
     sources=read_json(root/'sources/upstreams.json')['sources']
     for s in sources:
@@ -102,6 +124,13 @@ def validate(root=ROOT):
                     raise ValueError('MITM wildcard requires separate review')
             if pattern in patterns:raise ValueError('duplicate/conflicting rewrite')
             patterns.append(pattern)
+    imported=imported_app_ads(root,policy)
+    for key,app in apps.items():
+        for rule in app['rules']:
+            for url in rule['positive']:
+                if is_blocked(urlsplit(url).hostname,imported['domains']):raise ValueError('app-ad domain rule shadows own rewrite: '+url)
+    for item in policy['exceptions']:
+        if is_blocked(item['domain'],imported['domains']):raise ValueError('protected domain blocked by app-ads: '+item['domain'])
     for route in read_json(root/'data/script-routes.json'):
         compiled=re.compile(route['pattern'])
         if not compiled.search(route['positive']):raise ValueError('script positive route fails')
@@ -133,9 +162,12 @@ def validate(root=ROOT):
                 continue
             if (section,line) in seen:raise ValueError('duplicate module line')
             seen.add((section,line))
-            if section=='Rule' and not re.fullmatch(r'DOMAIN(?:-SUFFIX)?,[^,]+,REJECT',line):
+            if section=='Rule' and not re.fullmatch(r'DOMAIN(?:-SUFFIX)?,[^,]+,REJECT|IP-CIDR6?,[^,]+,REJECT,no-resolve',line):
                 raise ValueError('unexpected routing in ad module')
-            if section=='MITM' and not line.startswith('hostname = %APPEND% '):raise ValueError('MITM overwrites main config')
+            if section=='URL Rewrite':check_rewrite(line,policy['critical_url_probes'])
+            if section=='MITM':
+                if not line.startswith('hostname = %APPEND% '):raise ValueError('MITM overwrites main config')
+                for host in line[len('hostname = %APPEND% '):].split(', '):check_mitm_host(host,policy['never_mitm_suffixes'])
             if section=='Script':
                 m=re.search(r'script-path=([^,\s]+)',line)
                 if not m or not m[1].startswith(base+'/dist/scripts/'):raise ValueError('script is not self hosted')

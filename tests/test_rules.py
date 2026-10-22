@@ -161,5 +161,15 @@ class UpdaterTests(unittest.TestCase):
         with self.assertRaises(ValueError):upstream.NoRedirect().redirect_request(None,None,302,'',{},'https://evil.test')
     def test_hagezi_timestamp(self):
         self.assertEqual(upstream.source_date(b'# Last modified: 20 Oct 2026 14:52 UTC\n').day,20)
+    def test_loon_plugin_timestamp_is_beijing_time(self):
+        stamp=upstream.source_date(b'#!name=x\n#!date=2026-09-10 21:10:39\n')
+        self.assertEqual(stamp.astimezone(dt.timezone.utc).hour,13)
+    def test_per_source_age_limit(self):
+        old=b'#VER=20260901000000\nDOMAIN-SUFFIX,ads.one.com\nDOMAIN-SUFFIX,ads.two.com\nDOMAIN-SUFFIX,ads.three.com\n'
+        with self.assertRaises(ValueError):self.update(self.fetcher(old))
+        self.write('sources/upstreams.json',{'sources':[dict(self.s,max_age_days=60)]})
+        self.assertTrue(self.update(self.fetcher(old)))
+        change=read_json(self.root/'reports/update.json')['changes'][0]
+        self.assertEqual(change['change_ratio'],0.5)
 
 if __name__=='__main__':unittest.main()

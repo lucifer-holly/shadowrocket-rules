@@ -3,7 +3,8 @@
 import argparse
 from pathlib import Path
 from common import ROOT, read_json, json_text, sha256, load_inputs, load_policy, optimize, repo_base
-from profiles import profile, routing_lists
+from profiles import profile
+from plugin_import import parse_plugin, select
 
 
 def module(name, sections, note=''):
@@ -16,7 +17,7 @@ def module(name, sections, note=''):
     return '\n'.join(lines) + '\n'
 
 
-def app_sections(apps):
+def app_sections(apps, imported=None):
     rewrites, hosts = [], set()
     seen = set()
     for ident, app in apps.items():
@@ -26,7 +27,27 @@ def app_sections(apps):
             if line not in seen:
                 rewrites.append(line); seen.add(line)
             hosts.update(rule['hosts'])
-    return [('URL Rewrite', rewrites), ('MITM', ['hostname = %APPEND% ' + ', '.join(sorted(hosts))])]
+    rules = []
+    if imported:
+        own = {line.split(' - ')[0] for line in seen}
+        rewrites.append('# fmz200/wool_scripts blockAds 的静态拒绝规则（GPL-3.0）；自动跟踪，未导入脚本')
+        rewrites += [f'{p} - {a}' for p, a in imported['rewrites'] if p not in own]
+        rules = [','.join(r) + ',REJECT' for r in imported['domains']] + imported['networks']
+        hosts.update(imported['mitm'])
+    return [('Rule', rules), ('URL Rewrite', rewrites), ('MITM', ['hostname = %APPEND% ' + ', '.join(sorted(hosts))])]
+
+
+def imported_app_ads(root, policy):
+    """Static subset of the tracked app-ad plugin; the snapshot hash is verified first."""
+    lock = read_json(root/'sources/upstreams.lock.json')['sources']
+    for source in read_json(root/'sources/upstreams.json')['sources']:
+        if source.get('role') != 'app-ads':
+            continue
+        body = (root/source['snapshot']).read_bytes()
+        if sha256(body) != lock[source['id']]['sha256']:
+            raise ValueError(source['id']+': snapshot does not match lock')
+        return select(parse_plugin(body), policy, policy['critical_url_probes'])
+    raise ValueError('app-ad plugin source missing')
 
 
 def outputs(root=ROOT):
@@ -40,13 +61,15 @@ def outputs(root=ROOT):
     header = ['# Personal ads: anti-AD (MIT) + HaGeZi Light (GPL-3.0), modified by this project.',
               '# See THIRD_PARTY_NOTICES.md and licenses/. No proxy nodes or certificates.']
     out = {}
-    out.update(routing_lists(root))
     for label, entries in [('base', merged), ('lite', light)]:
         rows = [','.join(r) for r in entries]
         out[f'dist/rules/{label}.list'] = '\n'.join(header + rows) + '\n'
         out[f'dist/modules/{label}.sgmodule'] = module(label.title(), [('Rule', [r+',REJECT' for r in rows])],
             '域名拦截，无需证书；base 与 lite 二选一')
     apps = read_json(root/'data/apps.json')
+    imported = imported_app_ads(root, policy)
+    out['dist/modules/app-ads.sgmodule'] = module('App Ads (Experimental)', app_sections(apps, imported),
+        '开屏与应用内广告：自维护规则 + fmz200 静态规则；需 HTTPS 解密；与 apps-all、单 App 模块三选一')
     out['dist/modules/apps-all.sgmodule'] = module('Apps (Experimental)', app_sections(apps), '需 HTTPS 解密；与单 App 模块二选一')
     for ident, spec in apps.items():
         out[f'dist/modules/apps/{ident}.sgmodule'] = module(spec['name']+' (Experimental)', app_sections({ident:spec}), '需 HTTPS 解密；逐个启用验证')
@@ -75,25 +98,24 @@ def outputs(root=ROOT):
     report = {'source_counts':counts,'unique_before_policy':len(rules),'protected_removed':len(removed),
               'covered_by_parent':compressed,'base_rules':len(merged),'lite_rules':len(light),
               'app_modules':len(apps),'url_rewrites':sum(len(x['rules']) for x in apps.values()),
+              'imported_app_ads':imported['report'],
               'response_routes':len(routes),'device_verified':False,
               'exceptions': [{'rule':','.join(k),'reason':v} for k,v in sorted(removed.items())]}
     subscription_rows = [
-        ('脱敏共用主配置模板（私人例外须合并到本地完整版）','dist/config/main.conf'),
-        ('公共强制代理规则集（主配置内部引用）','dist/rules/routing-proxy.list'),
-        ('国内常用域名直连规则集（主配置内部引用）','dist/rules/routing-direct.list'),
-        ('通用域名拦截（优先）','dist/modules/base.sgmodule'),
+        ('手机与 Mac 共用主配置（「配置」页导入）','dist/config/main.conf'),
+        ('通用域名拦截（手机，优先）','dist/modules/base.sgmodule'),
         ('较小域名库（与 base 二选一）','dist/modules/lite.sgmodule'),
-        ('全部 App 路径规则（实验）','dist/modules/apps-all.sgmodule'),
+        ('开屏与应用内广告（手机，需证书，推荐）','dist/modules/app-ads.sgmodule'),
+        ('仅自维护 App 路径规则（与 app-ads 二选一）','dist/modules/apps-all.sgmodule'),
         ('哔哩哔哩/知乎响应处理（实验）','dist/modules/response-cleaner.sgmodule'),
         ('主配置示例（优先保留原配置）','dist/config/adblock-example.conf'),
         ('主配置合并片段','dist/config/adblock.fragment.conf')]
     subscription_rows += [(app['name']+'（独立实验模块）', f'dist/modules/apps/{ident}.sgmodule') for ident,app in apps.items()]
     out['docs/SUBSCRIPTIONS.md'] = '\n'.join([
         '# 订阅地址','',
-        '由 project.json 自动生成；当前地址对应自己的仓库。完整主配置使用方法见 DEVICE_PROFILES.md。',
-        'base / lite 二选一；apps-all / 独立 App 二选一；response-cleaner 可额外启用。',
-        '主配置 URL 在「配置」页导入；模块 URL 在「模块」中导入，都不是节点订阅。手机与 Mac 使用同一 main.conf；手机另加 base 等广告模块，Mac 默认只用主配置。',
-        '含私人地址的完整版可将私人直连和原有全部 PROXY 规则合并在一个本地主配置中；后续更新其引用的公共分流规则集，无需单独的私人模块。规则集链接不能当成完整配置导入。',
+        '由 project.json 自动生成；当前地址对应自己的仓库。使用方法见 DEVICE_PROFILES.md。',
+        '主配置 URL 在「配置」页导入；模块 URL 在「模块」中导入，都不是节点订阅。手机与 Mac 使用同一 main.conf；手机另加广告模块，Mac 默认只用主配置。',
+        'base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；response-cleaner 可额外启用。',
         '', '| 内容 | Raw 地址 |', '|---|---|',
         *[f'| {name} | {base}/{rel} |' for name,rel in subscription_rows], '',
         '脚本只引用本仓库按内容哈希命名的文件；更新需要先审阅合并，再在手机更新模块/配置。',

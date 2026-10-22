@@ -25,6 +25,22 @@
       "spdx": "GPL-3.0",
       "min_rules": 20000,
       "max_rules": 150000
+    },
+    {
+      "id": "fmz-blockads",
+      "repository": "fmz200/wool_scripts",
+      "ref": "main",
+      "path": "Loon/plugin/blockAds.plugin",
+      "format": "loon-plugin-static",
+      "role": "app-ads",
+      "snapshot": "vendor/fmz-blockads.plugin",
+      "license_path": "LICENSE",
+      "license_file": "licenses/fmz200-GPL-3.0.txt",
+      "spdx": "GPL-3.0",
+      "min_rules": 1500,
+      "max_rules": 20000,
+      "max_age_days": 180,
+      "note": "Only static REJECT domains/IPs, reject-family URL rewrites and the plugin's own MITM hosts are imported. Scripts, jq, body rewrites, redirects and arguments are ignored."
     }
   ]
 }

@@ -1,0 +1,14 @@
+# 旧主配置开头的手工直连例外：原样、原顺序保留，并继续排在所有 PROXY 规则之前。
+# 公开仓库只放可公开的条目。私人服务器 IP、私人域名不写在这里：
+# - 位于中国大陆的私人服务器 IP 由主配置末尾的 GEOIP,CN,DIRECT 直连；
+# - 确需额外私人例外时，写进只保存在设备上的本地模块。
+DOMAIN-SUFFIX,edu.cn,DIRECT,extended-matching
+DOMAIN-SUFFIX,tencentmeeting.cn,DIRECT,extended-matching
+DOMAIN-SUFFIX,flagos.io,DIRECT,extended-matching
+DOMAIN-SUFFIX,xiaohongshu.com,DIRECT,extended-matching
+DOMAIN-SUFFIX,yeah.net,DIRECT,pre-matching,extended-matching
+IP-CIDR,198.18.3.254/32,DIRECT
+DOMAIN-SUFFIX,update.code.visualstudio.com,DIRECT
+DOMAIN-SUFFIX,vscode.download.prss.microsoft.com,DIRECT
+# 标准 SSH 端口 22 直连。
+DST-PORT,22,DIRECT
