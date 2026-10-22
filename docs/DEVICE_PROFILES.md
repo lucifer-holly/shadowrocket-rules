@@ -36,7 +36,7 @@
    enable = true
    ```
 
-   再在 `[MITM]` 下面加两行：`ca-passphrase` 加等号再写证书密码（默认通常是 `Shadowrocket`）；`ca-p12` 加等号再粘贴刚复制的证书内容。必须先完成第 6 步的安装和信任，再启用这个模块，否则可能提示 `No PKCS12 Certificates`。这个模块含私钥，只留在手机里。
+   再在 `[MITM]` 下面加两行：`ca-passphrase` 加等号再写 HTTPS 解密页面「密码」一栏显示的值（每台设备生成的证书密码不同）；`ca-p12` 加等号再粘贴刚复制的证书内容。必须先完成第 6 步的安装和信任，再启用这个模块，否则可能提示 `No PKCS12 Certificates`。这个模块含私钥，只留在手机里。
 8. 模块 → `+` → 粘贴 `app-ads` 链接；需要时再加 `response-cleaner`。完全退出目标 App 后重新打开，检查开屏、登录、下单和支付。
 
 某个 App 异常时，先关 `app-ads` 确认；仍异常再关 `base`。
