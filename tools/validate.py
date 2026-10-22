@@ -6,7 +6,7 @@ import os
 import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain,within
-from build import run, imported_app_ads
+from build import run, imported_app_ads, weibo_routes
 from profiles import sections as routing_sections
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
@@ -75,6 +75,31 @@ def check_mitm_host(host, never_mitm, exceptions=()):
     if any(within(sample, s) or within(s, host.lstrip('*.')) for s in never_mitm):
         raise ValueError('MITM would decrypt a protected login/payment/AI host: '+host)
 
+def check_weibo(spec, policy, blocklists):
+    # Rewrites answer whole calls with {}; scripts edit exact paths; neither may reach login, messages or posting.
+    rewrites=[re.compile(r['pattern']) for r in spec['rewrites']]
+    routes=[re.compile(p) for _,p in weibo_routes(spec)]
+    paths=[p for g in spec['scripts'] for p in g['paths']]
+    if len(paths)!=len(set(paths)) or not all(g['reason'] for g in spec['scripts']):
+        raise ValueError('Weibo script groups need unique paths and a reason')
+    for rule,compiled in zip(spec['rewrites'],rewrites):
+        if rule['action']!='reject-dict' or not rule['pattern'].startswith('^https://api\\.weibo\\.cn/2/') or not rule['reason'] or not rule['positive']:
+            raise ValueError('unsafe Weibo rewrite: '+rule['pattern'][:120])
+        for url in rule['positive']:
+            if not compiled.search(url) or any(r.search(url) for r in routes):
+                raise ValueError('Weibo rewrite sample fails or overlaps a script route: '+url)
+    for path in paths:
+        url=f'https://api.weibo.cn/2/{path}'
+        if not any(r.search(url+'?gsid=example') for r in routes) or any(r.search(url+'/extra') for r in routes):
+            raise ValueError('Weibo script route is not exact: '+path)
+        if any(r.search(url+'?gsid=example') for r in rewrites):raise ValueError('rewrite shadows Weibo script: '+path)
+    for url in spec['negative']+policy['critical_url_probes']:
+        if any(r.search(url) for r in routes+rewrites):raise ValueError('Weibo module matches a protected URL: '+url)
+    for host in spec['mitm']:
+        domain(host)
+        if any(is_blocked(host,listed) for listed in blocklists):raise ValueError('domain block shadows Weibo module: '+host)
+
+
 def scan_public(root=ROOT):
     patterns=[re.compile(r'-----BEGIN (?:[A-Z ]*PRIVATE KEY|PKCS12)-----'),
               re.compile(r'(?:ss|ssr|vmess|vless|trojan|hysteria2)://[A-Za-z0-9+/_=-]{8,}'),
@@ -140,6 +165,7 @@ def validate(root=ROOT):
         for h in route['hosts']:
             domain(h)
             if is_blocked(h,rules):raise ValueError('domain blocks response script')
+    check_weibo(read_json(root/'data/weibo.json'),policy,[rules,imported['domains']])
     lock=read_json(root/'sources/scripts.lock.json')['scripts']
     for item in lock:
         data=(root/item['path']).read_bytes()
@@ -173,6 +199,9 @@ def validate(root=ROOT):
             if section=='Script':
                 m=re.search(r'script-path=([^,\s]+)',line)
                 if not m or not m[1].startswith(base+'/dist/scripts/'):raise ValueError('script is not self hosted')
+                route=re.search(r'pattern=([^,]+),',line)
+                if not route or any(re.search(route[1],url) for url in policy['critical_url_probes']):
+                    raise ValueError('response script matches a critical login/payment/content URL')
                 rel=m[1][len(base)+1:]
                 if rel not in manifest:raise ValueError('script dependency is missing')
     scan_public(root)

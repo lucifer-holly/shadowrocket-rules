@@ -37,6 +37,11 @@
 - Redistributed unmodified as `vendor/maasea-youtube.response.js` and published as `dist/scripts/youtube.response.<SHA-256>.js` for `dist/modules/youtube.sgmodule`. The module wiring (route, size limit, QUIC rule, single MITM host) is this project's own.
 - The copy is pinned by hash and by an API-usage fingerprint; new upstream versions are reported for review and never imported automatically.
 
+## Weibo endpoint observations
+
+- `scripts/weibo.js` is this project's own GPL-3.0-only code. Endpoint paths, JSON field names and item identifiers (for example `mblogtypename`, `promotion`, `ads_word`, `profile_top`, the 我-page `itemId` values and card types 118/247) were learned from public modules: fmz200/wool_scripts `Loon/plugin/weibo.plugin` and `Scripts/weibo/weibo_ads.js` (GPL-3.0), and, for reading only, zmqcherish/proxy-script `weibo_main.js` and the iKeLee 微博去广告 module listing, whose licences do not permit redistribution.
+- No code from these projects is copied, bundled or fetched at runtime; the filtering rules are narrower (explicit ad markers and named modules only) and were written from scratch.
+
 ## User-provided starting material
 
 The attached splash-core module and initial repository supplied the ten initial app endpoint candidates. This project rewrote them into structured endpoint records with bounded matching, removed uncertain whole-host blocks and discarded the old dynamic-vendoring helper. Unverified endpoint candidates remain explicitly experimental.

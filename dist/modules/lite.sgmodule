@@ -4073,6 +4073,7 @@ DOMAIN-SUFFIX,adpia.vn,REJECT
 DOMAIN-SUFFIX,adpicker.net,REJECT
 DOMAIN-SUFFIX,adpicmedia.net,REJECT
 DOMAIN-SUFFIX,adpies.com,REJECT
+DOMAIN-SUFFIX,adpinpai.video.weibocdn.com,REJECT
 DOMAIN-SUFFIX,adpix.jp,REJECT
 DOMAIN-SUFFIX,adplace.cz,REJECT
 DOMAIN-SUFFIX,adplay.it,REJECT
@@ -21228,6 +21229,7 @@ DOMAIN-SUFFIX,dsp-track-global.zmaticoo.com,REJECT
 DOMAIN-SUFFIX,dsp-x.jd.com,REJECT
 DOMAIN-SUFFIX,dsp.ads.umeng.com,REJECT
 DOMAIN-SUFFIX,dsp.aparat.com,REJECT
+DOMAIN-SUFFIX,dsp.edm.weibo.cn,REJECT
 DOMAIN-SUFFIX,dsp.io,REJECT
 DOMAIN-SUFFIX,dsp.logly.co.jp,REJECT
 DOMAIN-SUFFIX,dsp.newsbreak.com,REJECT
@@ -64974,6 +64976,7 @@ DOMAIN-SUFFIX,waves.retentionscience.com,REJECT
 DOMAIN-SUFFIX,wavesend.ru,REJECT
 DOMAIN-SUFFIX,wavetogive.org,REJECT
 DOMAIN-SUFFIX,waviesdaywork.cyou,REJECT
+DOMAIN-SUFFIX,wax.weibo.com,REJECT
 DOMAIN-SUFFIX,waxapushlite.com,REJECT
 DOMAIN-SUFFIX,way2traffic.com,REJECT
 DOMAIN-SUFFIX,wayfarerorthodox.com,REJECT

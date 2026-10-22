@@ -11,10 +11,12 @@
 | 去广告② App 开屏与应用内广告（需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
 | 去广告③ 信息流净化·B站/知乎（需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
 | 去广告④ YouTube（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/youtube.sgmodule` |
+| 去广告⑤ 微博完整版（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/weibo.sgmodule` |
 | 本机证书（你自己建的本地模块，不在仓库里） | 手机 | — |
 
 - `base` 内存吃紧或 VPN 频繁断开时换 `lite.sgmodule`，两者二选一。
-- 名字里的编号就是作用：① 拦广告域名，② App 开屏/应用内广告，③ 信息流净化，④ YouTube。名字里带「需证书」的模块要配合本机证书模块。
+- 名字里的编号就是作用：① 拦广告域名，② App 开屏/应用内广告，③ 信息流净化，④ YouTube，⑤ 微博完整版。名字里带「需证书」的模块要配合本机证书模块。
+- 微博模块只针对 App Store 里的「微博」（完整版），会解密 `api.weibo.cn`：删信息流、热搜、评论区、视频流里标了广告或推广的内容和推荐卡片，热搜本身保留。微博哪个页面打不开或变空白，先关它，再从后台划掉微博重新打开。
 - `app-ads` 已包含 `apps-all` 的全部自维护规则；名字以「去广告②」开头的模块只开一个。
 - YouTube 模块是实验性的：脚本来自第三方（已审核并固定版本），在 Surge 上测试，Shadowrocket 不保证兼容。YouTube 出现播放或加载异常时先关它。
 - 主配置里没有广告规则、证书和脚本，Mac 直接用不会误解密。

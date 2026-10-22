@@ -1,0 +1,225 @@
+[
+  {
+    "name": "timeline drops labelled ads, ad arrays, inserted trends and brand strips; cursors stay",
+    "url": "https://api.weibo.cn/2/statuses/unread_friends_timeline?gsid=x&since_id=1",
+    "input": {"statuses": [{"id": 1, "text": "a"}, {"id": 2, "mblogtypename": "广告"}, {"id": 3, "promotion": {"type": "ad"}}, {"id": 4, "mblogtypename": "热推"}, {"id": 5, "text": "b", "common_struct": [{"name": "绿洲"}], "extend_info": {"shopwindow_cards": [1], "keep": 1}}], "ad": [{"x": 1}], "advertises": [{"x": 2}], "trends": [{"t": 1}], "since_id": 5, "max_id": 9},
+    "expected": {"statuses": [{"id": 1, "text": "a"}, {"id": 5, "text": "b", "extend_info": {"keep": 1}}], "ad": [], "advertises": [], "since_id": 5, "max_id": 9}
+  },
+  {
+    "name": "clean timeline passes unchanged",
+    "url": "https://api.weibo.cn/2/groups/timeline?list_id=1",
+    "input": {"statuses": [{"id": 1, "text": "a"}], "ad": [], "since_id": 5},
+    "passThrough": true
+  },
+  {
+    "name": "home feed drops ad posts and named recommendation modules, keeps other groups",
+    "url": "https://api.weibo.cn/2/statuses/container_timeline_hot?gsid=x",
+    "input": {"items": [
+      {"category": "feed", "data": {"id": 1, "text": "normal"}},
+      {"category": "feed", "data": {"id": 2, "content_auth_info": {"content_auth_title": "广告"}}},
+      {"category": "feed", "data": {"id": 3, "is_ad": 1}},
+      {"category": "feed", "data": {"id": 4, "ads_material_info": {"is_ads": true}}},
+      {"category": "feed", "data": {"id": 5, "page_info": {"actionlog": {"source": "ad"}}}},
+      {"category": "feed", "status": {"id": 6, "mblogtypename": "热推"}},
+      {"category": "group", "trend_name": "recommend_video_card", "items": []},
+      {"category": "group", "trend_name": "super_topic_recommend_card", "items": []},
+      {"category": "group", "items": [{"data": {"desc": "可能感兴趣的人"}}]},
+      {"category": "group", "trend_name": "hot_topic", "items": [{"data": {"desc": "热门话题"}}]}
+    ], "loadedInfo": {"headers": [1], "max_id": 7}},
+    "expected": {"items": [
+      {"category": "feed", "data": {"id": 1, "text": "normal"}},
+      {"category": "group", "trend_name": "hot_topic", "items": [{"data": {"desc": "热门话题"}}]}
+    ], "loadedInfo": {"headers": [1], "max_id": 7}}
+  },
+  {
+    "name": "profile page keeps the header group even when it looks like a recommendation",
+    "url": "https://api.weibo.cn/2/profile/container_timeline?uid=1",
+    "input": {"items": [
+      {"category": "group", "items": [{"data": {"itemid": "profile_top", "desc": "可能感兴趣的人"}}]},
+      {"category": "feed", "data": {"id": 1, "text": "post", "semantic_brand_params": {"a": 1}}},
+      {"category": "feed", "data": {"id": 2, "mblogtypename": "广告"}},
+      {"category": "group", "items": [{"data": {"desc": "可能感兴趣的人"}}]}
+    ]},
+    "expected": {"items": [
+      {"category": "group", "items": [{"data": {"itemid": "profile_top", "desc": "可能感兴趣的人"}}]},
+      {"category": "feed", "data": {"id": 1, "text": "post"}}
+    ]}
+  },
+  {
+    "name": "me page drops tasks, red packets and the membership upsell; follow count opens followed people",
+    "url": "https://api.weibo.cn/2/profile/me?gsid=x",
+    "input": {"items": [
+      {"itemId": "profileme_mine", "header": {"vipView": {"a": 1}, "name": "me"}, "items": [{"itemId": "mainnums_friends", "click": {"modules": [{"scheme": "sinaweibo://cardlist?containerid=231093_-_selfrecomm"}]}}]},
+      {"itemId": "100505_-_top8"},
+      {"itemId": "100505_-_newcreator", "type": "grid"},
+      {"itemId": "100505_-_newcreator", "type": "banner"},
+      {"itemId": "100505_-_vipkaitong"},
+      {"itemId": "100505_-_hongbao2022"},
+      {"itemId": "100505_-_newusertask"},
+      {"itemId": "100505_-_meattent_-_123"},
+      {"itemId": "100505_-_advideo", "header": {"title": {"content": "微博之夜"}}},
+      {"itemId": "100505_-_advideo", "header": {"title": {"content": "我的视频"}}},
+      {"itemId": "100505_-_manage"}
+    ]},
+    "expected": {"items": [
+      {"itemId": "profileme_mine", "header": {"vipView": null, "name": "me"}, "items": [{"itemId": "mainnums_friends", "click": {"modules": [{"scheme": "sinaweibo://cardlist?containerid=231093_-_selffollowed"}]}}]},
+      {"itemId": "100505_-_top8"},
+      {"itemId": "100505_-_newcreator", "type": "grid"},
+      {"itemId": "100505_-_advideo", "header": {"title": {"content": "我的视频"}}},
+      {"itemId": "100505_-_manage"}
+    ]}
+  },
+  {
+    "name": "post extras drop recommendations, product placement and follow banners; tipping stays",
+    "url": "https://api.weibo.cn/2/statuses/extend?id=1",
+    "input": {"trend": {"titles": {"title": "相关推荐"}}, "head_cards": [1], "top_cards": [1], "semantic_brand_params": {}, "ad_tag_nature": 1, "follow_data": {"a": 1}, "page_alerts": {"a": 1}, "reward_info": {"r": 1}, "extend_info": {"shopwindow_cards": [1], "ad_semantic_brand": {}, "other": 1}, "reposts_count": 3, "longText": {"content": "x"}},
+    "expected": {"follow_data": null, "page_alerts": null, "reward_info": {"r": 1}, "extend_info": {"other": 1}, "reposts_count": 3, "longText": {"content": "x"}}
+  },
+  {
+    "name": "post detail keeps the post, real comments and unmarked cards; drops recommendations, ad cards, share card and follow banner",
+    "url": "https://api.weibo.cn/2/statuses/container_detail?mid=1",
+    "input": {
+      "pageHeader": {"data": {"items": [{"category": "detail", "data": {"id": 1}}, {"category": "card", "data": {"promotion": {"a": 1}}}, {"category": "card", "data": {"title": "超话"}}, {"category": "group", "items": []}, {"category": "wboxcard", "data": {"title": "抽奖"}}, {"category": "wboxcard", "data": {"mblogtypename": "广告"}}, {"category": "x", "type": "share"}, {"category": "topic_entry"}]}},
+      "detailInfo": {"extend": {"follow_data": {"a": 1}, "keep": 1}},
+      "items": [{"type": "comment", "data": {"text": "c"}}, {"type": "trend"}, {"commentAdType": 1}, {"data": {"adType": "推荐"}}, {"adType": "广告"}]
+    },
+    "expected": {
+      "pageHeader": {"data": {"items": [{"category": "detail", "data": {"id": 1}}, {"category": "card", "data": {"title": "超话"}}, {"category": "wboxcard", "data": {"title": "抽奖"}}, {"category": "topic_entry"}]}},
+      "detailInfo": {"extend": {"keep": 1}},
+      "items": [{"type": "comment", "data": {"text": "c"}}]
+    }
+  },
+  {
+    "name": "post detail header is left alone when the post item is missing",
+    "url": "https://api.weibo.cn/2/statuses/container_detail?mid=1",
+    "input": {"pageHeader": {"data": {"items": [{"category": "card", "data": {"id": 1}}]}}},
+    "passThrough": true
+  },
+  {
+    "name": "comment section drops ads, recommendations and injected promo accounts; filter notice stays",
+    "url": "https://api.weibo.cn/2/comments/build_comments?id=1",
+    "input": {"datas": [{"data": {"text": "normal", "user": {"name": "u"}}}, {"type": 6}, {"adType": "广告"}, {"adType": "相关内容"}, {"data": {"user": {"name": "微博热搜"}}}, {"type": 15, "data": {"text": "部分评论已过滤"}}, {"data": {"promotion": {"type": "ad"}}}], "max_id": 3},
+    "expected": {"datas": [{"data": {"text": "normal", "user": {"name": "u"}}}, {"type": 15, "data": {"text": "部分评论已过滤"}}], "max_id": 3}
+  },
+  {
+    "name": "newer comment list drops trend and ad comments",
+    "url": "https://api.weibo.cn/2/statuses/container_detail_comment?id=1",
+    "input": {"items": [{"type": "comment", "data": {"text": "c"}}, {"type": "trend"}, {"commentAdType": "ad"}, {"data": {"adType": "热推"}}]},
+    "expected": {"items": [{"type": "comment", "data": {"text": "c"}}]}
+  },
+  {
+    "name": "repost lists drop ad posts",
+    "url": "https://api.weibo.cn/2/statuses/repost_timeline?id=1",
+    "input": {"reposts": [{"id": 1}, {"id": 2, "mblogtypename": "广告"}], "hot_reposts": [{"id": 3, "promotion": {"type": "ad"}}], "total_number": 3},
+    "expected": {"reposts": [{"id": 1}], "hot_reposts": [], "total_number": 3}
+  },
+  {
+    "name": "forward area drops trend cards and ad posts",
+    "url": "https://api.weibo.cn/2/statuses/container_detail_forward?id=1",
+    "input": {"items": [{"type": "forward", "data": {"id": 1}}, {"type": "trend"}, {"type": "forward", "data": {"mblogtypename": "广告"}}]},
+    "expected": {"items": [{"type": "forward", "data": {"id": 1}}]}
+  },
+  {
+    "name": "hot search keeps every row except promoted ones and banner ads; pinned rows stay",
+    "url": "https://api.weibo.cn/2/page?containerid=106003type%3D25",
+    "input": {"cards": [
+      {"card_group": [{"desc": "热搜一", "itemid": "c_type:31"}, {"desc": "推广", "promotion": {"x": 1}}, {"desc": "广告词", "itemid": "x_ads_word_1"}, {"desc": "广告词二", "actionlog": {"ext": "a|ads_word|b"}}, {"desc": "置顶", "itemid": "t:51"}, {"card_type": 118, "pic": "banner"}]},
+      {"card_type": 247},
+      {"card_type": 9, "mblog": {"mblogtypename": "广告"}},
+      {"card_type": 9, "mblog": {"text": "ok"}}
+    ]},
+    "expected": {"cards": [
+      {"card_group": [{"desc": "热搜一", "itemid": "c_type:31"}, {"desc": "置顶", "itemid": "t:51"}]},
+      {"card_type": 9, "mblog": {"text": "ok"}}
+    ]}
+  },
+  {
+    "name": "hot search tab page drops promoted rows only",
+    "url": "https://api.weibo.cn/2/flowpage?containerid=1",
+    "input": {"pageHeader": {"data": {"title": "热搜"}}, "items": [{"itemId": "hotword", "items": [{"data": {"itemid": "a", "desc": "热搜"}}, {"data": {"itemid": "b", "promotion": {}}}, {"data": {"itemid": "is_ad_pos_1"}}]}, {"itemId": "other", "items": [{"data": {"itemid": "region_data_x"}}]}]},
+    "expected": {"pageHeader": {"data": {"title": "热搜"}}, "items": [{"itemId": "hotword", "items": [{"data": {"itemid": "a", "desc": "热搜"}}]}, {"itemId": "other", "items": [{"data": {"itemid": "region_data_x"}}]}]}
+  },
+  {
+    "name": "topic and search results drop ad posts, ad cards and brand strips",
+    "url": "https://api.weibo.cn/2/searchall?containerid=100103",
+    "input": {"items": [
+      {"category": "feed", "data": {"mblogtypename": "广告"}},
+      {"category": "feed", "data": {"text": "ok", "semantic_brand_params": {}}},
+      {"category": "group", "items": [{"data": {"content_auth_info": {"content_auth_title": "广告"}}}, {"data": {"card_type": 17, "desc": "ok"}}]},
+      {"category": "card", "data": {"card_type": 118}}
+    ]},
+    "expected": {"items": [
+      {"category": "feed", "data": {"text": "ok"}},
+      {"category": "group", "items": [{"data": {"card_type": 17, "desc": "ok"}}]}
+    ]}
+  },
+  {
+    "name": "discover page keeps hot search and hot posts, drops promoted rows, carousels, banners and search-box words",
+    "url": "https://api.weibo.cn/2/search/finder?gsid=x",
+    "input": {
+      "channelInfo": {"channels": [{"id": 1001, "payload": {
+        "loadedInfo": {"searchBarContent": [{"w": 1}], "other": 1},
+        "items": [
+          {"category": "card", "data": {"card_type": 17, "group": [{"itemid": "hot1"}, {"itemid": "x_is_ad_pos_y"}, {"itemid": "hot2", "promotion": {"a": 1}}]}},
+          {"category": "card", "data": {"itemid": "finder_window"}},
+          {"category": "card", "data": {"itemid": "discover_gallery"}},
+          {"category": "card", "data": {"card_type": 235, "channel_list": [{"group": [{"itemid": "h"}, {"promotion": {}}]}]}},
+          {"category": "feed", "data": {"ads_material_info": {"is_ads": true}}},
+          {"category": "feed", "data": {"text": "hot post"}}
+        ]}}]},
+      "header": {"data": {"items": [{"category": "card", "data": {"card_type": 118}}, {"category": "card", "data": {"card_type": 101}}]}}
+    },
+    "expected": {
+      "channelInfo": {"channels": [{"id": 1001, "payload": {
+        "loadedInfo": {"other": 1},
+        "items": [
+          {"category": "card", "data": {"card_type": 17, "group": [{"itemid": "hot1"}]}},
+          {"category": "card", "data": {"card_type": 235, "channel_list": [{"group": [{"itemid": "h"}]}]}},
+          {"category": "feed", "data": {"text": "hot post"}}
+        ]}}]},
+      "header": {"data": {"items": [{"category": "card", "data": {"card_type": 101}}]}}
+    }
+  },
+  {
+    "name": "discover refresh drops ad posts and the search-box words",
+    "url": "https://api.weibo.cn/2/search/container_timeline?containerid=1",
+    "input": {"loadedInfo": {"searchBarContent": [1], "since_id": 2}, "items": [{"category": "feed", "data": {"mblogtypename": "广告"}}, {"category": "feed", "data": {"text": "ok"}}]},
+    "expected": {"loadedInfo": {"since_id": 2}, "items": [{"category": "feed", "data": {"text": "ok"}}]}
+  },
+  {
+    "name": "card lists drop wide banner ads",
+    "url": "https://api.weibo.cn/2/cardlist?containerid=1",
+    "input": {"cards": [{"card_group": [{"card_type": 118}, {"card_type": 8, "desc": "ok"}]}]},
+    "expected": {"cards": [{"card_group": [{"card_type": 8, "desc": "ok"}]}]}
+  },
+  {
+    "name": "video stream drops ad videos and shopping, floating and red-packet overlays; tags stay",
+    "url": "https://api.weibo.cn/2/video/tiny_stream_video_list?x=1",
+    "input": {"statuses": [{"id": 1, "video_info": {"shopping": {}, "float_info": {}, "forward_redpacket_info": {}, "tags": [1], "media": "x"}}, {"id": 2, "mblogtypename": "广告"}]},
+    "expected": {"statuses": [{"id": 1, "video_info": {"tags": [1], "media": "x"}}]}
+  },
+  {
+    "name": "video tab fake badge is cleared",
+    "url": "https://api.weibo.cn/2/video/remind_info?x=1",
+    "input": {"exist_remind": true, "image": "u", "bubble_dismiss_time": 5, "image_dismiss_time": 5, "tag_image_normal": "t", "other": 1},
+    "expected": {"exist_remind": false, "image": "", "bubble_dismiss_time": 0, "image_dismiss_time": 0, "tag_image_normal": "", "other": 1}
+  },
+  {
+    "name": "message flow drops ad-tagged cards only",
+    "url": "https://api.weibo.cn/2/messageflow?x=1",
+    "input": {"messages": [{"msg_card": {"ad_tag": "广告"}}, {"msg_card": {"text": "hi"}}, {"text": "plain"}]},
+    "expected": {"messages": [{"msg_card": {"text": "hi"}}, {"text": "plain"}]}
+  },
+  {
+    "name": "check-in prompt is hidden",
+    "url": "https://api.weibo.cn/2/checkin/show?x=1",
+    "input": {"show": 1, "other": 2},
+    "expected": {"show": 0, "other": 2}
+  },
+  {
+    "name": "hidden check-in prompt passes unchanged",
+    "url": "https://api.weibo.cn/2/checkin/show?x=1",
+    "input": {"show": 0},
+    "passThrough": true
+  }
+]

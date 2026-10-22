@@ -1,0 +1,49 @@
+{
+  "description": "Weibo iOS app (full version) module. Only api.weibo.cn is decrypted. rewrites answer pure promotion calls with an empty JSON object; scripts lists the exact paths under https://api.weibo.cn/2/ that scripts/weibo.js filters (its ROUTES table must list the same paths). negative: URLs no rewrite or script may match (login, messages, posting, follow, profile basics).",
+  "mitm": ["api.weibo.cn"],
+  "rewrites": [
+    {"pattern": "^https://api\\.weibo\\.cn/2/!/live/media_homelist(?:\\?|$)", "action": "reject-dict", "reason": "首页顶部的直播条", "positive": ["https://api.weibo.cn/2/!/live/media_homelist?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/push/daily(?:\\?|$)", "action": "reject-dict", "reason": "首页左上角每天弹出的提示", "positive": ["https://api.weibo.cn/2/push/daily?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/ug/checkin/list(?:\\?|$)", "action": "reject-dict", "reason": "签到任务弹窗", "positive": ["https://api.weibo.cn/2/ug/checkin/list?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/video/redpacket(?:\\?|$)", "action": "reject-dict", "reason": "视频页的红包活动", "positive": ["https://api.weibo.cn/2/video/redpacket?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/!/huati/discovery_home_bottom_getdotinfo(?:\\?|$)", "action": "reject-dict", "reason": "超话按钮上的推广红点", "positive": ["https://api.weibo.cn/2/!/huati/discovery_home_bottom_getdotinfo?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/!/chaohua/discovery/home_bottom/switch(?:\\?|$)", "action": "reject-dict", "reason": "超话底部入口的切换提示", "positive": ["https://api.weibo.cn/2/!/chaohua/discovery/home_bottom/switch?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/!/(?:sug/list/finderchange|was/finder/searchbarchange)(?:\\?|$)", "action": "reject-dict", "reason": "搜索框里轮换的推荐搜索词", "positive": ["https://api.weibo.cn/2/!/sug/list/finderchange?gsid=example", "https://api.weibo.cn/2/!/was/finder/searchbarchange?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/!/wbox/\\w+/home_bottom_modal(?:\\?|$)", "action": "reject-dict", "reason": "首页底部弹出的活动浮层", "positive": ["https://api.weibo.cn/2/!/wbox/abc123/home_bottom_modal?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/ad/preload(?:\\?|$)", "action": "reject-dict", "reason": "广告素材预加载", "positive": ["https://api.weibo.cn/2/ad/preload?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/client/addlog_batch(?:\\?|$)", "action": "reject-dict", "reason": "客户端行为日志批量上报", "positive": ["https://api.weibo.cn/2/client/addlog_batch?gsid=example"]}
+  ],
+  "scripts": [
+    {"id": "feed", "reason": "关注、推荐、分组信息流和个人主页：删广告、热推、推荐卡片和微博下方的商品/品牌条；「我」页删任务、红包、会员推广", "paths": [
+      "statuses/friends/timeline", "statuses/friends_timeline", "statuses/unread_friends_timeline", "statuses/unread_hot_timeline",
+      "groups/timeline", "statuses/container_timeline", "statuses/container_timeline_unread", "statuses/container_timeline_hot",
+      "statuses/container_timeline_topicpage", "profile/container_timeline", "profile/me"]},
+    {"id": "detail", "reason": "微博正文页、评论区、转发区：删相关推荐、博主好物、关注横幅和广告评论", "paths": [
+      "statuses/extend", "statuses/container_detail", "statuses/container_detail_comment", "statuses/container_detail_mix",
+      "statuses/container_detail_forward", "statuses/repost_timeline", "comments/build_comments", "comments/mix_comments"]},
+    {"id": "search", "reason": "热搜、发现、搜索和话题页：只删标了推广的热搜条目、横幅广告和广告微博，热搜本身保留", "paths": [
+      "page", "cardlist", "flowpage", "searchall", "search/finder", "search/container_timeline", "search/container_discover"]},
+    {"id": "video", "reason": "视频流、视频号、消息流和签到：删广告视频、视频里的商品/红包浮层、假提醒红点和广告消息", "paths": [
+      "video/tiny_stream_video_list", "video/tiny_stream_mid_detail", "video/full_screen_stream", "video/community_tab",
+      "video/remind_info", "statuses/video_mixtimeline", "messageflow", "checkin/show"]}
+  ],
+  "negative": [
+    "https://api.weibo.cn/2/account/login",
+    "https://api.weibo.cn/2/direct_messages/conversation?uid=1",
+    "https://api.weibo.cn/2/direct_messages/user_list?count=20",
+    "https://api.weibo.cn/2/statuses/send",
+    "https://api.weibo.cn/2/statuses/show?id=1",
+    "https://api.weibo.cn/2/comments/create",
+    "https://api.weibo.cn/2/friendships/create",
+    "https://api.weibo.cn/2/profile?uid=1",
+    "https://api.weibo.cn/2/profile/statuses/tab?uid=1",
+    "https://api.weibo.cn/2/users/show",
+    "https://api.weibo.cn/2/remind/unread_count",
+    "https://api.weibo.cn/2/page/button?request_url=example",
+    "https://api.weibo.cn/2/search/finder_nav_polling",
+    "https://api.weibo.cn/2/statuses/container_timeline_topic?x=1",
+    "https://api.weibo.cn/2/groups/allgroups/v2?x=1",
+    "https://api.weibo.cn.evil.test/2/page?containerid=1",
+    "https://weibointl.api.weibo.cn/portal.php?a=trends"
+  ]
+}

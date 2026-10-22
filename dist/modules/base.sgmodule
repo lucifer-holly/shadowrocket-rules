@@ -8682,6 +8682,7 @@ DOMAIN-SUFFIX,adpies.com,REJECT
 DOMAIN-SUFFIX,adpinfo.com,REJECT
 DOMAIN-SUFFIX,adping.qq.com,REJECT
 DOMAIN-SUFFIX,adpinion.com,REJECT
+DOMAIN-SUFFIX,adpinpai.video.weibocdn.com,REJECT
 DOMAIN-SUFFIX,adpionier.de,REJECT
 DOMAIN-SUFFIX,adpix.jp,REJECT
 DOMAIN-SUFFIX,adplace.cz,REJECT
@@ -40774,6 +40775,7 @@ DOMAIN-SUFFIX,dsp.ali213.net,REJECT
 DOMAIN-SUFFIX,dsp.aparat.com,REJECT
 DOMAIN-SUFFIX,dsp.brand.sogo.com,REJECT
 DOMAIN-SUFFIX,dsp.com,REJECT
+DOMAIN-SUFFIX,dsp.edm.weibo.cn,REJECT
 DOMAIN-SUFFIX,dsp.fcbox.com,REJECT
 DOMAIN-SUFFIX,dsp.io,REJECT
 DOMAIN-SUFFIX,dsp.newsbreak.com,REJECT
@@ -136550,6 +136552,7 @@ DOMAIN-SUFFIX,wavingauradignity.com,REJECT
 DOMAIN-SUFFIX,wavrlh.cedok.cz,REJECT
 DOMAIN-SUFFIX,wavtcdqwbuhiw.space,REJECT
 DOMAIN-SUFFIX,wavzlt.michaelstars.com,REJECT
+DOMAIN-SUFFIX,wax.weibo.com,REJECT
 DOMAIN-SUFFIX,wax.weibo.com.cn,REJECT
 DOMAIN-SUFFIX,waxapushlite.com,REJECT
 DOMAIN-SUFFIX,waxfromcache.net,REJECT

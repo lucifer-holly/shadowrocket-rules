@@ -5,6 +5,12 @@
       "sha256": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
       "license": "GPL-3.0-only",
       "review": "Original implementation reviewed: exact JSON endpoints; pass-through on unknown shapes/errors; no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified."
+    },
+    {
+      "path": "scripts/weibo.js",
+      "sha256": "30592fdbf898a1babc27ab66c7a7829e1f79e90c5b3ff18b5f75cc3efd04489d",
+      "license": "GPL-3.0-only",
+      "review": "Original implementation reviewed 2026-10-22: exact api.weibo.cn/2/ paths listed in data/weibo.json. Removes only entries the API marks as ads or promotions (mblogtypename 广告/热推, promotion objects, ad flags, ad item ids, wide banner card types 118/247), named recommendation modules (可能感兴趣的人, super-topic and video recommendation cards), the post page's related-recommendation, product-placement and follow blocks, recommendation groups and share card (other post-page cards only when marked as ads), brand/shop strips under posts, 我-page task/red-packet/membership items, the video-tab fake badge and the check-in prompt. Hot-search rows stay unless promoted; groups holding a profile header are never removed; API errors, non-JSON, unknown shapes and other paths pass unchanged. No network, storage, notifications or logs. Synthetic fixtures only; iOS not verified."
     }
   ],
   "archives": [

@@ -4,7 +4,7 @@ import argparse
 import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,parse_rules,load_inputs,load_policy,optimize,is_blocked,within,exception_for
-from build import imported_app_ads
+from build import imported_app_ads, weibo_routes
 
 def explain(value):
     host=urlsplit(value).hostname if '://' in value else value
@@ -22,6 +22,9 @@ def explain(value):
             result['rewrite_matches'] += [ident for r in app['rules'] if re.search(r['pattern'],value)]
         result['rewrite_matches'] += [f'fmz-blockads ({a})' for p,a in imported['rewrites'] if re.search(p,value)][:1]
         result['script_matches']=[r['id'] for r in read_json(ROOT/'data/script-routes.json') if re.search(r['pattern'],value)]
+        weibo=read_json(ROOT/'data/weibo.json')
+        result['rewrite_matches'] += [f"weibo ({r['action']})" for r in weibo['rewrites'] if re.search(r['pattern'],value)]
+        result['script_matches'] += ['weibo-'+ident for ident,pattern in weibo_routes(weibo) if re.search(pattern,value)]
     result['routing']='未被本项目拦截的流量继续使用原主配置；本工具不模拟主配置路由或 HTTPS 解密状态。'
     return result
 
