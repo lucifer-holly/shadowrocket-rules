@@ -19,7 +19,7 @@
 | `data/allowlist.json` | 从广告库中移除的域名例外；不输出 DIRECT，不改变路由 |
 | `data/app-ads-overrides.json` | 对自动导入的 App 广告规则的排除项（主机或单条规则），以及临时「只解密」的排查主机 `observe_hosts` |
 | `tools/devicelog.py` | 分析 Shadowrocket 导出的请求日志，只显示目标 App 的条目，见 [设备日志](DEVICE_LOGS.md) |
-| `AGENTS.md`、`docs/STATUS.md` | 接手维护的说明与当前进度；`CLAUDE.md`、`.github/copilot-instructions.md` 只指向 `AGENTS.md` |
+| `AGENTS.md`、`docs/STATUS.md` | 接手维护的说明与当前进度；`CLAUDE.md` 只导入 `AGENTS.md` |
 | `data/policy.json` | 公共后缀/共享根保护、禁止解密的主机、关键网址探针、更新幅度、时效和大小阈值 |
 | `dist/` | 自动生成的手机用文件及完整性清单 |
 | `reports/` | 构建统计、最近一次自动更新的完整增删 |
@@ -58,6 +58,8 @@ make test
 4. 有来源被拦截或任何检查失败时，运行会标红，并在仓库开出（或追加到）标题为「上游自动更新需要关注」的 Issue，附带报告；之后某次运行全部正常，会自动关闭这个 Issue。
 
 设备端：手机和 Mac 打开 Shadowrocket 的配置/模块自动更新，就会在下次更新时拿到新规则。
+
+仓库 60 天没有任何提交时，GitHub 会自动停用定时任务。每天的自动更新提交通常能让仓库保持活跃；长期没有新提交时，到 Actions 页面重新启用。
 
 需要你处理的情况只有 Issue 里列出的几类：
 
