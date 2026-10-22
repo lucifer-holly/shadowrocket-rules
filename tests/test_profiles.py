@@ -124,10 +124,10 @@ class SharedProfileTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 check_public_profile(changed, self.base)
 
-    def test_ipv6_stays_off_for_ipv4_only_networks(self):
-        # Advertising IPv6 on an IPv4-only Wi-Fi breaks direct connections such as Xiaohongshu's.
-        self.assertIn('\nipv6 = false\n', self.text)
-        self.assertNotIn('ipv6 = true', self.text)
+    def test_ipv6_enabled_with_ipv4_preferred(self):
+        # IPv6 stays available, but IPv4 answers are used first so IPv4-only networks keep working.
+        self.assertIn('\nipv6 = true\n', self.text)
+        self.assertIn('\nprefer-ipv6 = false\n', self.text)
 
     def test_phone_ad_module_preserves_known_ai_feature_hosts(self):
         rules = optimize(load_inputs()[0], load_policy())[0]
