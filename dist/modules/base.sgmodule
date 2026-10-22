@@ -5,12 +5,8 @@
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
 
 [Rule]
-DOMAIN,brandvideo.biz.weibo.com,REJECT
 DOMAIN,cm.ad.bilibili.com,REJECT
 DOMAIN,cm.adcommon.bilibili.com,REJECT
-DOMAIN,kadmimage.biz.weibo.com,REJECT
-DOMAIN,sdkaction.biz.weibo.com,REJECT
-DOMAIN,sdkclick.biz.weibo.com,REJECT
 DOMAIN,sdkmonitor.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,0-02.net,REJECT
 DOMAIN-SUFFIX,0-btc.com,REJECT
@@ -25172,6 +25168,7 @@ DOMAIN-SUFFIX,brandsfive.com,REJECT
 DOMAIN-SUFFIX,brandshow.58.com,REJECT
 DOMAIN-SUFFIX,brandsmat.com,REJECT
 DOMAIN-SUFFIX,brandturbo.vip,REJECT
+DOMAIN-SUFFIX,brandvideo.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,brandybison.com,REJECT
 DOMAIN-SUFFIX,brandyjaggers.com,REJECT
 DOMAIN-SUFFIX,brasencracket.cyou,REJECT
@@ -64864,6 +64861,7 @@ DOMAIN-SUFFIX,kadam.ru,REJECT
 DOMAIN-SUFFIX,kaden.netoff.co.jp,REJECT
 DOMAIN-SUFFIX,kadime.cc,REJECT
 DOMAIN-SUFFIX,kadlec.psjhealth.org,REJECT
+DOMAIN-SUFFIX,kadmimage.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,kadmkyie.com,REJECT
 DOMAIN-SUFFIX,kadrawheerga.com,REJECT
 DOMAIN-SUFFIX,kaebyy.autouncle.se,REJECT
@@ -104218,11 +104216,13 @@ DOMAIN-SUFFIX,sdk.zadn.vn,REJECT
 DOMAIN-SUFFIX,sdk.zsdfm.com,REJECT
 DOMAIN-SUFFIX,sdk4push.com,REJECT
 DOMAIN-SUFFIX,sdk6.ibm.xtify.com,REJECT
+DOMAIN-SUFFIX,sdkaction.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,sdkapi.dsp-api.moloco.com,REJECT
 DOMAIN-SUFFIX,sdkapi.kookong.com,REJECT
 DOMAIN-SUFFIX,sdkapiv2.bizport.cn,REJECT
 DOMAIN-SUFFIX,sdkapp.mobile.sina.cn,REJECT
 DOMAIN-SUFFIX,sdkauth.hpplay.cn,REJECT
+DOMAIN-SUFFIX,sdkclick.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,sdkclick.com,REJECT
 DOMAIN-SUFFIX,sdkclick.mobile.sina.cn,REJECT
 DOMAIN-SUFFIX,sdkconf.avlyun.com,REJECT

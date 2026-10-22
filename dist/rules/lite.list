@@ -2,12 +2,8 @@
 # See THIRD_PARTY_NOTICES.md and licenses/. No proxy nodes or certificates.
 DOMAIN,ads-img-qc.xhscdn.com
 DOMAIN,ads-video-qc.xhscdn.com
-DOMAIN,brandvideo.biz.weibo.com
 DOMAIN,cm.ad.bilibili.com
 DOMAIN,cm.adcommon.bilibili.com
-DOMAIN,kadmimage.biz.weibo.com
-DOMAIN,sdkaction.biz.weibo.com
-DOMAIN,sdkclick.biz.weibo.com
 DOMAIN,sdkmonitor.biz.weibo.com
 DOMAIN-SUFFIX,0-02.net
 DOMAIN-SUFFIX,0-btc.com
@@ -14387,6 +14383,7 @@ DOMAIN-SUFFIX,brandreachsys.com
 DOMAIN-SUFFIX,brands.kmsmep.com
 DOMAIN-SUFFIX,brandsmat.com
 DOMAIN-SUFFIX,brandturbo.vip
+DOMAIN-SUFFIX,brandvideo.biz.weibo.com
 DOMAIN-SUFFIX,brandyjaggers.com
 DOMAIN-SUFFIX,brangista.122.2o7.net
 DOMAIN-SUFFIX,brasencracket.cyou
@@ -30957,6 +30954,7 @@ DOMAIN-SUFFIX,kachinasindon.com
 DOMAIN-SUFFIX,kad.gotokeep.com
 DOMAIN-SUFFIX,kadam.ru
 DOMAIN-SUFFIX,kadime.cc
+DOMAIN-SUFFIX,kadmimage.biz.weibo.com
 DOMAIN-SUFFIX,kadrawheerga.com
 DOMAIN-SUFFIX,kafebuhara.ru
 DOMAIN-SUFFIX,kaffeeschwarz.paarzeit.de
@@ -49204,10 +49202,12 @@ DOMAIN-SUFFIX,sdk.yolanda.hk
 DOMAIN-SUFFIX,sdk.zadn.vn
 DOMAIN-SUFFIX,sdk4push.com
 DOMAIN-SUFFIX,sdk6.ibm.xtify.com
+DOMAIN-SUFFIX,sdkaction.biz.weibo.com
 DOMAIN-SUFFIX,sdkapi.dsp-api.moloco.com
 DOMAIN-SUFFIX,sdkapi.kookong.com
 DOMAIN-SUFFIX,sdkapiv2.bizport.cn
 DOMAIN-SUFFIX,sdkauth.hpplay.cn
+DOMAIN-SUFFIX,sdkclick.biz.weibo.com
 DOMAIN-SUFFIX,sdkconf.avlyun.com
 DOMAIN-SUFFIX,sdkconfig.pulse.m10s.io
 DOMAIN-SUFFIX,sdkconfig.pulse.schibsted.io

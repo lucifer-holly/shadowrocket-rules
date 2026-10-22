@@ -7,12 +7,8 @@
 [Rule]
 DOMAIN,ads-img-qc.xhscdn.com,REJECT
 DOMAIN,ads-video-qc.xhscdn.com,REJECT
-DOMAIN,brandvideo.biz.weibo.com,REJECT
 DOMAIN,cm.ad.bilibili.com,REJECT
 DOMAIN,cm.adcommon.bilibili.com,REJECT
-DOMAIN,kadmimage.biz.weibo.com,REJECT
-DOMAIN,sdkaction.biz.weibo.com,REJECT
-DOMAIN,sdkclick.biz.weibo.com,REJECT
 DOMAIN,sdkmonitor.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,0-02.net,REJECT
 DOMAIN-SUFFIX,0-btc.com,REJECT
@@ -14392,6 +14388,7 @@ DOMAIN-SUFFIX,brandreachsys.com,REJECT
 DOMAIN-SUFFIX,brands.kmsmep.com,REJECT
 DOMAIN-SUFFIX,brandsmat.com,REJECT
 DOMAIN-SUFFIX,brandturbo.vip,REJECT
+DOMAIN-SUFFIX,brandvideo.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,brandyjaggers.com,REJECT
 DOMAIN-SUFFIX,brangista.122.2o7.net,REJECT
 DOMAIN-SUFFIX,brasencracket.cyou,REJECT
@@ -30962,6 +30959,7 @@ DOMAIN-SUFFIX,kachinasindon.com,REJECT
 DOMAIN-SUFFIX,kad.gotokeep.com,REJECT
 DOMAIN-SUFFIX,kadam.ru,REJECT
 DOMAIN-SUFFIX,kadime.cc,REJECT
+DOMAIN-SUFFIX,kadmimage.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,kadrawheerga.com,REJECT
 DOMAIN-SUFFIX,kafebuhara.ru,REJECT
 DOMAIN-SUFFIX,kaffeeschwarz.paarzeit.de,REJECT
@@ -49209,10 +49207,12 @@ DOMAIN-SUFFIX,sdk.yolanda.hk,REJECT
 DOMAIN-SUFFIX,sdk.zadn.vn,REJECT
 DOMAIN-SUFFIX,sdk4push.com,REJECT
 DOMAIN-SUFFIX,sdk6.ibm.xtify.com,REJECT
+DOMAIN-SUFFIX,sdkaction.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,sdkapi.dsp-api.moloco.com,REJECT
 DOMAIN-SUFFIX,sdkapi.kookong.com,REJECT
 DOMAIN-SUFFIX,sdkapiv2.bizport.cn,REJECT
 DOMAIN-SUFFIX,sdkauth.hpplay.cn,REJECT
+DOMAIN-SUFFIX,sdkclick.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,sdkconf.avlyun.com,REJECT
 DOMAIN-SUFFIX,sdkconfig.pulse.m10s.io,REJECT
 DOMAIN-SUFFIX,sdkconfig.pulse.schibsted.io,REJECT

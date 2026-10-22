@@ -68,7 +68,7 @@ make test
 
 | 想做的事 | 改哪里 |
 |---|---|
-| 新出现的广告域名，直接拦 | `data/extra-domains.json`（进入 base/lite） |
+| 新出现的广告域名，直接拦 | `data/extra-domains.json`（进入 base/lite）。主配置分组里已有的域名（如 `weibo.com` 直连）下的子域名写 `DOMAIN-SUFFIX`：设备日志证实这种写法能压过主配置的分组规则，`DOMAIN` 写法还没在真机上确认 |
 | 某 App 的广告接口，按路径拦 | `data/apps.json`，附正样例和同主机登录/支付负样例 |
 | 某个域名被误拦 | `data/allowlist.json`（base、lite、app-ads 都会放行） |
 | 自动导入的规则让某个 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` 填该 App 的主机（包含子域），该主机不再被导入规则拦截、重写或解密；只想去掉某一条时填 `exclude_patterns` |
