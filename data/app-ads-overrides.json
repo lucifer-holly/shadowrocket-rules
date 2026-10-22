@@ -14,6 +14,26 @@
     {
       "host": "diy-assets.msstatic.com",
       "reason": "同上，弹窗网页的图片等资源；查清后删除"
+    },
+    {
+      "host": "fileserver.cdn.huya.com",
+      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现，查清开屏素材来源后删除"
+    },
+    {
+      "host": "s1-static.msstatic.com",
+      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现，查清开屏素材来源后删除"
+    },
+    {
+      "host": "v-huya-img2.msstatic.com",
+      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现，查清开屏素材来源后删除"
+    },
+    {
+      "host": "anchorpost.msstatic.com",
+      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现，查清开屏素材来源后删除"
+    },
+    {
+      "host": "huyaimg.msstatic.com",
+      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现，查清开屏素材来源后删除"
     }
   ]
 }

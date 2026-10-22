@@ -3,7 +3,7 @@
     "dist/config/adblock-example.conf": "97c210cb506447239ef51befcb66da533730aaf66e3cce92b99a68adacf78d3c",
     "dist/config/adblock.fragment.conf": "921de47b3095586ad6cad3a295f7b8e5113fc3a20fec59e10785293c63ce6693",
     "dist/config/main.conf": "735dfe9a2f22a8595b262b038dedaebdfdbd67fab0897af457b0d1f6e352fc88",
-    "dist/modules/app-ads.sgmodule": "e5f72de2a970eddb360100586184d920da40f6c73e3d87c973508c4a8edab55e",
+    "dist/modules/app-ads.sgmodule": "557a5a1e9a4da5ce9a30ac61f69a3ed576157a2557e800d3656e5f9a8756fc46",
     "dist/modules/apps-all.sgmodule": "36fd9ea96968bccfdf20ce1a2c06070cc38311faa9ee77494238b3a7f530dad0",
     "dist/modules/apps/amap.sgmodule": "95780464e6ab0a7525a2eaf786e5c793bdbcd776a22b8896fd47d8290513d8ff",
     "dist/modules/apps/appso.sgmodule": "5065f5d95be9a65bf7b5b11386bcdfbb22b0117b1e0f1899b4ab81205f7b2bbd",
