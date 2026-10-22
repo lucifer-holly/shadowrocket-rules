@@ -19,12 +19,12 @@
     "dist/modules/apps/xianyu.sgmodule": "296866dd9101e05924e147fbbf36b6acbea3c9bfb529d643b10ade39df280c32",
     "dist/modules/apps/xiaohongshu.sgmodule": "39555ecded1a4d3b1be69c2ab95a1ae0fa94d17860ca52f1dd9dfa9efab4406e",
     "dist/modules/apps/zhihu.sgmodule": "9121a92f08f96854b1f2edf52c419f384a0e5ab4f919c117b7f656d427e55ba8",
-    "dist/modules/base.sgmodule": "1536ed4de5a0805503ea497918ac70256e7ada618e3e9d0e5e95f0ac1967868a",
-    "dist/modules/lite.sgmodule": "2084477436e3c4723659229c81dd7290632e31d5f92adb5755c6c3bb9cc7ce09",
+    "dist/modules/base.sgmodule": "2b4f0c5339ae0892615a3532ee0f47eb85df4b61a2f07285003b71e61203b48d",
+    "dist/modules/lite.sgmodule": "62de9b022378373eff8587fc1ba1225bc6f3a09b13275464d3a3e2c1cf270f19",
     "dist/modules/response-cleaner.sgmodule": "c9e964656b5e87543d9e06f5ccf87a87ed2c47aceda1acbdce64f586fcc5d5ba",
     "dist/modules/youtube.sgmodule": "82f641f613dd7d1aa70a2c561aaaa97ca1edc934a6fe99e8356f168cf7169f2c",
-    "dist/rules/base.list": "6a8d98ae85c2a31c4cf0daf810667c8ff1c991497da26fd03e4e44d9d084e913",
-    "dist/rules/lite.list": "8e43f546366b1154962ecd262cb8445d441230c96552b4c65453e1e29e00c63f",
+    "dist/rules/base.list": "1a8363ce16bf147ce9987182e10bf2d06f14f08305ddfc59693b79dc4a1fd7c1",
+    "dist/rules/lite.list": "416ec6eec972375984bfcf7e6d253ffa8cb443d35d8a9480fb4d813b57e9ae81",
     "dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js": "6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9",
     "dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
     "dist/scripts/youtube.response.f98483d5f5017514f82502253c0db5ce2d4ffb7839887aa2cadc22666f5a7f12.js": "f98483d5f5017514f82502253c0db5ce2d4ffb7839887aa2cadc22666f5a7f12"
@@ -50,12 +50,12 @@
       "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/plugin/blockAds.plugin"
     },
     "hagezi-light": {
-      "bytes": 1428504,
+      "bytes": 1452926,
       "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-10-22T04:06:35+00:00",
-      "sha256": "5c3d3b3e3a971c6fc65289616b010ee6d5c6a6d9bc559dc048a3db6d1b1b8b7f",
-      "source_timestamp": "2026-10-21T14:51:00+00:00",
+      "observed_at": "2026-10-22T09:49:50+00:00",
+      "sha256": "de22e793afbb63bfba0dc066ed42173ca7dad5599f282650ba0f74ec343968f5",
+      "source_timestamp": "2026-10-22T08:41:00+00:00",
       "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/light-onlydomains.txt"
     }
   }
