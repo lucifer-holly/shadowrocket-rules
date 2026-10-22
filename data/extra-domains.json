@@ -3,5 +3,11 @@
   {"type":"DOMAIN","domain":"cm.ad.bilibili.com","reason":"原附件广告专用主机"},
   {"type":"DOMAIN","domain":"cm.adcommon.bilibili.com","reason":"原附件广告专用主机"},
   {"type":"DOMAIN","domain":"ads-img-qc.xhscdn.com","reason":"原附件广告素材主机"},
-  {"type":"DOMAIN","domain":"ads-video-qc.xhscdn.com","reason":"原附件广告素材主机"}
+  {"type":"DOMAIN","domain":"ads-video-qc.xhscdn.com","reason":"原附件广告素材主机"},
+  {"type":"DOMAIN-SUFFIX","domain":"uve.weibo.com","reason":"微博广告引擎，含开屏预加载 bootpreload；上游也拦，本地固定一份"},
+  {"type":"DOMAIN","domain":"brandvideo.biz.weibo.com","reason":"微博开屏品牌视频广告（2026-10-22 设备日志）"},
+  {"type":"DOMAIN","domain":"kadmimage.biz.weibo.com","reason":"微博广告图片素材（2026-10-22 设备日志）"},
+  {"type":"DOMAIN","domain":"sdkaction.biz.weibo.com","reason":"微博广告 SDK 行为上报（2026-10-22 设备日志）"},
+  {"type":"DOMAIN","domain":"sdkclick.biz.weibo.com","reason":"微博广告 SDK 点击上报（2026-10-22 设备日志）"},
+  {"type":"DOMAIN","domain":"sdkmonitor.biz.weibo.com","reason":"微博广告 SDK 曝光监测（2026-10-22 设备日志）"}
 ]}

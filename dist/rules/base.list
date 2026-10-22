@@ -1,7 +1,12 @@
 # Personal ads: anti-AD (MIT) + HaGeZi Light (GPL-3.0), modified by this project.
 # See THIRD_PARTY_NOTICES.md and licenses/. No proxy nodes or certificates.
+DOMAIN,brandvideo.biz.weibo.com
 DOMAIN,cm.ad.bilibili.com
 DOMAIN,cm.adcommon.bilibili.com
+DOMAIN,kadmimage.biz.weibo.com
+DOMAIN,sdkaction.biz.weibo.com
+DOMAIN,sdkclick.biz.weibo.com
+DOMAIN,sdkmonitor.biz.weibo.com
 DOMAIN-SUFFIX,0-02.net
 DOMAIN-SUFFIX,0-btc.com
 DOMAIN-SUFFIX,0-energy.com

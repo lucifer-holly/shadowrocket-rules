@@ -140,15 +140,16 @@
     "name": "微博",
     "status": "experimental-unverified-on-device",
     "risk": "medium",
-    "source": "user-supplied initial repository; re-scoped endpoints",
+    "source": "user-supplied initial repository; re-scoped endpoints; a 2026-10-22 device log shows Weibo Lite 7.2 calling /v3/",
     "rules": [
       {
-        "pattern": "^https?://adstrategy\\.biz\\.weibo\\.com/v2/strategy/ad(?:\\?|$)",
+        "pattern": "^https?://adstrategy\\.biz\\.weibo\\.com/v\\d+/strategy/ad(?:\\?|$)",
         "hosts": [
           "adstrategy.biz.weibo.com"
         ],
         "positive": [
-          "https://adstrategy.biz.weibo.com/v2/strategy/ad?uid=example"
+          "https://adstrategy.biz.weibo.com/v2/strategy/ad?uid=example",
+          "https://adstrategy.biz.weibo.com/v3/strategy/ad?reqid=example"
         ],
         "action": "reject-dict"
       }

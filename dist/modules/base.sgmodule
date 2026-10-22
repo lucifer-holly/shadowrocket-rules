@@ -5,8 +5,13 @@
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
 
 [Rule]
+DOMAIN,brandvideo.biz.weibo.com,REJECT
 DOMAIN,cm.ad.bilibili.com,REJECT
 DOMAIN,cm.adcommon.bilibili.com,REJECT
+DOMAIN,kadmimage.biz.weibo.com,REJECT
+DOMAIN,sdkaction.biz.weibo.com,REJECT
+DOMAIN,sdkclick.biz.weibo.com,REJECT
+DOMAIN,sdkmonitor.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,0-02.net,REJECT
 DOMAIN-SUFFIX,0-btc.com,REJECT
 DOMAIN-SUFFIX,0-energy.com,REJECT

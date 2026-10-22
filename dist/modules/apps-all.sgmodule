@@ -21,7 +21,7 @@
 ^https?://amap-aos-info-nogw\.amap\.com/ws/aos/alimama/splash_screen_rt(?:\?|$) - reject-dict
 ^https?://m\d+\.amap\.com/ws/shield/dsp/app/startup/init(?:\?|$) - reject-dict
 # 微博 (weibo); 真机效果未验证
-^https?://adstrategy\.biz\.weibo\.com/v2/strategy/ad(?:\?|$) - reject-dict
+^https?://adstrategy\.biz\.weibo\.com/v\d+/strategy/ad(?:\?|$) - reject-dict
 # 哔哩哔哩 (bilibili); 真机效果未验证
 ^https?://api\.bilibili\.com/x/mengqi/v\d+/resource(?:\?|$) - reject-dict
 # 拼多多 (pdd); 真机效果未验证

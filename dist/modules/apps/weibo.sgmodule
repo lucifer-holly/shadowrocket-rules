@@ -6,7 +6,7 @@
 
 [URL Rewrite]
 # 微博 (weibo); 真机效果未验证
-^https?://adstrategy\.biz\.weibo\.com/v2/strategy/ad(?:\?|$) - reject-dict
+^https?://adstrategy\.biz\.weibo\.com/v\d+/strategy/ad(?:\?|$) - reject-dict
 
 [MITM]
 hostname = %APPEND% adstrategy.biz.weibo.com
