@@ -3,7 +3,7 @@
 import argparse
 from pathlib import Path
 from common import ROOT, read_json, json_text, sha256, load_inputs, load_policy, optimize, repo_base
-from profiles import profile
+from profiles import profile, routing_lists
 
 
 def module(name, sections, note=''):
@@ -40,6 +40,7 @@ def outputs(root=ROOT):
     header = ['# Personal ads: anti-AD (MIT) + HaGeZi Light (GPL-3.0), modified by this project.',
               '# See THIRD_PARTY_NOTICES.md and licenses/. No proxy nodes or certificates.']
     out = {}
+    out.update(routing_lists(root))
     for label, entries in [('base', merged), ('lite', light)]:
         rows = [','.join(r) for r in entries]
         out[f'dist/rules/{label}.list'] = '\n'.join(header + rows) + '\n'
@@ -77,7 +78,9 @@ def outputs(root=ROOT):
               'response_routes':len(routes),'device_verified':False,
               'exceptions': [{'rule':','.join(k),'reason':v} for k,v in sorted(removed.items())]}
     subscription_rows = [
-        ('iPhone/iPad/Mac 共用主配置（手机去广告另加模块）','dist/config/main.conf'),
+        ('脱敏共用主配置模板（私人例外须合并到本地完整版）','dist/config/main.conf'),
+        ('公共强制代理规则集（主配置内部引用）','dist/rules/routing-proxy.list'),
+        ('国内常用域名直连规则集（主配置内部引用）','dist/rules/routing-direct.list'),
         ('通用域名拦截（优先）','dist/modules/base.sgmodule'),
         ('较小域名库（与 base 二选一）','dist/modules/lite.sgmodule'),
         ('全部 App 路径规则（实验）','dist/modules/apps-all.sgmodule'),
@@ -90,6 +93,7 @@ def outputs(root=ROOT):
         '由 project.json 自动生成；当前地址对应自己的仓库。完整主配置使用方法见 DEVICE_PROFILES.md。',
         'base / lite 二选一；apps-all / 独立 App 二选一；response-cleaner 可额外启用。',
         '主配置 URL 在「配置」页导入；模块 URL 在「模块」中导入，都不是节点订阅。手机与 Mac 使用同一 main.conf；手机另加 base 等广告模块，Mac 默认只用主配置。',
+        '含私人地址的完整版可将私人直连和原有全部 PROXY 规则合并在一个本地主配置中；后续更新其引用的公共分流规则集，无需单独的私人模块。规则集链接不能当成完整配置导入。',
         '', '| 内容 | Raw 地址 |', '|---|---|',
         *[f'| {name} | {base}/{rel} |' for name,rel in subscription_rows], '',
         '脚本只引用本仓库按内容哈希命名的文件；更新需要先审阅合并，再在手机更新模块/配置。',

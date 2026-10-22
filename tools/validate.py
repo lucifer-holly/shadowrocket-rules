@@ -6,7 +6,7 @@ import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain
 from build import run
-from profiles import LAN_ROUTES
+from profiles import LAN_ROUTES, routing_references
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
 
@@ -37,12 +37,19 @@ def check_public_profile(text, base):
             fields = line.split(',')
             if fields[0] == 'IP-CIDR' and fields[1] not in LAN_ROUTES:
                 raise ValueError('public profile contains a non-LAN address')
-            if fields[0] in {'RULE-SET', 'SCRIPT'} or 'REJECT' in fields:
+            if fields[0] == 'RULE-SET' and line not in routing_references(base)[:2]:
+                raise ValueError('public profile has an unexpected rule-set dependency')
+            if fields[0] == 'SCRIPT' or 'REJECT' in fields:
                 raise ValueError('shared routing profile must not enable advertising or script processing')
     if 'FINAL,PROXY' not in active or 'DST-PORT,22,DIRECT' not in active:
         raise ValueError('missing fallback or standard SSH direct rule')
     if f'update-url = {base}/dist/config/main.conf' not in active:
         raise ValueError('missing persistent configuration update URL')
+    references = routing_references(base)
+    if any(line not in active for line in references):
+        raise ValueError('missing public service routing reference')
+    if [active.index(line) for line in references] != sorted(active.index(line) for line in references):
+        raise ValueError('mandatory proxy routing must precede domestic direct routing')
 
 def scan_public(root=ROOT):
     patterns=[re.compile(r'-----BEGIN (?:[A-Z ]*PRIVATE KEY|PKCS12)-----'),

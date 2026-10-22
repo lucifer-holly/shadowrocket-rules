@@ -10,6 +10,7 @@
 | `sources/watch.json` | fmz 整包字节指纹，仅提醒人工复核；不导入/执行 |
 | `data/apps.json` | 14 个实验 App 模块的端点、解密主机、正样例和来源 |
 | `data/routing.json`、`tools/profiles.py` | 两端共用主配置的公开服务分流与构建；不导入私人配置 |
+| `tools/personalize.py` | 在本地合并私人直连和旧配置全部显式 PROXY 规则；拒绝把输出写入公开仓库目录 |
 | `data/script-routes.json` | 原创响应过滤器的 3 个限定入口 |
 | `scripts/response-cleaner.js` | 原创 JSON 过滤代码，不访问网络、存储或凭据 |
 | `sources/scripts.lock.json` | 当前脚本审核指纹和历史脚本保留清单 |

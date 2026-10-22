@@ -3,10 +3,13 @@
 由 project.json 自动生成；当前地址对应自己的仓库。完整主配置使用方法见 DEVICE_PROFILES.md。
 base / lite 二选一；apps-all / 独立 App 二选一；response-cleaner 可额外启用。
 主配置 URL 在「配置」页导入；模块 URL 在「模块」中导入，都不是节点订阅。手机与 Mac 使用同一 main.conf；手机另加 base 等广告模块，Mac 默认只用主配置。
+含私人地址的完整版可将私人直连和原有全部 PROXY 规则合并在一个本地主配置中；后续更新其引用的公共分流规则集，无需单独的私人模块。规则集链接不能当成完整配置导入。
 
 | 内容 | Raw 地址 |
 |---|---|
-| iPhone/iPad/Mac 共用主配置（手机去广告另加模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf |
+| 脱敏共用主配置模板（私人例外须合并到本地完整版） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf |
+| 公共强制代理规则集（主配置内部引用） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/rules/routing-proxy.list |
+| 国内常用域名直连规则集（主配置内部引用） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/rules/routing-direct.list |
 | 通用域名拦截（优先） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule |
 | 较小域名库（与 base 二选一） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/lite.sgmodule |
 | 全部 App 路径规则（实验） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps-all.sgmodule |

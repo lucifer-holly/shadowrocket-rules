@@ -96,8 +96,8 @@
       ]
     },
     {
-      "name": "Apple, Microsoft and domestic applications",
-      "policy": "DIRECT",
+      "name": "International services use the proxy, including former direct exceptions",
+      "policy": "PROXY",
       "domains": [
         "apple.com",
         "apple.com.cn",
@@ -120,6 +120,14 @@
         "windowsupdate.com",
         "visualstudio.com",
         "vscode.download.prss.microsoft.com",
+        "paypal.com",
+        "paypalobjects.com"
+      ]
+    },
+    {
+      "name": "Common domestic applications and services",
+      "policy": "DIRECT",
+      "domains": [
         "edu.cn",
         "tencentmeeting.cn",
         "flagos.io",
@@ -182,9 +190,7 @@
         "miui.com",
         "myqcloud.com",
         "aliyun.com",
-        "aliyuncs.com",
-        "paypal.com",
-        "paypalobjects.com"
+        "aliyuncs.com"
       ]
     }
   ]
