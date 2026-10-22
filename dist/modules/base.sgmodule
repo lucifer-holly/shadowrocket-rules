@@ -46544,7 +46544,6 @@ DOMAIN-SUFFIX,feature.fm,REJECT
 DOMAIN-SUFFIX,featured.bradyid.com,REJECT
 DOMAIN-SUFFIX,featured.perfectionholic.com,REJECT
 DOMAIN-SUFFIX,featuregangster.com,REJECT
-DOMAIN-SUFFIX,featuregates.org,REJECT
 DOMAIN-SUFFIX,featurelockout.com,REJECT
 DOMAIN-SUFFIX,featuretv.live,REJECT
 DOMAIN-SUFFIX,feb.hdingkun.com,REJECT
@@ -117129,7 +117128,6 @@ DOMAIN-SUFFIX,statshunt.com,REJECT
 DOMAIN-SUFFIX,statsie.com,REJECT
 DOMAIN-SUFFIX,statsig.anthropic.com,REJECT
 DOMAIN-SUFFIX,statsig.prizepicks.com,REJECT
-DOMAIN-SUFFIX,statsigapi.net,REJECT
 DOMAIN-SUFFIX,statsinsight.com,REJECT
 DOMAIN-SUFFIX,statsit.com,REJECT
 DOMAIN-SUFFIX,statsjs.klevu.com,REJECT

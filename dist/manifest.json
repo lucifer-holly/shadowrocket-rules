@@ -2,6 +2,7 @@
   "files": {
     "dist/config/adblock-example.conf": "97c210cb506447239ef51befcb66da533730aaf66e3cce92b99a68adacf78d3c",
     "dist/config/adblock.fragment.conf": "921de47b3095586ad6cad3a295f7b8e5113fc3a20fec59e10785293c63ce6693",
+    "dist/config/main.conf": "b5eefe17b2ecaddbf0afe920b37e4c5d1893c8a86a173b349cc966ff9d1a6ba0",
     "dist/modules/apps-all.sgmodule": "aae5f90de2f2db034d640aebece9afb34f8c195c241ca147489ebddf06fcb599",
     "dist/modules/apps/amap.sgmodule": "cf31779a26917995a6c3a7380555e1f167700084456e2d607cf3cffbba1eb768",
     "dist/modules/apps/appso.sgmodule": "08a8177e6d80cffa5d16630a265bfe2085e9cc3efceac46eb59e779d3482adf1",
@@ -17,11 +18,11 @@
     "dist/modules/apps/xianyu.sgmodule": "99da7cceda57d0cfc709bc6169788f85a912497857f8999657365874fce4808a",
     "dist/modules/apps/xiaohongshu.sgmodule": "bb74f40c8c3ae7d3ce069f7815c8aa977bcc5484eb19aecffc18d17c84e90d44",
     "dist/modules/apps/zhihu.sgmodule": "37c2f1d47be17fbbbc45c84dc453f9e84a978b7473df6610451db73349755a85",
-    "dist/modules/base.sgmodule": "57929845e58fa4e8e79f318de5088ddedcff0e092c9bff36f87a39e46d393d4c",
-    "dist/modules/lite.sgmodule": "6f355479af55ee686ea59063665f19c90b2f52ffaf342e3c3761c591e235600d",
+    "dist/modules/base.sgmodule": "f273d5793ffc776d4cf22b36ce46438f5f323af2e29551e4fc06d28986b5d07e",
+    "dist/modules/lite.sgmodule": "9a9b11dc72e370d5ad27fc53720f6190e46781288c67fc97a209282da9bcbbda",
     "dist/modules/response-cleaner.sgmodule": "e22303b8626f10df69786b9876c9a515821770abd41c699c03eb44cd844ed353",
-    "dist/rules/base.list": "73085340ae3b5005fbb142c9410dc0ea7af7aec26bc0681cb295014cd599aa36",
-    "dist/rules/lite.list": "590563af649bf26e1b8434e4b190a120a3791bb743770720e8da9f523ae474e6",
+    "dist/rules/base.list": "6b8b8335456dccd4f3cb4dfbaca63294d2d655703a24e3b7d42a117e60244546",
+    "dist/rules/lite.list": "180fe91ec7bb7509520aa2b6a70ac8f542de6ec0ac8209ef96a02c72efd78e29",
     "dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc"
   },
   "format_version": 1,

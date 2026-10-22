@@ -9,6 +9,7 @@
 | `vendor/`、`licenses/` | 可离线重建的原始快照和许可；fmz 文件仅保留 4 条静态端点 |
 | `sources/watch.json` | fmz 整包字节指纹，仅提醒人工复核；不导入/执行 |
 | `data/apps.json` | 14 个实验 App 模块的端点、解密主机、正样例和来源 |
+| `data/routing.json`、`tools/profiles.py` | 两端共用主配置的公开服务分流与构建；不导入私人配置 |
 | `data/script-routes.json` | 原创响应过滤器的 3 个限定入口 |
 | `scripts/response-cleaner.js` | 原创 JSON 过滤代码，不访问网络、存储或凭据 |
 | `sources/scripts.lock.json` | 当前脚本审核指纹和历史脚本保留清单 |

@@ -1,7 +1,7 @@
 {
   "app_modules": 14,
-  "base_rules": 143417,
-  "covered_by_parent": 9303,
+  "base_rules": 143415,
+  "covered_by_parent": 9302,
   "device_verified": false,
   "exceptions": [
     {
@@ -67,6 +67,14 @@
     {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,drupalmetrics.ppg.apple.com"
+    },
+    {
+      "reason": "保留既有 AI 应用功能配置例外；不放行整个通用遥测域名树",
+      "rule": "DOMAIN-SUFFIX,events.statsigapi.net"
+    },
+    {
+      "reason": "保留既有 AI 应用功能配置例外；不放行整个通用遥测域名树",
+      "rule": "DOMAIN-SUFFIX,featuregates.org"
     },
     {
       "reason": "iCloud 同步",
@@ -149,6 +157,10 @@
       "rule": "DOMAIN-SUFFIX,securemetrics.apple.com"
     },
     {
+      "reason": "保留既有 AI 应用功能配置例外；不放行整个通用遥测域名树",
+      "rule": "DOMAIN-SUFFIX,statsigapi.net"
+    },
+    {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,stocks-analytics-events.apple.com"
     },
@@ -169,8 +181,8 @@
       "rule": "DOMAIN-SUFFIX,widgets.itunes.apple.com"
     }
   ],
-  "lite_rules": 66401,
-  "protected_removed": 41,
+  "lite_rules": 66400,
+  "protected_removed": 44,
   "response_routes": 3,
   "source_counts": {
     "anti-ad": 103677,

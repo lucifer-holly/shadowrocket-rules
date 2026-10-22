@@ -1,15 +1,23 @@
 # Personal Shadowrocket Adblock
 
-给 iPhone / iPad 使用的个人去广告规则工程。**保留原 `default.conf`、DMIT 节点和「配置」路由模式，优先通过模块叠加。** 不包含节点、账号、证书或私人配置。
+给 iPhone / iPad 使用的个人去广告规则工程，也提供 **手机和 Mac 共用的远程分流主配置**。手机额外启用广告模块，Mac 默认只做分流。保留已有 DMIT 节点和「配置」路由模式；仓库不包含节点、账号、证书或私人服务器地址。
 
 首次交付（2026-10-21）：anti-AD + HaGeZi Light 的本地快照，编译后 143,417 条域名规则；14 个 App 独立模块、15 条路径重写；哔哩哔哩与知乎的 3 条 JSON 响应处理路由。全部为**离线检查与合成样例验证，尚未进行 iOS 真机验证**。域名总数不等于广告拦截率。
 
 ## 先用起来
 
+共用主配置订阅：
+
+```text
+https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf
+```
+
+在「配置」页导入这条 URL，手机和 Mac 使用同一份。它不内置广告库、不启用解密；手机再按下面步骤添加广告模块。私人 SSH 目标需保留为本地模块，不能随公开主配置上传。该主配置是通用分流，不逐条复制旧的私人规则；完整使用与更新说明见 [两端共用配置](docs/DEVICE_PROFILES.md)。希望完全保留现有分流时，继续使用原主配置配合广告模块。
+
 1. 备份当前配置；保持原 DMIT 节点和「配置」模式。暂停重叠的第三方去广告模块。
 2. 在「配置 → 模块」导入 `dist/modules/base.sgmodule`。该文件内嵌域名表，不需要证书，也不依赖任何上游订阅。若出现内存压力或连接频繁断开，换 `lite.sgmodule`，两者二选一。
 3. 需要去 App 开屏时，逐个导入 `dist/modules/apps/` 下的模块。确认功能正常后，可用 `apps-all.sgmodule` 替代独立模块；两种方式二选一。它们使用 HTTPS 路径重写，需要手机本地生成并信任 HTTPS 解密证书。操作见 [安装说明](docs/INSTALL.md)。
-4. 信息流与哔哩哔哩开屏 JSON 处理可额外启用 `response-cleaner.sgmodule`。**先配置自己的仓库地址并上传，再启用脚本模块**；ZIP 中的 `YOUR-USERNAME` 是占位符。脚本仅来自你自己的仓库，文件名固定到内容哈希，不自动下载上游 JS。
+4. 信息流与哔哩哔哩开屏 JSON 处理可额外启用 `response-cleaner.sgmodule`。当前地址已指向自己的仓库；脚本仅来自本仓库，文件名固定到内容哈希，不自动下载上游 JS。
 5. 在手机更新模块，重新连接，完全退出目标 App 后再打开。检查正常登录、下单、支付、视频播放、Safari、SSH 和国内外路由。发现问题先关闭对应 App 模块。
 
 模块导入入口和证书菜单名称可能随 Shadowrocket/iOS 版本变化。支持的语法针对 Shadowrocket 编译，不把 Loon/QX 文件直接套用；真正的解析和业务行为仍需在手机验收。
@@ -28,7 +36,7 @@ make test
 [订阅地址表](docs/SUBSCRIPTIONS.md) 会随上面的命令自动生成。基础模块订阅形式：
 
 ```text
-https://raw.githubusercontent.com/YOUR-USERNAME/shadowrocket-rules/main/dist/modules/base.sgmodule
+https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule
 ```
 
 这是「模块 URL」，不要加进节点订阅。若使用主配置合并方式，可参考 `dist/config/adblock.fragment.conf`；也提供无节点的 `adblock-example.conf`。示例配置不能替代你原有的私人分流和 SSH 设置，优先用模块。

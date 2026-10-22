@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 from common import ROOT, read_json, json_text, sha256, load_inputs, load_policy, optimize, repo_base
+from profiles import profile
 
 
 def module(name, sections, note=''):
@@ -63,6 +64,7 @@ def outputs(root=ROOT):
     out['dist/modules/response-cleaner.sgmodule'] = module('Response Cleaner (Experimental)',
         [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '哔哩哔哩/知乎 JSON；需 HTTPS 解密，未知结构原样返回')
     out['dist/config/adblock.fragment.conf'] = '# 仅供合并进原 [Rule]；不是完整主配置。\n[Rule]\n'+f'RULE-SET,{base}/dist/rules/base.list,REJECT\n'
+    out['dist/config/main.conf'] = profile(root, base)
     out['dist/config/adblock-example.conf'] = '\n'.join([
         '# 示例配置；优先用模块保留原 default.conf。', '# 不含节点；PROXY 使用 Shadowrocket 选择的节点；SSH 规则需自行添加。',
         '[General]', 'bypass-system = true', '', '[Rule]',
@@ -75,6 +77,7 @@ def outputs(root=ROOT):
               'response_routes':len(routes),'device_verified':False,
               'exceptions': [{'rule':','.join(k),'reason':v} for k,v in sorted(removed.items())]}
     subscription_rows = [
+        ('iPhone/iPad/Mac 共用主配置（手机去广告另加模块）','dist/config/main.conf'),
         ('通用域名拦截（优先）','dist/modules/base.sgmodule'),
         ('较小域名库（与 base 二选一）','dist/modules/lite.sgmodule'),
         ('全部 App 路径规则（实验）','dist/modules/apps-all.sgmodule'),
@@ -84,9 +87,9 @@ def outputs(root=ROOT):
     subscription_rows += [(app['name']+'（独立实验模块）', f'dist/modules/apps/{ident}.sgmodule') for ident,app in apps.items()]
     out['docs/SUBSCRIPTIONS.md'] = '\n'.join([
         '# 订阅地址','',
-        '由 project.json 自动生成。YOUR-USERNAME 是占位符；运行 configure.py 并上传后才是真实可用订阅。',
+        '由 project.json 自动生成；当前地址对应自己的仓库。完整主配置使用方法见 DEVICE_PROFILES.md。',
         'base / lite 二选一；apps-all / 独立 App 二选一；response-cleaner 可额外启用。',
-        '保持原主配置和配置路由模式。在 配置 → 模块 → + 导入模块 URL。规则集 URL 用于 [Rule]，不是节点订阅。',
+        '主配置 URL 在「配置」页导入；模块 URL 在「模块」中导入，都不是节点订阅。手机与 Mac 使用同一 main.conf；手机另加 base 等广告模块，Mac 默认只用主配置。',
         '', '| 内容 | Raw 地址 |', '|---|---|',
         *[f'| {name} | {base}/{rel} |' for name,rel in subscription_rows], '',
         '脚本只引用本仓库按内容哈希命名的文件；更新需要先审阅合并，再在手机更新模块/配置。',

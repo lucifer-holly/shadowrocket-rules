@@ -6,6 +6,7 @@ import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain
 from build import run
+from profiles import LAN_ROUTES
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
 
@@ -13,6 +14,35 @@ def check_script(text):
     # Defense in depth for this small known script, not a general JavaScript security proof.
     if FORBIDDEN_JS.search(text):
         raise ValueError('script contains an unapproved execution/network/storage API')
+
+
+def check_public_profile(text, base):
+    allowed_sections = {'General', 'Rule', 'Host'}
+    section = None
+    active = []
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith('#'):
+            continue
+        if line.startswith('[') and line.endswith(']'):
+            section = line[1:-1]
+            if section not in allowed_sections:
+                raise ValueError('public profile contains nodes, scripts or decryption settings')
+            continue
+        active.append(line)
+        if section == 'General' and line.startswith('update-url'):
+            if line != f'update-url = {base}/dist/config/main.conf':
+                raise ValueError('profile update URL must point to this repository')
+        if section == 'Rule':
+            fields = line.split(',')
+            if fields[0] == 'IP-CIDR' and fields[1] not in LAN_ROUTES:
+                raise ValueError('public profile contains a non-LAN address')
+            if fields[0] in {'RULE-SET', 'SCRIPT'} or 'REJECT' in fields:
+                raise ValueError('shared routing profile must not enable advertising or script processing')
+    if 'FINAL,PROXY' not in active or 'DST-PORT,22,DIRECT' not in active:
+        raise ValueError('missing fallback or standard SSH direct rule')
+    if f'update-url = {base}/dist/config/main.conf' not in active:
+        raise ValueError('missing persistent configuration update URL')
 
 def scan_public(root=ROOT):
     patterns=[re.compile(r'-----BEGIN (?:[A-Z ]*PRIVATE KEY|PKCS12)-----'),
@@ -34,6 +64,7 @@ def validate(root=ROOT):
     if os.environ.get('GITHUB_ACTIONS') == 'true' and cfg['repository'] != os.environ.get('GITHUB_REPOSITORY'):
         raise ValueError('project.json repository differs from this GitHub repository; run tools/configure.py --repo owner/repo')
     run(root,check=True)
+    check_public_profile((root/'dist/config/main.conf').read_text(),base)
     policy=load_policy(root)
     sources=read_json(root/'sources/upstreams.json')['sources']
     for s in sources:

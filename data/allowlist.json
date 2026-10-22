@@ -174,6 +174,16 @@
       "domain": "sso.ifanr.com",
       "scope": "host",
       "reason": "混合 API 使用路径级规则；保留非广告请求"
+    },
+    {
+      "domain": "featuregates.org",
+      "scope": "host",
+      "reason": "保留既有 AI 应用功能配置例外；不放行整个通用遥测域名树"
+    },
+    {
+      "domain": "events.statsigapi.net",
+      "scope": "host",
+      "reason": "保留既有 AI 应用功能配置例外；不放行整个通用遥测域名树"
     }
   ]
 }

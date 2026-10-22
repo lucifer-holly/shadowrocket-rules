@@ -1,11 +1,12 @@
 # 订阅地址
 
-由 project.json 自动生成。YOUR-USERNAME 是占位符；运行 configure.py 并上传后才是真实可用订阅。
+由 project.json 自动生成；当前地址对应自己的仓库。完整主配置使用方法见 DEVICE_PROFILES.md。
 base / lite 二选一；apps-all / 独立 App 二选一；response-cleaner 可额外启用。
-保持原主配置和配置路由模式。在 配置 → 模块 → + 导入模块 URL。规则集 URL 用于 [Rule]，不是节点订阅。
+主配置 URL 在「配置」页导入；模块 URL 在「模块」中导入，都不是节点订阅。手机与 Mac 使用同一 main.conf；手机另加 base 等广告模块，Mac 默认只用主配置。
 
 | 内容 | Raw 地址 |
 |---|---|
+| iPhone/iPad/Mac 共用主配置（手机去广告另加模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf |
 | 通用域名拦截（优先） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule |
 | 较小域名库（与 base 二选一） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/lite.sgmodule |
 | 全部 App 路径规则（实验） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps-all.sgmodule |
