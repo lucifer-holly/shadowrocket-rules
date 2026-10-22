@@ -1,5 +1,5 @@
-#!name=Personal App Ads (Experimental)
-#!desc=自维护去广告；开屏与应用内广告：自维护规则 + fmz200 静态规则；需 HTTPS 解密；与 apps-all、单 App 模块三选一
+#!name=去广告② App 开屏与应用内广告（需证书）
+#!desc=开屏、弹窗与应用内广告：fmz200 静态规则 + 自维护规则；需 HTTPS 解密与本机证书模块；与其他「去广告②」模块只开一个
 #!category=去广告
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md

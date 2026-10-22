@@ -104,12 +104,14 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
                 # Do not write remote body/tracebacks/URLs into logs.
                 errors.append(f'{sid}: {type(exc).__name__}: {str(exc)[:180]}')
                 rows.append(f'| {sid} | 获取/检查失败，保留旧版 | — | — |')
-    # Whole plugin is observed as inert bytes only, never parsed or evaluated as code.
+    # Watched files (e.g. pinned third-party scripts) are compared as inert bytes, never parsed or run.
+    reviews=[]
     for watch in read_json(root/'sources/watch.json')['sources']:
         try:
             data=fetcher(watch['url'])
-            status='一致' if sha256(data)==watch['sha256'] else '发生变化：App 静态端点需人工复核（不导入脚本）'
-            rows.append(f"| {watch['id']} | {status} | — | — |")
+            changed=sha256(data)!=watch['sha256']
+            if changed:reviews.append(watch['id'])
+            rows.append(f"| {watch['id']} | {'有新版本：需审核后才更新，不会自动导入' if changed else '一致'} | — | — |")
         except Exception as exc:
             rows.append(f"| {watch['id']} | 参考源无法获取：{type(exc).__name__}（不影响已有快照） | — | — |")
     report='\n'.join(['# 上游自动更新报告','',f"检查时间：{now.isoformat(timespec='seconds')}",'',
@@ -120,7 +122,7 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
     # Reports always go to ignored cache; a failed source never replaces its snapshot.
     cache=root/'.cache';cache.mkdir(exist_ok=True)
     (cache/'update.md').write_text(report,encoding='utf-8')
-    (cache/'update.json').write_text(json_text({'errors':errors,'changes':changes}),encoding='utf-8')
+    (cache/'update.json').write_text(json_text({'errors':errors,'changes':changes,'reviews':reviews}),encoding='utf-8')
     if proposals and not check:
         proposals['sources/upstreams.lock.json']=json_text(lock).encode()
         # Network/format/license checks finish before filesystem mutation.

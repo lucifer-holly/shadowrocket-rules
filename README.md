@@ -6,16 +6,18 @@
 
 ## 先用起来
 
-| 用途 | 设备 | 链接 |
+| 模块列表里显示的名字 | 设备 | 链接 |
 |---|---|---|
-| 主配置（「配置」页导入） | 手机 + Mac | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf` |
-| 通用广告域名拦截（「模块」页） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule` |
-| 开屏与应用内广告（需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
-| 哔哩哔哩/知乎信息流（可选，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
+| 主配置（「配置」页导入，不是模块） | 手机 + Mac | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf` |
+| 去广告① 广告域名拦截（免证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule` |
+| 去广告② App 开屏与应用内广告（需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
+| 去广告③ 信息流净化·B站/知乎（需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
+| 去广告④ YouTube（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/youtube.sgmodule` |
+| 本机证书（你自己建的本地模块，不在仓库里） | 手机 | — |
 
 1. 备份旧配置。两台设备都在「配置」页从 URL 添加主配置并使用，首页选 DMIT 节点，路由选「配置」，打开配置与模块的自动后台更新。
 2. 手机在「模块」页添加 `base`（资源不足换 `lite`，二选一），先验证网页、AI、微信、登录、支付和 SSH。
-3. 手机生成并信任 HTTPS 解密证书，**再建一个只存在手机上的本地证书模块**，否则远程主配置更新后证书会失效。然后添加 `app-ads`，需要时加 `response-cleaner`。
+3. 手机生成并信任 HTTPS 解密证书，**再建一个只存在手机上的本地证书模块**，否则远程主配置更新后证书会失效。然后添加 `app-ads`，需要时加 `response-cleaner`、`youtube`（实验）。
 4. 完全退出目标 App 后重新打开，检查开屏、登录、下单、支付和视频播放。异常时先关 `app-ads`，再关 `base`。
 
 逐步操作、证书模块模板、分流顺序见 [两端共用配置](docs/DEVICE_PROFILES.md)；证书与模块细节见 [安装说明](docs/INSTALL.md)。菜单名称可能随 Shadowrocket/iOS 版本变化，真实解析和业务行为需要在设备上验收。

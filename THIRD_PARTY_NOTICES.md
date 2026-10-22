@@ -29,6 +29,14 @@
 - This project does not redistribute as runtime code or execute the upstream plugin's scripts, jq filters, body rewrites, redirects, arguments, account handling or entitlement changes.
 - Bilibili JSON field/route observations were checked against the same public plugin. The response-cleaner implementation is original, small and narrower in scope; it does not copy the plugin's broader content filtering or account features.
 
+## Maasea/sgmodule — YouTube response script (pinned copy)
+
+- Author: Maasea and contributors.
+- Source: https://github.com/Maasea/sgmodule (`Script/Youtube/youtube.response.js`).
+- License: Apache License 2.0, retained as `licenses/maasea-sgmodule-Apache-2.0.txt`. No NOTICE file is published upstream.
+- Redistributed unmodified as `vendor/maasea-youtube.response.js` and published as `dist/scripts/youtube.response.<SHA-256>.js` for `dist/modules/youtube.sgmodule`. The module wiring (route, size limit, QUIC rule, single MITM host) is this project's own.
+- The copy is pinned by hash and by an API-usage fingerprint; new upstream versions are reported for review and never imported automatically.
+
 ## User-provided starting material
 
 The attached splash-core module and initial repository supplied the ten initial app endpoint candidates. This project rewrote them into structured endpoint records with bounded matching, removed uncertain whole-host blocks and discarded the old dynamic-vendoring helper. Unverified endpoint candidates remain explicitly experimental.

@@ -4,15 +4,19 @@
 
 ## 链接
 
-| 用途 | 设备 | 链接（在 Shadowrocket 中粘贴） |
+| 模块列表里显示的名字 | 设备 | 链接 |
 |---|---|---|
-| 主配置（「配置」页导入） | 手机 + Mac | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf` |
-| 通用广告域名拦截（「模块」页） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule` |
-| 开屏与应用内广告（「模块」页，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
-| 哔哩哔哩/知乎信息流（可选，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
+| 主配置（「配置」页导入，不是模块） | 手机 + Mac | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf` |
+| 去广告① 广告域名拦截（免证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule` |
+| 去广告② App 开屏与应用内广告（需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
+| 去广告③ 信息流净化·B站/知乎（需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
+| 去广告④ YouTube（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/youtube.sgmodule` |
+| 本机证书（你自己建的本地模块，不在仓库里） | 手机 | — |
 
 - `base` 内存吃紧或 VPN 频繁断开时换 `lite.sgmodule`，两者二选一。
-- `app-ads` 已包含 `apps-all` 的全部自维护规则；`app-ads`、`apps-all`、单 App 模块三选一。
+- 名字里的编号就是作用：① 拦广告域名，② App 开屏/应用内广告，③ 信息流净化，④ YouTube。名字里带「需证书」的模块要配合本机证书模块。
+- `app-ads` 已包含 `apps-all` 的全部自维护规则；名字以「去广告②」开头的模块只开一个。
+- YouTube 模块是实验性的：脚本来自第三方（已审核并固定版本），在 Surge 上测试，Shadowrocket 不保证兼容。YouTube 出现播放或加载异常时先关它。
 - 主配置里没有广告规则、证书和脚本，Mac 直接用不会误解密。
 
 ## 首次设置
@@ -37,7 +41,7 @@
    ```
 
    再在 `[MITM]` 下面加两行：`ca-passphrase` 加等号再写 HTTPS 解密页面「密码」一栏显示的值（每台设备生成的证书密码不同）；`ca-p12` 加等号再粘贴刚复制的证书内容。必须先完成第 6 步的安装和信任，再启用这个模块，否则可能提示 `No PKCS12 Certificates`。这个模块含私钥，只留在手机里。
-8. 模块 → `+` → 粘贴 `app-ads` 链接；需要时再加 `response-cleaner`。完全退出目标 App 后重新打开，检查开屏、登录、下单和支付。
+8. 模块 → `+` → 粘贴 `app-ads` 链接；需要时再加 `response-cleaner`、`youtube`。完全退出目标 App 后重新打开，检查开屏、登录、下单和支付。
 
 某个 App 异常时，先关 `app-ads` 确认；仍异常再关 `base`。
 

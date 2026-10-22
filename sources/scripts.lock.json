@@ -13,5 +13,31 @@
       "sha256": "6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9",
       "review": "Original implementation reviewed: exact JSON endpoints for Bilibili, Zhihu and Weibo feeds; Weibo removes only posts labelled 广告/热推, promotion.type \"ad\", recommend_video_card groups and the ad/advertises arrays; pass-through on unknown shapes/errors (code / error_code / errno); no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified. Withdrawn 2026-10-22: after Weibo API decryption was added, Weibo profile and post pages stopped opening on the device; kept for modules cached in between."
     }
+  ],
+  "third_party": [
+    {
+      "id": "maasea-youtube-response",
+      "path": "vendor/maasea-youtube.response.js",
+      "sha256": "f98483d5f5017514f82502253c0db5ce2d4ffb7839887aa2cadc22666f5a7f12",
+      "bytes": 132973,
+      "upstream": "https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/youtube.response.js",
+      "license": "Apache-2.0",
+      "license_file": "licenses/maasea-sgmodule-Apache-2.0.txt",
+      "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "api_counts": {
+        "$httpClient": 1,
+        "fetch(": 3,
+        "$persistentStore": 2,
+        "$prefs": 2,
+        "$notification": 1,
+        "$notify(": 1,
+        "$task": 2,
+        "eval(": 0,
+        "Function(": 0,
+        "require(": 0,
+        "import(": 0
+      },
+      "review": "Reviewed 2026-10-22 (minified bundle). Decodes YouTube protobuf responses on youtubei.googleapis.com and removes ad entries and the Premium upsell tab. The multi-client adapter defines $httpClient/$task.fetch but no code calls it, so the script makes no network requests. $persistentStore holds only its ad-detection cache and settings; the only notification is a local \"script needs update\" message. Request headers are read only to tell YouTube Music apart. Any byte change requires a new review."
+    }
   ]
 }

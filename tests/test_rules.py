@@ -163,6 +163,11 @@ class UpdaterTests(unittest.TestCase):
         for u in ['http://raw.githubusercontent.com/a/b/main/r','https://evil.test/r','https://raw.githubusercontent.com/a/b/main/r?token=x']:
             with self.assertRaises(ValueError):upstream.fetch(u)
         with self.assertRaises(ValueError):upstream.NoRedirect().redirect_request(None,None,302,'',{},'https://evil.test')
+    def test_new_watched_script_version_is_reported_not_applied(self):
+        self.write('sources/watch.json',{'sources':[{'id':'pinned-script','url':'https://raw.githubusercontent.com/a/b/main/s.js','sha256':'0'*64}]})
+        self.assertFalse(self.update(self.fetcher()))
+        self.assertEqual(read_json(self.root/'.cache/update.json')['reviews'],['pinned-script'])
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.body)
     def test_hagezi_timestamp(self):
         self.assertEqual(upstream.source_date(b'# Last modified: 20 Oct 2026 14:52 UTC\n').day,20)
     def test_loon_plugin_timestamp_is_beijing_time(self):

@@ -26,4 +26,4 @@ jobs:
       - name: Test parsing, updates, routing and JSON behavior
         run: |
           python3 -m unittest discover -s tests -v
-          node --test tests/response-cleaner.test.cjs
+          node --test tests/*.test.cjs

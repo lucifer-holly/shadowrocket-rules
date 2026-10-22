@@ -1,4 +1,12 @@
 {
-  "sources": [],
-  "note": "fmz200 blockAds is now an automatically tracked data source (sources/upstreams.json); no watch-only entries remain."
+  "sources": [
+    {
+      "id": "maasea-youtube-response",
+      "url": "https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/youtube.response.js",
+      "sha256": "f98483d5f5017514f82502253c0db5ce2d4ffb7839887aa2cadc22666f5a7f12",
+      "mode": "review-required",
+      "note": "Third-party script: a new upstream version is reported for review and never published automatically."
+    }
+  ],
+  "note": "Watch-only sources: changes are reported for review and never imported automatically."
 }

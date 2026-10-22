@@ -124,6 +124,11 @@ class SharedProfileTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 check_public_profile(changed, self.base)
 
+    def test_ipv6_stays_off_for_ipv4_only_networks(self):
+        # Advertising IPv6 on an IPv4-only Wi-Fi breaks direct connections such as Xiaohongshu's.
+        self.assertIn('\nipv6 = false\n', self.text)
+        self.assertNotIn('ipv6 = true', self.text)
+
     def test_phone_ad_module_preserves_known_ai_feature_hosts(self):
         rules = optimize(load_inputs()[0], load_policy())[0]
         for host in ['chatgpt.com', 'api.openai.com', 'claude.ai', 'featuregates.org', 'events.statsigapi.net']:

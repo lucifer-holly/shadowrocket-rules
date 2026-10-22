@@ -1,5 +1,5 @@
-#!name=Personal 知乎 (Experimental)
-#!desc=自维护去广告；需 HTTPS 解密；逐个启用验证
+#!name=去广告② 单 App·知乎（需证书）
+#!desc=只含这个 App 的规则，用于排查；需 HTTPS 解密；与其他「去广告②」模块只开一个
 #!category=去广告
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md

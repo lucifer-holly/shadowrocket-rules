@@ -8,7 +8,8 @@ from plugin_import import parse_plugin, select
 
 
 def module(name, sections, note=''):
-    lines = [f'#!name=Personal {name}', '#!desc=自维护去广告；'+note,
+    # The name is what the Shadowrocket module list shows, so it states the function and the slot it fills.
+    lines = [f'#!name={name}', '#!desc='+note,
              '#!category=去广告', '#!system=ios',
              '# SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md']
     for section, content in sections:
@@ -62,6 +63,32 @@ def imported_app_ads(root, policy):
             'rewrites': list(merged['rewrites'].items()), 'mitm': sorted(merged['mitm']), 'report': merged['report']}
 
 
+API_TOKENS = ('$httpClient', 'fetch(', '$persistentStore', '$prefs', '$notification', '$notify(', '$task',
+              'eval(', 'Function(', 'require(', 'import(')
+YOUTUBE_ROUTE = ('^https://youtubei\\.googleapis\\.com/youtubei/v1/(?:browse|next|player|search|reel/reel_watch_sequence'
+                 '|guide|account/get_setting|get_watch|log_event|config)(?:\\?|$)')
+
+
+def youtube_outputs(root, base):
+    """Pinned third-party YouTube script: any byte or API-usage change stops the build until reviewed again."""
+    item = next(x for x in read_json(root/'sources/scripts.lock.json')['third_party'] if x['id'] == 'maasea-youtube-response')
+    body = (root/item['path']).read_bytes()
+    if sha256(body) != item['sha256'] or sha256((root/item['license_file']).read_bytes()) != item['license_sha256']:
+        raise ValueError('third-party script or licence changed without review')
+    text = body.decode('utf-8')
+    if {t: text.count(t) for t in API_TOKENS} != item['api_counts'] or not item['review']:
+        raise ValueError('third-party script API usage differs from the reviewed fingerprint')
+    rel = f"dist/scripts/youtube.response.{item['sha256']}.js"
+    # Responses above 2 MiB pass unchanged so protobuf decoding cannot exhaust the 50 MB network-extension memory.
+    script = (f'youtube-response = type=http-response,pattern={YOUTUBE_ROUTE},requires-body=true,binary-body-mode=true,'
+              f'max-size=2097152,timeout=20,script-path={base}/{rel}')
+    module_text = module('去广告④ YouTube（实验，需证书）', [
+        ('Rule', ['AND,((DOMAIN,youtubei.googleapis.com),(PROTOCOL,UDP)),REJECT-NO-DROP']),
+        ('Script', [script]), ('MITM', ['hostname = %APPEND% youtubei.googleapis.com'])],
+        '去除 YouTube App 视频贴片和首页、搜索里的广告；脚本来自 Maasea/sgmodule（Apache-2.0），已审核并固定版本；YouTube 异常时先关闭本模块')
+    return {rel: text, 'dist/modules/youtube.sgmodule': module_text}
+
+
 def outputs(root=ROOT):
     base = repo_base(root)
     policy = load_policy(root)
@@ -76,15 +103,18 @@ def outputs(root=ROOT):
     for label, entries in [('base', merged), ('lite', light)]:
         rows = [','.join(r) for r in entries]
         out[f'dist/rules/{label}.list'] = '\n'.join(header + rows) + '\n'
-        out[f'dist/modules/{label}.sgmodule'] = module(label.title(), [('Rule', [r+',REJECT' for r in rows])],
-            '域名拦截，无需证书；base 与 lite 二选一')
+        title = '去广告① 广告域名拦截（免证书）' if label == 'base' else '去广告① 广告域名拦截·精简版（免证书）'
+        out[f'dist/modules/{label}.sgmodule'] = module(title, [('Rule', [r+',REJECT' for r in rows])],
+            '拦截通用广告与跟踪域名，不需要证书；标准版与精简版二选一，内存吃紧时用精简版')
     apps = read_json(root/'data/apps.json')
     imported = imported_app_ads(root, policy)
-    out['dist/modules/app-ads.sgmodule'] = module('App Ads (Experimental)', app_sections(apps, imported),
-        '开屏与应用内广告：自维护规则 + fmz200 静态规则；需 HTTPS 解密；与 apps-all、单 App 模块三选一')
-    out['dist/modules/apps-all.sgmodule'] = module('Apps (Experimental)', app_sections(apps), '需 HTTPS 解密；与单 App 模块二选一')
+    out['dist/modules/app-ads.sgmodule'] = module('去广告② App 开屏与应用内广告（需证书）', app_sections(apps, imported),
+        '开屏、弹窗与应用内广告：fmz200 静态规则 + 自维护规则；需 HTTPS 解密与本机证书模块；与其他「去广告②」模块只开一个')
+    out['dist/modules/apps-all.sgmodule'] = module('去广告② 备选·仅自维护 App 规则（需证书）', app_sections(apps),
+        '只含自维护的 App 路径规则，用于排查；需 HTTPS 解密；与其他「去广告②」模块只开一个')
     for ident, spec in apps.items():
-        out[f'dist/modules/apps/{ident}.sgmodule'] = module(spec['name']+' (Experimental)', app_sections({ident:spec}), '需 HTTPS 解密；逐个启用验证')
+        out[f'dist/modules/apps/{ident}.sgmodule'] = module(f"去广告② 单 App·{spec['name']}（需证书）", app_sections({ident:spec}),
+            '只含这个 App 的规则，用于排查；需 HTTPS 解密；与其他「去广告②」模块只开一个')
     scripts = read_json(root/'sources/scripts.lock.json')['scripts']
     if len(scripts) != 1 or scripts[0]['path'] != 'scripts/response-cleaner.js':
         raise ValueError('script inventory requires manual compiler review')
@@ -97,8 +127,9 @@ def outputs(root=ROOT):
     routes = read_json(root/'data/script-routes.json')
     script_lines = [f"personal-{r['id']} = type=http-response,pattern={r['pattern']},requires-body=true,max-size=1048576,timeout=5,script-path={base}/{script_rel}" for r in routes]
     hosts = sorted({h for r in routes for h in r['hosts']})
-    out['dist/modules/response-cleaner.sgmodule'] = module('Response Cleaner (Experimental)',
-        [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '哔哩哔哩/知乎 JSON；需 HTTPS 解密，未知结构原样返回')
+    out['dist/modules/response-cleaner.sgmodule'] = module('去广告③ 信息流净化·B站/知乎（需证书）',
+        [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '删除哔哩哔哩、知乎推荐流里明确标注的广告卡片；需 HTTPS 解密与本机证书模块；未知内容原样返回')
+    out.update(youtube_outputs(root, base))
     out['dist/config/adblock.fragment.conf'] = '# 仅供合并进原 [Rule]；不是完整主配置。\n[Rule]\n'+f'RULE-SET,{base}/dist/rules/base.list,REJECT\n'
     out['dist/config/main.conf'] = profile(root, base)
     out['dist/config/adblock-example.conf'] = '\n'.join([
@@ -120,6 +151,7 @@ def outputs(root=ROOT):
         ('开屏与应用内广告（手机，需证书，推荐）','dist/modules/app-ads.sgmodule'),
         ('仅自维护 App 路径规则（与 app-ads 二选一）','dist/modules/apps-all.sgmodule'),
         ('哔哩哔哩/知乎响应处理（实验）','dist/modules/response-cleaner.sgmodule'),
+        ('YouTube 去广告（实验，第三方脚本已审核并固定版本）','dist/modules/youtube.sgmodule'),
         ('主配置示例（优先保留原配置）','dist/config/adblock-example.conf'),
         ('主配置合并片段','dist/config/adblock.fragment.conf')]
     subscription_rows += [(app['name']+'（独立实验模块）', f'dist/modules/apps/{ident}.sgmodule') for ident,app in apps.items()]

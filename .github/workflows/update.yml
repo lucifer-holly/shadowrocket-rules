@@ -42,7 +42,7 @@ jobs:
             python3 tools/build.py
             python3 tools/validate.py
             python3 -m unittest discover -s tests
-            node --test tests/response-cleaner.test.cjs
+            node --test tests/*.test.cjs
             if git diff --quiet -- vendor sources/upstreams.lock.json dist reports; then
               echo 'No rule changes.' >> "$GITHUB_STEP_SUMMARY"
               exit 0
@@ -91,6 +91,18 @@ jobs:
           if [ -n "$number" ]; then
             gh issue close "$number" --comment "已恢复：${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} 全部来源通过检查。"
           fi
+      - name: Ask for review when a pinned third-party script has a new version
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          [ -f .cache/update.json ] || exit 0
+          reviews=$(python3 -c "import json; print(' '.join(json.load(open('.cache/update.json')).get('reviews', [])))")
+          [ -n "$reviews" ] || exit 0
+          title='第三方脚本有新版本，需要审核'
+          body="上游有新版本：${reviews}。脚本会接触解密后的请求，所以不会自动更新；当前固定版本继续使用。审核后更新 sources/scripts.lock.json 与 vendor/ 中的副本。运行记录：${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          number=$(gh issue list --state open --json number,title --jq "map(select(.title == \"${title}\")) | .[0].number // empty")
+          if [ -z "$number" ]; then gh issue create --title "$title" --body "$body"; fi
       - name: Mark the run as needing attention when a source was blocked
         if: steps.publish.outputs.upstream_rc == '3'
         run: |

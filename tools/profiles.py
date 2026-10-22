@@ -12,7 +12,8 @@ GENERAL = [
     'skip-proxy = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, localhost, *.local, captive.apple.com',
     'tun-excluded-routes = 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.0.0.0/24, 192.0.2.0/24, 192.88.99.0/24, 192.168.0.0/16, 198.51.100.0/24, 203.0.113.0/24, 224.0.0.0/4, 255.255.255.255/32, 239.255.255.250/32',
     'dns-server = system', 'fallback-dns-server = system',
-    'ipv6 = true', 'prefer-ipv6 = false', 'dns-direct-system = false',
+    # IPv6 off: on IPv4-only Wi-Fi, a tunnel that advertises IPv6 makes direct connections fail.
+    'ipv6 = false', 'prefer-ipv6 = false', 'dns-direct-system = false',
     'icmp-auto-reply = true', 'always-reject-url-rewrite = false',
     'private-ip-answer = true', 'dns-direct-fallback-proxy = false',
     'udp-policy-not-supported-behaviour = REJECT',
@@ -75,7 +76,7 @@ def sections(root):
 
 def profile(root, base):
     rows = [
-        '#!name=Personal Shared Routing',
+        '#!name=分流主配置（手机 + Mac 共用）',
         '#!desc=iPhone/iPad/Mac 共用分流；国内直连、国外代理；手机去广告另加模块',
         '# SPDX-License-Identifier: GPL-3.0-only',
         '# 公开配置：不含节点、账号、证书或私人服务器地址。首页继续选择自己的节点，路由选「配置」。',

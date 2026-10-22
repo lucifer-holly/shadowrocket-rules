@@ -65,10 +65,12 @@ def check_rewrite(line, probes):
         raise ValueError('rewrite matches a critical login/payment/content URL: '+pattern[:120])
 
 
-def check_mitm_host(host, never_mitm):
+def check_mitm_host(host, never_mitm, exceptions=()):
     if re.fullmatch(r'[\d.*]+', host) or host.count('*') > 1:
         raise ValueError('MITM host requires separate review: '+host)
     domain(host.replace('*', 'x1'))
+    if host in exceptions:  # exact, separately reviewed hosts such as the YouTube API
+        return
     sample = host.replace('*', 'x1')
     if any(within(sample, s) or within(s, host.lstrip('*.')) for s in never_mitm):
         raise ValueError('MITM would decrypt a protected login/payment/AI host: '+host)
@@ -162,12 +164,12 @@ def validate(root=ROOT):
                 continue
             if (section,line) in seen:raise ValueError('duplicate module line')
             seen.add((section,line))
-            if section=='Rule' and not re.fullmatch(r'DOMAIN(?:-SUFFIX)?,[^,]+,REJECT|IP-CIDR6?,[^,]+,REJECT,no-resolve',line):
+            if section=='Rule' and not re.fullmatch(r'DOMAIN(?:-SUFFIX)?,[^,]+,REJECT|IP-CIDR6?,[^,]+,REJECT,no-resolve|AND,\(\(DOMAIN,[^,()]+\),\(PROTOCOL,UDP\)\),REJECT-NO-DROP',line):
                 raise ValueError('unexpected routing in ad module')
             if section=='URL Rewrite':check_rewrite(line,policy['critical_url_probes'])
             if section=='MITM':
                 if not line.startswith('hostname = %APPEND% '):raise ValueError('MITM overwrites main config')
-                for host in line[len('hostname = %APPEND% '):].split(', '):check_mitm_host(host,policy['never_mitm_suffixes'])
+                for host in line[len('hostname = %APPEND% '):].split(', '):check_mitm_host(host,policy['never_mitm_suffixes'],policy.get('mitm_exceptions',[]))
             if section=='Script':
                 m=re.search(r'script-path=([^,\s]+)',line)
                 if not m or not m[1].startswith(base+'/dist/scripts/'):raise ValueError('script is not self hosted')

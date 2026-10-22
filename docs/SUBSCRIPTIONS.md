@@ -12,6 +12,7 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | 开屏与应用内广告（手机，需证书，推荐） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule |
 | 仅自维护 App 路径规则（与 app-ads 二选一） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps-all.sgmodule |
 | 哔哩哔哩/知乎响应处理（实验） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule |
+| YouTube 去广告（实验，第三方脚本已审核并固定版本） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/youtube.sgmodule |
 | 主配置示例（优先保留原配置） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/adblock-example.conf |
 | 主配置合并片段 | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/adblock.fragment.conf |
 | 淘宝（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/taobao.sgmodule |

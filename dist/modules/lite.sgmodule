@@ -1,5 +1,5 @@
-#!name=Personal Lite
-#!desc=自维护去广告；域名拦截，无需证书；base 与 lite 二选一
+#!name=去广告① 广告域名拦截·精简版（免证书）
+#!desc=拦截通用广告与跟踪域名，不需要证书；标准版与精简版二选一，内存吃紧时用精简版
 #!category=去广告
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md

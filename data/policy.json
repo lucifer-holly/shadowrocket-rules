@@ -111,5 +111,8 @@
     "https://appleid.apple.com/",
     "https://www.paypal.com/signin",
     "https://github.com/login"
+  ],
+  "mitm_exceptions": [
+    "youtubei.googleapis.com"
   ]
 }

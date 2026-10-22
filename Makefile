@@ -5,7 +5,7 @@ check:
 	python3 tools/validate.py
 test: check
 	python3 -m unittest discover -s tests -v
-	node --test tests/response-cleaner.test.cjs
+	node --test tests/*.test.cjs
 update:
 	python3 tools/upstream.py
 	python3 tools/build.py

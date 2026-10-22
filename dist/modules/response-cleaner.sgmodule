@@ -1,5 +1,5 @@
-#!name=Personal Response Cleaner (Experimental)
-#!desc=自维护去广告；哔哩哔哩/知乎 JSON；需 HTTPS 解密，未知结构原样返回
+#!name=去广告③ 信息流净化·B站/知乎（需证书）
+#!desc=删除哔哩哔哩、知乎推荐流里明确标注的广告卡片；需 HTTPS 解密与本机证书模块；未知内容原样返回
 #!category=去广告
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md

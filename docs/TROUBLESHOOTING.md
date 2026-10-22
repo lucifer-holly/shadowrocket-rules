@@ -40,6 +40,9 @@ python3 tools/explain.py 'https://api.m.jd.com/client.action?functionId=xview2Co
 - **Protobuf / gRPC / 加密响应**：当前原创脚本只处理 JSON，不把二进制响应强行按字符串修改。
 - **服务端插入视频广告（SSAI，Server-Side Ad Insertion，服务端广告插入）**：与视频共用媒体流时，网络规则难以稳定区分；可能需要播放器端支持。YouTube/抖音等不承诺全面去除。
 - **本地素材、创作者植入、App 自营推荐**：没有独立可拦截网络请求，或与正常内容难以区分。
+- **X（Twitter）推广帖与「为你推荐」**：推广帖和推荐内容与正常推文走同一个接口，域名规则只能拦它的广告和追踪域名（已包含在 app-ads 里）。目前没有找到能在 Shadowrocket 上可靠去除推广帖的公开方案。实用办法：首页切到「正在关注」，对不想看的内容点「不感兴趣」或静音。
+- **Telegram 频道赞助消息**：通过 Telegram 自己的加密协议（MTProto）下发，网络规则看不到也拦不了；拦它会连带断掉 Telegram。只有 Telegram Premium 能关掉。
+- **YouTube**：`youtube` 模块解密 YouTube 接口并删除广告条目，属于实验功能；YouTube 更改数据格式后可能失效，届时可能弹出「脚本需要更新」的本地通知。
 - **Safari 页面残留占位与同源广告**：网络过滤不能隐藏网页元素。页面元素隐藏应使用 Safari 内容拦截扩展（Content Blocker）；此项目不提供“把 EasyList 的 CSS 规则当 Shadowrocket 域名规则”的转换。
 
 平台升级也会改变接口、证书和数据结构。这里给出可维护的规则工程与退路，不把离线通过包装成所有 App 广告已消失。

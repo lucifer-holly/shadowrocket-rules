@@ -77,6 +77,10 @@ make test
 
 改完运行 `make build && make test`，提交到 main。
 
+## 第三方脚本（YouTube）
+
+`vendor/maasea-youtube.response.js` 是固定版本的第三方脚本，`sources/scripts.lock.json` 的 `third_party` 记录了它的哈希、许可、审核结论和敏感 API 的出现次数。脚本内容、许可或 API 次数任何一项变化，构建都会停下。上游出新版本时，自动更新只会开出「第三方脚本有新版本，需要审核」的 Issue，不会替换现有副本，因为脚本能接触解密后的 YouTube 请求。审核新版本时：读 diff，确认仍不调用网络/通知接口，更新 vendor 副本、哈希、次数和审核说明，运行 `make test`。
+
 ## 添加 App 与响应脚本
 
 先从自己设备获取最小必要的、脱敏的域名和接口信息，确认是不是广告专用。混合业务 API 不整域拒绝。每条路径至少增加正样例，以及同主机登录、支付、订单不匹配的负样例；保持 App 模块独立，以便一键关闭。
