@@ -1,5 +1,6 @@
 [
   {"id":"bili-feed","pattern":"^https://app\\.bilibili\\.com/x/v2/feed/index(?:/story)?(?:\\?|$)","hosts":["app.bilibili.com"],"positive":"https://app.bilibili.com/x/v2/feed/index?idx=1"},
   {"id":"bili-splash","pattern":"^https://app\\.bilibili\\.com/x/v2/splash/(?:list|show|event/list2)(?:\\?|$)","hosts":["app.bilibili.com"],"positive":"https://app.bilibili.com/x/v2/splash/list?build=1"},
-  {"id":"zhihu-feed","pattern":"^https://api\\.zhihu\\.com/topstory/recommend(?:\\?|$)","hosts":["api.zhihu.com"],"positive":"https://api.zhihu.com/topstory/recommend?limit=10"}
+  {"id":"zhihu-feed","pattern":"^https://api\\.zhihu\\.com/topstory/recommend(?:\\?|$)","hosts":["api.zhihu.com"],"positive":"https://api.zhihu.com/topstory/recommend?limit=10"},
+  {"id":"weibo-feed","pattern":"^https://api\\.weibo\\.cn/2/(?:statuses/(?:friends/timeline|unread_friends_timeline|unread_hot_timeline|container_timeline(?:_unread)?)|groups/timeline)(?:\\?|$)","hosts":["api.weibo.cn"],"positive":"https://api.weibo.cn/2/statuses/unread_friends_timeline?gsid=example"}
 ]

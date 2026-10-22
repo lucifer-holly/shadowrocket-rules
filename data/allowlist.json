@@ -184,6 +184,21 @@
       "domain": "events.statsigapi.net",
       "scope": "host",
       "reason": "保留既有 AI 应用功能配置例外；不放行整个通用遥测域名树"
+    },
+    {
+      "domain": "apppush-sh5.xiaohongshu.com",
+      "scope": "host",
+      "reason": "小红书消息/推送长连接；拦截后消息页显示未连接（anti-AD issue #865、#721）"
+    },
+    {
+      "domain": "apppush-rts.xiaohongshu.com",
+      "scope": "host",
+      "reason": "小红书消息/推送长连接；拦截后消息页显示未连接（anti-AD issue #865、#721）"
+    },
+    {
+      "domain": "apppush.xiaohongshu.com",
+      "scope": "host",
+      "reason": "小红书消息/推送长连接；拦截后消息页显示未连接（anti-AD issue #865、#721）"
     }
   ]
 }

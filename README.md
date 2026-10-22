@@ -2,7 +2,7 @@
 
 个人 Shadowrocket 规则仓库：**手机和 Mac 共用一个远程主配置**（国内直连、国外代理、旧配置要求代理的站点全部继续代理），手机再加去广告模块（域名拦截、开屏与应用内广告）。保留自己的 DMIT 节点和「配置」路由模式。所有文件都放在本仓库，第三方规则以快照形式保存并由 GitHub Actions 每天跟踪；仓库不包含节点、账号、证书或私人服务器地址。
 
-当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；anti-AD + HaGeZi Light 编译后 143,415 条广告域名；`app-ads` 模块含 fmz200 去广告插件的 1,133 条静态拒绝重写、2,590 条广告域名，以及 15 条自维护路径规则；另有哔哩哔哩与知乎的 3 条 JSON 响应处理。全部为**离线检查与合成样例验证，尚未进行真机验证**。规则数量不等于广告拦截率。
+当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；anti-AD + HaGeZi Light 约 14 万条广告域名（每天自动更新）；`app-ads` 模块含 fmz200 去广告插件的约 1,100 条静态拒绝重写、约 2,600 条广告域名，以及 17 条自维护路径规则；另有哔哩哔哩、知乎、微博的 4 条 JSON 响应处理。全部为**离线检查与合成样例验证，尚未进行真机验证**。规则数量不等于广告拦截率。
 
 ## 先用起来
 
@@ -11,7 +11,7 @@
 | 主配置（「配置」页导入） | 手机 + Mac | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf` |
 | 通用广告域名拦截（「模块」页） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule` |
 | 开屏与应用内广告（需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
-| 哔哩哔哩/知乎信息流（可选，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
+| 哔哩哔哩/知乎/微博信息流（可选，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
 
 1. 备份旧配置。两台设备都在「配置」页从 URL 添加主配置并使用，首页选 DMIT 节点，路由选「配置」，打开配置与模块的自动后台更新。
 2. 手机在「模块」页添加 `base`（资源不足换 `lite`，二选一），先验证网页、AI、微信、登录、支付和 SSH。

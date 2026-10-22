@@ -2,10 +2,16 @@
   "scripts": [
     {
       "path": "scripts/response-cleaner.js",
-      "sha256": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
+      "sha256": "6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9",
       "license": "GPL-3.0-only",
-      "review": "Original implementation reviewed: exact JSON endpoints; pass-through on unknown shapes/errors; no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified."
+      "review": "Original implementation reviewed: exact JSON endpoints for Bilibili, Zhihu and Weibo feeds; Weibo removes only posts labelled 广告/热推, promotion.type \"ad\", recommend_video_card groups and the ad/advertises arrays; pass-through on unknown shapes/errors (code / error_code / errno); no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified."
     }
   ],
-  "archives": []
+  "archives": [
+    {
+      "path": "dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js",
+      "sha256": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
+      "review": "Original implementation reviewed: exact JSON endpoints; pass-through on unknown shapes/errors; no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified. Superseded 2026-10-22 by the Weibo feed revision; kept for modules cached before the update."
+    }
+  ]
 }

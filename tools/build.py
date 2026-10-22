@@ -98,7 +98,7 @@ def outputs(root=ROOT):
     script_lines = [f"personal-{r['id']} = type=http-response,pattern={r['pattern']},requires-body=true,max-size=1048576,timeout=5,script-path={base}/{script_rel}" for r in routes]
     hosts = sorted({h for r in routes for h in r['hosts']})
     out['dist/modules/response-cleaner.sgmodule'] = module('Response Cleaner (Experimental)',
-        [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '哔哩哔哩/知乎 JSON；需 HTTPS 解密，未知结构原样返回')
+        [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '哔哩哔哩/知乎/微博 JSON；需 HTTPS 解密，未知结构原样返回')
     out['dist/config/adblock.fragment.conf'] = '# 仅供合并进原 [Rule]；不是完整主配置。\n[Rule]\n'+f'RULE-SET,{base}/dist/rules/base.list,REJECT\n'
     out['dist/config/main.conf'] = profile(root, base)
     out['dist/config/adblock-example.conf'] = '\n'.join([
@@ -119,7 +119,7 @@ def outputs(root=ROOT):
         ('较小域名库（与 base 二选一）','dist/modules/lite.sgmodule'),
         ('开屏与应用内广告（手机，需证书，推荐）','dist/modules/app-ads.sgmodule'),
         ('仅自维护 App 路径规则（与 app-ads 二选一）','dist/modules/apps-all.sgmodule'),
-        ('哔哩哔哩/知乎响应处理（实验）','dist/modules/response-cleaner.sgmodule'),
+        ('哔哩哔哩/知乎/微博响应处理（实验）','dist/modules/response-cleaner.sgmodule'),
         ('主配置示例（优先保留原配置）','dist/config/adblock-example.conf'),
         ('主配置合并片段','dist/config/adblock.fragment.conf')]
     subscription_rows += [(app['name']+'（独立实验模块）', f'dist/modules/apps/{ident}.sgmodule') for ident,app in apps.items()]

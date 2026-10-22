@@ -24,10 +24,10 @@
 - Author: fmz200 (奶思) and contributors credited by the upstream project.
 - Source: https://github.com/fmz200/wool_scripts/blob/main/Loon/plugin/blockAds.plugin
 - License: upstream GPL-3.0, retained as `licenses/fmz200-GPL-3.0.txt`.
-- Snapshot: `vendor/fmz-blockads.plugin` (whole file, hashed in `sources/upstreams.lock.json`), tracked automatically like the other data sources. `vendor/fmz-selected.txt` keeps the four original lines adapted earlier into `data/apps.json`.
+- Snapshot: `vendor/fmz-blockads.plugin` (whole file, hashed in `sources/upstreams.lock.json`), tracked automatically like the other data sources. `vendor/fmz-selected.txt` keeps the original lines adapted by hand into `data/apps.json`: four from blockAds.plugin and two from `Loon/plugin/weibo.plugin` (Weibo Lite splash and daily-tip endpoints).
 - Modifications: `tools/plugin_import.py` keeps only static `DOMAIN`/`DOMAIN-SUFFIX`/narrow `IP-CIDR` REJECT rules and `reject`-family URL rewrites, converts them to Shadowrocket module syntax, removes protected hosts and critical-URL matches, and narrows MITM hostnames to those the kept rules need (always a subset of the plugin's own list). The result is `dist/modules/app-ads.sgmodule`.
 - This project does not redistribute as runtime code or execute the upstream plugin's scripts, jq filters, body rewrites, redirects, arguments, account handling or entitlement changes.
-- Bilibili JSON field/route observations were checked against the same public plugin. The response-cleaner implementation is original, small and narrower in scope; it does not copy the plugin's broader content filtering or account features.
+- Bilibili JSON field/route observations were checked against the same public plugin. Weibo feed ad markers (`mblogtypename`, `promotion.type`, `recommend_video_card`) were learned by reading public scripts; the Weibo filter in `scripts/response-cleaner.js` is original code and copies none of them. The response-cleaner implementation is original, small and narrower in scope; it does not copy the plugin's broader content filtering or account features.
 
 ## User-provided starting material
 

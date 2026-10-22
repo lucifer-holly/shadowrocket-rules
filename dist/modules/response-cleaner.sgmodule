@@ -1,13 +1,14 @@
 #!name=Personal Response Cleaner (Experimental)
-#!desc=自维护去广告；哔哩哔哩/知乎 JSON；需 HTTPS 解密，未知结构原样返回
+#!desc=自维护去广告；哔哩哔哩/知乎/微博 JSON；需 HTTPS 解密，未知结构原样返回
 #!category=去广告
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
 
 [Script]
-personal-bili-feed = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/feed/index(?:/story)?(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js
-personal-bili-splash = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/splash/(?:list|show|event/list2)(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js
-personal-zhihu-feed = type=http-response,pattern=^https://api\.zhihu\.com/topstory/recommend(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js
+personal-bili-feed = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/feed/index(?:/story)?(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js
+personal-bili-splash = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/splash/(?:list|show|event/list2)(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js
+personal-zhihu-feed = type=http-response,pattern=^https://api\.zhihu\.com/topstory/recommend(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js
+personal-weibo-feed = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/(?:friends/timeline|unread_friends_timeline|unread_hot_timeline|container_timeline(?:_unread)?)|groups/timeline)(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js
 
 [MITM]
-hostname = %APPEND% api.zhihu.com, app.bilibili.com
+hostname = %APPEND% api.weibo.cn, api.zhihu.com, app.bilibili.com

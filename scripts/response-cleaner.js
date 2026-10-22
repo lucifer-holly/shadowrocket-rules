@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-only
- * Original, narrowly scoped JSON response filter. No network, persistence or logs.
+ * Original, narrowly scoped JSON response filter (Bilibili, Zhihu, Weibo feeds). No network, persistence or logs.
  * Unknown routes, malformed/large bodies and non-success responses pass unchanged.
  */
 (function () {
@@ -19,12 +19,14 @@
     var bili = /^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index(?:\/story)?(?:\?|$)/.test(url);
     var splash = /^https:\/\/app\.bilibili\.com\/x\/v2\/splash\/(?:list|show|event\/list2)(?:\?|$)/.test(url);
     var zhihu = /^https:\/\/api\.zhihu\.com\/topstory\/recommend(?:\?|$)/.test(url);
-    if (!bili && !splash && !zhihu) return {};
+    var weibo = /^https:\/\/api\.weibo\.cn\/2\/(?:statuses\/(?:friends\/timeline|unread_friends_timeline|unread_hot_timeline|container_timeline(?:_unread)?)|groups\/timeline)(?:\?|$)/.test(url);
+    if (!bili && !splash && !zhihu && !weibo) return {};
     var obj;
     try { obj = JSON.parse(body); } catch (_) { return {}; }
     if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return {};
     // Preserve application errors, authentication state and unknown schemas.
-    if (obj.code !== undefined && obj.code !== 0) return {};
+    if (!weibo && obj.code !== undefined && obj.code !== 0) return {};
+    if (weibo && (obj.error_code !== undefined || obj.errno !== undefined)) return {};
     var changed = false;
     function filter(list, isAd) {
       var clean = list.filter(function (item) { return !isAd(item); });
@@ -49,6 +51,26 @@
       obj.data = filter(obj.data, function (item) {
         return item && typeof item === 'object' &&
           (item.type === 'ad' || (item.target && item.target.type === 'ad'));
+      });
+    }
+    if (weibo) {
+      // Paid posts are labelled 广告/热推 or carry promotion.type "ad"; ordinary and hot posts stay.
+      var weiboAd = function (post) {
+        return !!post && typeof post === 'object' &&
+          (post.mblogtypename === '广告' || post.mblogtypename === '热推' ||
+           (!!post.promotion && typeof post.promotion === 'object' && post.promotion.type === 'ad'));
+      };
+      if (Array.isArray(obj.statuses)) obj.statuses = filter(obj.statuses, weiboAd);
+      if (Array.isArray(obj.items)) {
+        obj.items = filter(obj.items, function (item) {
+          return !!item && typeof item === 'object' && (weiboAd(item.data) ||
+            (item.category === 'group' && item.trend_name === 'recommend_video_card'));
+        });
+      }
+      ['ad', 'advertises'].forEach(function (key) {
+        if (Array.isArray(obj[key]) && obj[key].length) {
+          obj[key] = []; changed = true;
+        }
       });
     }
     return changed ? { body: JSON.stringify(obj) } : {};

@@ -45,3 +45,7 @@ test('story feeds remove explicit vertical ad cards only', () => {
   const result=run('https://app.bilibili.com/x/v2/feed/index/story?x=1',input);
   assert.deepEqual(JSON.parse(result.body),{code:0,data:{items:[{card_goto:'av',ad_info:{}},{card_goto:'live'}]}});
 });
+
+test('weibo lookalike host does not run', () => {
+  assert.deepEqual(run('https://api.weibo.cn.evil.test/2/statuses/friends/timeline', {statuses:[{mblogtypename:'广告'}]}), {});
+});

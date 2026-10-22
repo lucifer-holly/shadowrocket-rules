@@ -9,7 +9,7 @@
 | 主配置（「配置」页导入） | 手机 + Mac | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf` |
 | 通用广告域名拦截（「模块」页） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule` |
 | 开屏与应用内广告（「模块」页，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
-| 哔哩哔哩/知乎信息流（可选，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
+| 哔哩哔哩/知乎/微博信息流（可选，需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
 
 - `base` 内存吃紧或 VPN 频繁断开时换 `lite.sgmodule`，两者二选一。
 - `app-ads` 已包含 `apps-all` 的全部自维护规则；`app-ads`、`apps-all`、单 App 模块三选一。

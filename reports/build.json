@@ -1,6 +1,6 @@
 {
-  "app_modules": 14,
-  "base_rules": 144658,
+  "app_modules": 15,
+  "base_rules": 144657,
   "covered_by_parent": 9415,
   "device_verified": false,
   "exceptions": [
@@ -19,6 +19,10 @@
     {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,app-events.infoapps.apple.com"
+    },
+    {
+      "reason": "小红书消息/推送长连接；拦截后消息页显示未连接（anti-AD issue #865、#721）",
+      "rule": "DOMAIN-SUFFIX,apppush-sh5.xiaohongshu.com"
     },
     {
       "reason": "Apple 登录、系统服务、App Store",
@@ -195,12 +199,12 @@
     }
   },
   "lite_rules": 67806,
-  "protected_removed": 44,
-  "response_routes": 3,
+  "protected_removed": 45,
+  "response_routes": 4,
   "source_counts": {
     "anti-ad": 103677,
     "hagezi-light": 67831
   },
   "unique_before_policy": 154117,
-  "url_rewrites": 15
+  "url_rewrites": 17
 }
