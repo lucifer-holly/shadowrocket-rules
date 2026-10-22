@@ -46,27 +46,74 @@
     ]}
   },
   {
-    "name": "me page drops tasks, red packets and the membership upsell; follow count opens followed people",
+    "name": "me page drops wallet, task centre, AI chat, events, red packets and membership upsell; useful entries and unknown modules stay",
     "url": "https://api.weibo.cn/2/profile/me?gsid=x",
-    "input": {"items": [
-      {"itemId": "profileme_mine", "header": {"vipView": {"a": 1}, "name": "me"}, "items": [{"itemId": "mainnums_friends", "click": {"modules": [{"scheme": "sinaweibo://cardlist?containerid=231093_-_selfrecomm"}]}}]},
-      {"itemId": "100505_-_top8"},
+    "input": {"vipHeaderBgImage": "u", "items": [
+      {"itemId": "profileme_mine", "header": {"vipView": {"a": 1}, "vipCenter": {"b": 1}, "name": "me"}, "items": [{"itemId": "mainnums_friends", "title": "关注", "click": {"modules": [{"scheme": "sinaweibo://cardlist?containerid=231093_-_selfrecomm"}]}}]},
+      {"itemId": "100505_-_top8", "items": [{"itemId": "100505_-_album", "title": "我的相册"}, {"itemId": "100505_-_pay", "title": "x"}, {"itemId": "a1", "title": {"content": "任务中心"}}, {"itemId": "a2", "title": {"text": "AI伴聊"}}, {"itemId": "100505_-_like", "title": "赞/收藏"}, {"itemId": "100505_-_draft", "name": "草稿箱"}]},
       {"itemId": "100505_-_newcreator", "type": "grid"},
       {"itemId": "100505_-_newcreator", "type": "banner"},
       {"itemId": "100505_-_vipkaitong"},
       {"itemId": "100505_-_hongbao2022"},
       {"itemId": "100505_-_newusertask"},
       {"itemId": "100505_-_meattent_-_123"},
-      {"itemId": "100505_-_advideo", "header": {"title": {"content": "微博之夜"}}},
       {"itemId": "100505_-_advideo", "header": {"title": {"content": "我的视频"}}},
-      {"itemId": "100505_-_manage"}
+      {"itemId": "100505_-_event", "header": {"title": {"content": "精彩活动"}}},
+      {"itemId": "100505_-_gifts", "items": [{"title": "领红包"}, {"title": "游戏中心"}]},
+      {"itemId": "100505_-_manage", "images": [{"itemId": "100505_-_setting", "title": "设置"}, {"itemId": "100505_-_shop", "title": "微博小店"}]},
+      {"itemId": "100505_-_unknown", "header": {"title": {"content": "我的收藏夹"}}}
     ]},
     "expected": {"items": [
-      {"itemId": "profileme_mine", "header": {"vipView": null, "name": "me"}, "items": [{"itemId": "mainnums_friends", "click": {"modules": [{"scheme": "sinaweibo://cardlist?containerid=231093_-_selffollowed"}]}}]},
-      {"itemId": "100505_-_top8"},
+      {"itemId": "profileme_mine", "header": {"vipView": null, "vipCenter": null, "name": "me"}, "items": [{"itemId": "mainnums_friends", "title": "关注", "click": {"modules": [{"scheme": "sinaweibo://cardlist?containerid=231093_-_selffollowed"}]}}]},
+      {"itemId": "100505_-_top8", "items": [{"itemId": "100505_-_album", "title": "我的相册"}, {"itemId": "100505_-_like", "title": "赞/收藏"}, {"itemId": "100505_-_draft", "name": "草稿箱"}]},
       {"itemId": "100505_-_newcreator", "type": "grid"},
-      {"itemId": "100505_-_advideo", "header": {"title": {"content": "我的视频"}}},
-      {"itemId": "100505_-_manage"}
+      {"itemId": "100505_-_manage", "images": [{"itemId": "100505_-_setting", "title": "设置"}]},
+      {"itemId": "100505_-_unknown", "header": {"title": {"content": "我的收藏夹"}}}
+    ]}
+  },
+  {
+    "name": "following list drops people you do not follow and the recommendation headings above them",
+    "url": "https://api.weibo.cn/2/cardlist?containerid=231093_-_selffollowed&page=1",
+    "input": {"cardlistInfo": {"containerid": "231093_-_selffollowed", "total": 2}, "cards": [
+      {"card_type": 11, "card_group": [{"card_type": 10, "user": {"id": 1, "following": true}}, {"card_type": 10, "user": {"id": 2, "following": false}}]},
+      {"card_type": 11, "card_group": [{"card_type": 4, "desc": "根据你的兴趣推荐优质博主"}, {"card_type": 10, "user": {"id": 3, "following": false}}]},
+      {"card_type": 58, "desc": "为你推荐"},
+      {"card_type": 10, "user": {"id": 4, "following": false}},
+      {"card_type": 11, "card_group": []},
+      {"card_type": 10, "user": {"id": 5}}
+    ]},
+    "expected": {"cardlistInfo": {"containerid": "231093_-_selffollowed", "total": 2}, "cards": [
+      {"card_type": 11, "card_group": [{"card_type": 10, "user": {"id": 1, "following": true}}]},
+      {"card_type": 11, "card_group": []},
+      {"card_type": 10, "user": {"id": 5}}
+    ]}
+  },
+  {
+    "name": "following list is recognised from the request when the response does not name its container",
+    "url": "https://api.weibo.cn/2/page?containerid=231093_-_selfrecomm&count=20",
+    "input": {"cards": [{"card_group": [{"user": {"id": 1, "following": true}}, {"user": {"id": 2, "following": false}}]}]},
+    "expected": {"cards": [{"card_group": [{"user": {"id": 1, "following": true}}]}]}
+  },
+  {
+    "name": "other people lists keep people you do not follow",
+    "url": "https://api.weibo.cn/2/cardlist?containerid=231051_-_followers_-_123",
+    "input": {"cardlistInfo": {"containerid": "231051_-_followers_-_123"}, "cards": [{"card_group": [{"user": {"id": 2, "following": false}}, {"card_type": 4, "desc": "推荐"}]}]},
+    "passThrough": true
+  },
+  {
+    "name": "feed recommendation modules are found by their wording; posts that mention the same words stay",
+    "url": "https://api.weibo.cn/2/statuses/container_timeline_unread?gsid=x",
+    "input": {"items": [
+      {"category": "card", "data": {"title": "根据你的兴趣推荐优质博主", "users": [{"id": 1}]}},
+      {"category": "group", "header": {"title": {"content": "推荐关注"}}, "items": []},
+      {"category": "feed", "data": {"id": 2, "text": "为你推荐一本书", "user": {"id": 3}}},
+      {"data": {"mblogid": "x", "text": "可能感兴趣的人都在这"}},
+      {"category": "card", "data": {"title": "关注的人最新动态"}}
+    ]},
+    "expected": {"items": [
+      {"category": "feed", "data": {"id": 2, "text": "为你推荐一本书", "user": {"id": 3}}},
+      {"data": {"mblogid": "x", "text": "可能感兴趣的人都在这"}},
+      {"category": "card", "data": {"title": "关注的人最新动态"}}
     ]}
   },
   {

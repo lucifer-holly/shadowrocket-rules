@@ -6,9 +6,9 @@ import unittest
 from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from common import ROOT, load_inputs, load_policy, optimize, is_blocked
+from common import ROOT, load_policy, optimize, is_blocked
 from plugin_import import parse_plugin, select, items, https_hosts
-from build import imported_app_ads
+from build import imported_app_ads, blocking_inputs
 
 SAMPLE = r'''#!name=sample
 #!date=2026-10-01 08:00:00
@@ -129,8 +129,21 @@ class RealSnapshotTests(unittest.TestCase):
                     self.assertNotIn(host, https_hosts(pattern)[0])
         self.assertIn('# 只解密、不拦截', self.module)
 
+    def test_static_domain_rules_live_in_the_domain_modules_only(self):
+        # ② carries only what needs decryption; every plugin domain and IP rule is enforced by both variants of ①.
+        self.assertNotIn('[Rule]', self.module)
+        base = optimize(blocking_inputs(policy=self.policy, imported=self.out)[0], self.policy)[0]
+        lite = optimize(blocking_inputs(subset={'hagezi-light'}, policy=self.policy, imported=self.out)[0], self.policy)[0]
+        for rule in self.out['domains']:
+            with self.subTest(rule=rule):
+                self.assertTrue(is_blocked(rule[1], base) and is_blocked(rule[1], lite))
+        for name in ['base', 'lite']:
+            text = (ROOT / f'dist/modules/{name}.sgmodule').read_text()
+            for network in self.out['networks']:
+                self.assertIn('\n' + network + '\n', text)
+
     def test_safari_fraud_warning_service_is_not_blocked(self):
-        base = optimize(load_inputs()[0], self.policy)[0]
+        base = optimize(blocking_inputs(policy=self.policy, imported=self.out)[0], self.policy)[0]
         for host in ['safebrowsing.apple', 'token.safebrowsing.apple', 'proxy.safebrowsing.apple', 'safebrowsing.g.applimg.com',
                      'safebrowsing.googleapis.com', 'safebrowsing.urlsec.qq.com']:
             with self.subTest(host=host):

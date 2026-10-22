@@ -3,7 +3,8 @@ from pathlib import Path
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from common import ROOT, repo_base, read_json, load_inputs, load_policy, optimize, is_blocked
+from common import ROOT, repo_base, read_json, load_policy, optimize, is_blocked
+from build import blocking_inputs
 from profiles import profile, route_for_test, rule_list, sections
 from validate import check_public_profile
 
@@ -130,7 +131,7 @@ class SharedProfileTests(unittest.TestCase):
         self.assertIn('\nprefer-ipv6 = false\n', self.text)
 
     def test_phone_ad_module_preserves_known_ai_feature_hosts(self):
-        rules = optimize(load_inputs()[0], load_policy())[0]
+        rules = optimize(blocking_inputs()[0], load_policy())[0]
         for host in ['chatgpt.com', 'api.openai.com', 'claude.ai', 'featuregates.org', 'events.statsigapi.net']:
             with self.subTest(host=host):
                 self.assertFalse(is_blocked(host, rules))

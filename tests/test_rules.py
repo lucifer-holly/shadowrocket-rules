@@ -42,7 +42,7 @@ class ParserTests(unittest.TestCase):
 class IntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.rules=optimize(load_inputs()[0],load_policy())[0]
+        cls.rules=optimize(build.blocking_inputs()[0],load_policy())[0]
         cls.apps=read_json(ROOT/'data/apps.json')
     def test_protected_services_pass(self):
         for h in ['accounts.google.com','passport.jd.com','paypal.com','api.m.jd.com','titan.pinduoduo.com','raw.githubusercontent.com','apple.com','api.pinduoduo.com']:

@@ -66,6 +66,11 @@ test('paths outside the route table pass unchanged', () => {
     assert.deepEqual(run(url, ad), {}, url);
 });
 
+test('a malformed container id in the request does not trigger the following-list filter', () => {
+  const body = { cards: [{ card_group: [{ user: { id: 2, following: false } }] }] };
+  assert.deepEqual(run('https://api.weibo.cn/2/cardlist?containerid=231093%E0%A4%A', body), {});
+});
+
 test('unexpected shapes pass unchanged', () => {
   for (const body of [{ items: 'x' }, { items: [null, 1, 'a', []] }, { statuses: {} }, { cards: [null, { card_group: 'x' }] }, {}])
     for (const url of [feed, 'https://api.weibo.cn/2/statuses/friends/timeline', 'https://api.weibo.cn/2/page?x=1'])

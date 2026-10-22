@@ -8,9 +8,9 @@
     },
     {
       "path": "scripts/weibo.js",
-      "sha256": "30592fdbf898a1babc27ab66c7a7829e1f79e90c5b3ff18b5f75cc3efd04489d",
+      "sha256": "daab057fb22cd6bb56bb9b98abf102ae8284a1189ad491f73dc5100c00171ba1",
       "license": "GPL-3.0-only",
-      "review": "Original implementation reviewed 2026-10-22: exact api.weibo.cn/2/ paths listed in data/weibo.json. Removes only entries the API marks as ads or promotions (mblogtypename 广告/热推, promotion objects, ad flags, ad item ids, wide banner card types 118/247), named recommendation modules (可能感兴趣的人, super-topic and video recommendation cards), the post page's related-recommendation, product-placement and follow blocks, recommendation groups and share card (other post-page cards only when marked as ads), brand/shop strips under posts, 我-page task/red-packet/membership items, the video-tab fake badge and the check-in prompt. Hot-search rows stay unless promoted; groups holding a profile header are never removed; API errors, non-JSON, unknown shapes and other paths pass unchanged. No network, storage, notifications or logs. Synthetic fixtures only; iOS not verified."
+      "review": "Original implementation reviewed 2026-10-22: exact api.weibo.cn/2/ paths listed in data/weibo.json. Removes only entries the API marks as ads or promotions (mblogtypename 广告/热推, promotion objects, ad flags, ad item ids, wide banner card types 118/247) and recommendation modules: named trend cards and non-post modules whose wording is a recommendation (推荐优质博主, 可能感兴趣, 推荐关注, 为你推荐); posts are never matched by wording and groups holding a profile header are never removed. In the owner's own following list (containers 231093…) it removes people the API marks as not followed (following false) and the recommendation headings above them. On the 我 page it removes modules and entries by visible name (钱包, 任务, AI伴聊, 活动, 红包, 会员, 商城, 游戏, 直播 and similar) plus known event/task ids; 相册, 赞/收藏, 草稿箱, 设置 and unknown modules stay. Post pages lose related-recommendation, product-placement and follow blocks, recommendation groups and the share card (other cards only when marked as ads); comment and repost areas lose ad and recommended entries; hot-search rows stay unless promoted. API errors, non-JSON, unknown shapes and other paths pass unchanged. No network, storage, notifications or logs. Synthetic fixtures only; iOS not verified."
     }
   ],
   "archives": [
@@ -18,6 +18,11 @@
       "path": "dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js",
       "sha256": "6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9",
       "review": "Original implementation reviewed: exact JSON endpoints for Bilibili, Zhihu and Weibo feeds; Weibo removes only posts labelled 广告/热推, promotion.type \"ad\", recommend_video_card groups and the ad/advertises arrays; pass-through on unknown shapes/errors (code / error_code / errno); no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified. Withdrawn 2026-10-22: after Weibo API decryption was added, Weibo profile and post pages stopped opening on the device; kept for modules cached in between."
+    },
+    {
+      "path": "dist/scripts/weibo.30592fdbf898a1babc27ab66c7a7829e1f79e90c5b3ff18b5f75cc3efd04489d.js",
+      "sha256": "30592fdbf898a1babc27ab66c7a7829e1f79e90c5b3ff18b5f75cc3efd04489d",
+      "review": "Original implementation reviewed 2026-10-22: exact api.weibo.cn/2/ paths listed in data/weibo.json. Removes only entries the API marks as ads or promotions (mblogtypename 广告/热推, promotion objects, ad flags, ad item ids, wide banner card types 118/247), named recommendation modules (可能感兴趣的人, super-topic and video recommendation cards), the post page's related-recommendation, product-placement and follow blocks, recommendation groups and share card (other post-page cards only when marked as ads), brand/shop strips under posts, 我-page task/red-packet/membership items, the video-tab fake badge and the check-in prompt. Hot-search rows stay unless promoted; groups holding a profile header are never removed; API errors, non-JSON, unknown shapes and other paths pass unchanged. No network, storage, notifications or logs. Synthetic fixtures only; iOS not verified. Superseded 2026-10-22 by the following-list and 我-page update; kept for modules cached in between."
     }
   ],
   "third_party": [

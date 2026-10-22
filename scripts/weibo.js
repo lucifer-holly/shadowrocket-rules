@@ -64,13 +64,29 @@
     return isObj(item.data) ? item.data : (isObj(item.status) ? item.status : null);
   }
 
-  // Recommendation modules inserted into feeds and profile pages.
+  function isPost(p) {
+    return isObj(p) && (p.mblogid !== undefined || p.idstr !== undefined || (isObj(p.user) && p.text !== undefined));
+  }
+
+  // The visible name of a module or entry, whichever field this app version uses.
+  function label(x) {
+    if (!isObj(x)) return '';
+    var parts = [];
+    [x.title, x.name, x.desc, x.card_type_name, isObj(x.header) ? x.header.title : null].forEach(function (t) {
+      if (typeof t === 'string') parts.push(t);
+      else if (isObj(t)) parts.push(str(t.content), str(t.text));
+    });
+    return parts.join(' ');
+  }
+
+  var REC_PHRASES = /推荐优质博主|可能感兴趣|感兴趣的人|推荐关注|为你推荐/;
+
+  // Recommendation modules inserted into feeds and profile pages; posts and profile headers are never matched.
   function isRecommendModule(item) {
-    if (!isObj(item) || item.category !== 'group') return false;
-    if (JSON.stringify(item).indexOf('profile_top') > -1) return false;
-    if (/^(?:super_topic_recommend_card|recommend_video_card)$/.test(str(item.trend_name))) return true;
-    var first = Array.isArray(item.items) ? item.items[0] : null;
-    return isObj(first) && isObj(first.data) && first.data.desc === '可能感兴趣的人';
+    if (!isObj(item) || item.category === 'feed' || isPost(postOf(item))) return false;
+    var json = JSON.stringify(item);
+    if (json.indexOf('profile_top') > -1) return false;
+    return /^(?:super_topic_recommend_card|recommend_video_card)$/.test(str(item.trend_name)) || REC_PHRASES.test(json);
   }
 
   // Older timelines: { statuses: [post], ad: [], advertises: [], trends: ... }.
@@ -94,31 +110,50 @@
     return changed;
   }
 
-  var ME_HIDDEN = /^(?:mine_attent_title|100505_-_meattent_pic|100505_-_meattent_-_\d+|100505_-_newusertask|100505_-_vipkaitong|100505_-_hongbao2022|100505_-_adphoto|100505_-_hongrenjie2022|100505_-_weibonight2023)$/;
+  var ME_HIDDEN = /^(?:mine_attent_title|100505_-_meattent_pic|100505_-_meattent_-_\d+|100505_-_newusertask|100505_-_vipkaitong|100505_-_hongbao2022|100505_-_adphoto|100505_-_advideo|100505_-_hongrenjie2022|100505_-_weibonight2023)$/;
+  // Names on the 我 page the owner does not use; entries such as 相册, 赞/收藏, 浏览记录, 草稿箱 and 设置 stay.
+  var ME_JUNK = /钱包|任务|伴聊|AI|活动|红包|会员|商城|小店|购物|游戏|直播|卡券|免流|抽奖|福利|充值|推广|广告|订单/;
+  var ME_JUNK_IDS = /^100505_-_(?:pay|ordercenter|promote)$/;
 
-  // The 我 page: tasks, red packets, membership upsell and event banners.
+  function isJunkEntry(x) {
+    return isObj(x) && (ME_JUNK_IDS.test(str(x.itemId)) || ME_JUNK.test(label(x)));
+  }
+
+  // The 我 page: wallet, tasks, AI chat, events, red packets and membership upsell, by module or by entry.
   function mePage(o) {
-    var changed = prune(o, 'items', function (item) {
-      if (!isObj(item)) return false;
-      var id = str(item.itemId);
-      if (ME_HIDDEN.test(id)) return true;
-      if (id === '100505_-_newcreator') return item.type !== 'grid';
-      var title = isObj(item.header) && isObj(item.header.title) ? item.header.title.content : '';
-      return id === '100505_-_advideo' && title === '微博之夜';
-    });
+    var changed = dropKeys(o, ['vipHeaderBgImage']);
+    var emptied = [];
     each(o.items, function (item) {
-      if (!isObj(item) || item.itemId !== 'profileme_mine') return;
-      if (isObj(item.header) && item.header.vipView) { item.header.vipView = null; changed = true; }
-      // The 关注 count opens the people you follow instead of recommendations.
-      each(item.items, function (d) {
-        var m = isObj(d) && d.itemId === 'mainnums_friends' && isObj(d.click) && Array.isArray(d.click.modules) ? d.click.modules[0] : null;
-        if (isObj(m) && str(m.scheme).indexOf('231093_-_selfrecomm') > -1) {
-          m.scheme = m.scheme.replace('231093_-_selfrecomm', '231093_-_selffollowed');
+      if (!isObj(item)) return;
+      if (item.itemId === 'profileme_mine') {
+        if (isObj(item.header)) {
+          ['vipView', 'vipCenter'].forEach(function (k) {
+            if (item.header[k]) { item.header[k] = null; changed = true; }
+          });
+        }
+        // The 关注 count opens the people you follow instead of recommendations.
+        each(item.items, function (d) {
+          var m = isObj(d) && d.itemId === 'mainnums_friends' && isObj(d.click) && Array.isArray(d.click.modules) ? d.click.modules[0] : null;
+          if (isObj(m) && str(m.scheme).indexOf('231093_-_selfrecomm') > -1) {
+            m.scheme = m.scheme.replace('231093_-_selfrecomm', '231093_-_selffollowed');
+            changed = true;
+          }
+        });
+        return;
+      }
+      ['items', 'images'].forEach(function (key) {
+        if (Array.isArray(item[key]) && item[key].length && prune(item, key, isJunkEntry)) {
           changed = true;
+          if (!item[key].length) emptied.push(item);
         }
       });
     });
-    return changed;
+    return prune(o, 'items', function (item) {
+      if (!isObj(item) || item.itemId === 'profileme_mine') return false;
+      var id = str(item.itemId);
+      if (emptied.indexOf(item) > -1 || ME_HIDDEN.test(id) || ME_JUNK.test(label(item))) return true;
+      return id === '100505_-_newcreator' && item.type !== 'grid'; // creator-centre carousel
+    }) || changed;
   }
 
   // Below a post: related recommendations, product placement, follow banners.
@@ -175,10 +210,38 @@
     return prune(o, 'items', function (x) { return isObj(x) && (x.type === 'trend' || isAdPost(x.data)); });
   }
 
-  // Card lists (hot search, topic pages): { cards: [{ card_group: [...] }] }.
-  function cards(o) {
+  var REC_TEXT = /推荐|感兴趣/;
+
+  function isRecUser(c) { return isObj(c) && isObj(c.user) && c.user.following === false; }
+  function isRecHeading(c) { return isObj(c) && !isObj(c.user) && REC_TEXT.test(label(c)); }
+
+  // Your own following list: anyone you do not follow, and the headings above them, are recommendations.
+  function followingList(o) {
+    var changed = false;
+    var emptied = [];
+    each(o.cards, function (c) {
+      if (!isObj(c) || !Array.isArray(c.card_group) || !c.card_group.length) return;
+      if (prune(c, 'card_group', function (x) { return isRecUser(x) || isRecHeading(x); })) {
+        changed = true;
+        if (!c.card_group.length) emptied.push(c);
+      }
+    });
+    return prune(o, 'cards', function (c) {
+      return emptied.indexOf(c) > -1 || isRecUser(c) || (isRecHeading(c) && !Array.isArray(c.card_group));
+    }) || changed;
+  }
+
+  function containerId(o, url) {
+    var id = isObj(o.cardlistInfo) ? str(o.cardlistInfo.containerid) : '';
+    var m = id ? null : /[?&]containerid=([^&#]*)/.exec(url);
+    try { return m ? decodeURIComponent(m[1]) : id; } catch (_) { return id; }
+  }
+
+  // Card lists (hot search, topic pages, following list): { cards: [{ card_group: [...] }] }.
+  function cards(o, url) {
     var changed = prune(o, 'cards', isAdCard);
     each(o.cards, function (c) { if (isObj(c) && prune(c, 'card_group', isAdCard)) changed = true; });
+    if (/^231093/.test(containerId(o, url)) && followingList(o)) changed = true;
     return (Array.isArray(o.items) && discover(o)) || changed;
   }
 
@@ -279,7 +342,8 @@
     if (!/^(?:200(?:$|\s)|HTTP\/\S+ 200(?:$|\s))/.test(status)) return {};
     var body = $response.body;
     if (typeof body !== 'string' || body.length > MAX_BODY) return {};
-    var m = /^https:\/\/api\.weibo\.cn\/2\/([^?#]+)(?:[?#]|$)/.exec(String($request.url || ''));
+    var url = String($request.url || '');
+    var m = /^https:\/\/api\.weibo\.cn\/2\/([^?#]+)(?:[?#]|$)/.exec(url);
     var handler = m && Object.prototype.hasOwnProperty.call(ROUTES, m[1]) ? ROUTES[m[1]] : null;
     if (!handler) return {};
     var obj;
@@ -287,7 +351,7 @@
     if (!isObj(obj)) return {};
     // Preserve API errors and login state.
     if ([obj.errno, obj.error_code].some(function (v) { return v !== undefined && v !== 0 && v !== '0'; }) || typeof obj.error === 'string') return {};
-    return handler(obj) ? { body: JSON.stringify(obj) } : {};
+    return handler(obj, url) ? { body: JSON.stringify(obj) } : {};
   }
 
   var result = {};

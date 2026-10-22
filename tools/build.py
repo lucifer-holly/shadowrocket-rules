@@ -20,6 +20,7 @@ def module(name, sections, note=''):
 
 
 def app_sections(apps, imported=None):
+    # Only what needs decryption: the plugins' static domain and IP rules are part of the domain modules (①).
     rewrites, hosts = [], set()
     seen = set()
     for ident, app in apps.items():
@@ -29,17 +30,15 @@ def app_sections(apps, imported=None):
             if line not in seen:
                 rewrites.append(line); seen.add(line)
             hosts.update(rule['hosts'])
-    rules = []
     if imported:
         own = {line.split(' - ')[0] for line in seen}
         rewrites.append('# 自动跟踪的第三方插件静态拒绝规则（见 THIRD_PARTY_NOTICES.md）；未导入脚本')
         rewrites += [f'{p} - {a}' for p, a in imported['rewrites'] if p not in own]
-        rules = [','.join(r) + ',REJECT' for r in imported['domains']] + imported['networks']
         hosts.update(imported['mitm'])
     mitm = ['hostname = %APPEND% ' + ', '.join(sorted(hosts))]
     if imported and imported['observed']:
         mitm.insert(0, '# 只解密、不拦截（排查用，日志里能看到完整地址）：' + ', '.join(imported['observed']))
-    return [('Rule', rules), ('URL Rewrite', rewrites), ('MITM', mitm)]
+    return [('URL Rewrite', rewrites), ('MITM', mitm)]
 
 
 def imported_app_ads(root, policy):
@@ -73,6 +72,14 @@ def imported_app_ads(root, policy):
     return {'domains': sorted(merged['domains']), 'networks': sorted(merged['networks']),
             'rewrites': list(merged['rewrites'].items()), 'mitm': sorted(merged['mitm'] | observed),
             'observed': sorted(observed), 'report': merged['report']}
+
+
+def blocking_inputs(root=ROOT, subset=None, policy=None, imported=None):
+    """Inputs of the domain modules (①): the plain lists plus the tracked plugins' static domain rules, deduplicated together."""
+    policy = policy or load_policy(root)
+    imported = imported or imported_app_ads(root, policy)
+    rules, counts = load_inputs(root, subset)
+    return rules | set(imported['domains']), dict(counts, plugin_domains=len(imported['domains']))
 
 
 API_TOKENS = ('$httpClient', 'fetch(', '$persistentStore', '$prefs', '$notification', '$notify(', '$task',
@@ -133,23 +140,25 @@ def outputs(root=ROOT):
     base = repo_base(root)
     policy = load_policy(root)
     # Rule exceptions never emit DIRECT: routing stays with the existing main configuration.
-    rules, counts = load_inputs(root)
+    imported = imported_app_ads(root, policy)
+    rules, counts = blocking_inputs(root, policy=policy, imported=imported)
     merged, removed, compressed = optimize(rules, policy)
-    light, _ = load_inputs(root, {'hagezi-light'})
+    light, _ = blocking_inputs(root, {'hagezi-light'}, policy, imported)
     light, _, _ = optimize(light, policy)
-    header = ['# Personal ads: anti-AD (MIT) + HaGeZi Light (GPL-3.0), modified by this project.',
+    header = ['# Personal ads: anti-AD (MIT) + HaGeZi Light (GPL-3.0) + fmz200 plugin static rules (GPL-3.0), modified by this project.',
               '# See THIRD_PARTY_NOTICES.md and licenses/. No proxy nodes or certificates.']
+    # Rule lists carry no policy; module lines add REJECT.
+    networks = [n.replace(',REJECT,', ',') for n in imported['networks']]
     out = {}
     for label, entries in [('base', merged), ('lite', light)]:
         rows = [','.join(r) for r in entries]
-        out[f'dist/rules/{label}.list'] = '\n'.join(header + rows) + '\n'
+        out[f'dist/rules/{label}.list'] = '\n'.join(header + rows + networks) + '\n'
         title = '去广告① 广告域名拦截（免证书）' if label == 'base' else '去广告① 广告域名拦截·精简版（免证书）'
-        out[f'dist/modules/{label}.sgmodule'] = module(title, [('Rule', [r+',REJECT' for r in rows])],
-            '拦截通用广告与跟踪域名，不需要证书；标准版与精简版二选一，内存吃紧时用精简版')
+        out[f'dist/modules/{label}.sgmodule'] = module(title, [('Rule', [r+',REJECT' for r in rows] + imported['networks'])],
+            '拦截广告与跟踪域名（anti-AD、HaGeZi、fmz200 插件的静态规则），不需要证书；标准版与精简版二选一，内存吃紧时用精简版')
     apps = read_json(root/'data/apps.json')
-    imported = imported_app_ads(root, policy)
     out['dist/modules/app-ads.sgmodule'] = module('去广告② App 开屏与应用内广告（需证书）', app_sections(apps, imported),
-        '开屏、弹窗与应用内广告：fmz200 静态规则 + 自维护规则；需 HTTPS 解密与本机证书模块；与其他「去广告②」模块只开一个')
+        '开屏、弹窗与应用内广告的接口规则：fmz200 静态重写 + 自维护规则；域名拦截都在去广告①；需 HTTPS 解密与本机证书模块；与其他「去广告②」模块只开一个')
     out['dist/modules/apps-all.sgmodule'] = module('去广告② 备选·仅自维护 App 规则（需证书）', app_sections(apps),
         '只含自维护的 App 路径规则，用于排查；需 HTTPS 解密；与其他「去广告②」模块只开一个')
     for ident, spec in apps.items():

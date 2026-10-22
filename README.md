@@ -2,7 +2,7 @@
 
 个人 Shadowrocket 规则仓库：**手机和 Mac 共用一个远程主配置**（国内直连、国外代理、旧配置要求代理的站点全部继续代理），手机再加去广告模块（域名拦截、开屏与应用内广告）。保留自己的 DMIT 节点和「配置」路由模式。所有文件都放在本仓库，第三方规则以快照形式保存并由 GitHub Actions 每天跟踪；仓库不包含节点、账号、证书或私人服务器地址。
 
-当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；anti-AD + HaGeZi Light 约 14 万条广告域名（每天自动更新）；`app-ads` 模块含 fmz200 去广告插件的约 1,100 条静态拒绝重写、约 2,600 条广告域名，以及 15 条自维护路径规则；另有哔哩哔哩与知乎的 3 条 JSON 响应处理，微博完整版的 34 个接口过滤和 10 条推广接口拦截。已在主人的 iPhone 上用真实请求日志验证了部分 App（见 [真机验收记录](docs/DEVICE_RESULTS.md)），其余只经过离线检查与合成样例测试。规则数量不等于广告拦截率。
+当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；去广告①含 anti-AD、HaGeZi Light 和 fmz200 去广告插件的静态域名，合并去重后约 14.6 万条（每天自动更新）；`app-ads` 只含需要证书的部分：fmz200 插件的约 1,100 条静态拒绝重写和 15 条自维护路径规则；另有哔哩哔哩与知乎的 3 条 JSON 响应处理，微博完整版的 34 个接口过滤和 11 条推广接口拦截。各模块之间没有重复的规则，`tools/validate.py` 会检查一个模块的规则不会抢先拦掉另一个模块要处理的接口。已在主人的 iPhone 上用真实请求日志验证了部分 App（见 [真机验收记录](docs/DEVICE_RESULTS.md)），其余只经过离线检查与合成样例测试。规则数量不等于广告拦截率。
 
 ## 先用起来
 
@@ -48,7 +48,7 @@ GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：
 
 - 源失联、HTML 错误页、空列表、格式变更、过期、许可变化或单次超过 20% 的增删，只拦住出问题的那个来源，它继续使用旧快照；其他来源照常更新。
 - 出现拦截或检查失败时，仓库会自动开出「上游自动更新需要关注」Issue，恢复正常后自动关闭。平时不需要看。
-- fmz200 插件只导入静态 REJECT 域名/IP、`reject` 系列 URL 重写和插件自己列出的解密主机；脚本、jq、正文改写、跳转和账号/权益相关内容一律不导入。解密主机收窄到被导入规则实际需要的范围，并排除登录、支付、银行、AI、Google、Apple 等受保护主机。
+- fmz200 插件只导入静态 REJECT 域名/IP（并入去广告①）、`reject` 系列 URL 重写和插件自己列出的解密主机（在 `app-ads`）；脚本、jq、正文改写、跳转和账号/权益相关内容一律不导入。解密主机收窄到被导入规则实际需要的范围，并排除登录、支付、银行、AI、Google、Apple 等受保护主机。
 - 分流数据（`data/`）由你维护，不受上游更新影响。新增或排除覆盖范围见 [维护说明](docs/MAINTENANCE.md#调整覆盖范围)。
 
 ## 常用维护入口
@@ -60,7 +60,7 @@ GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：
 | 自动导入的规则让某 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` |
 | 新增 App 路径 | `data/apps.json`，补充正反样例和限定 MITM 主机 |
 | 调整分流 | `data/manual-direct.list`、`data/legacy-proxy.list`、`data/routing.json` |
-| 查看规则是否匹配 | `python3 tools/explain.py ads.example.com`（含 app-ads） |
+| 查看规则是否匹配 | `python3 tools/explain.py ads.example.com`（含 app-ads 和各脚本模块） |
 | 分析手机导出的请求日志 | `python3 tools/devicelog.py 日志.db --app huya --check`，见 [设备日志](docs/DEVICE_LOGS.md) |
 | 离线重建 | `make build` |
 | 全部离线检查 | `make test` |

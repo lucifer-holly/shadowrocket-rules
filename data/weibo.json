@@ -11,6 +11,7 @@
     {"pattern": "^https://api\\.weibo\\.cn/2/!/(?:sug/list/finderchange|was/finder/searchbarchange)(?:\\?|$)", "action": "reject-dict", "reason": "搜索框里轮换的推荐搜索词", "positive": ["https://api.weibo.cn/2/!/sug/list/finderchange?gsid=example", "https://api.weibo.cn/2/!/was/finder/searchbarchange?gsid=example"]},
     {"pattern": "^https://api\\.weibo\\.cn/2/!/wbox/\\w+/home_bottom_modal(?:\\?|$)", "action": "reject-dict", "reason": "首页底部弹出的活动浮层", "positive": ["https://api.weibo.cn/2/!/wbox/abc123/home_bottom_modal?gsid=example"]},
     {"pattern": "^https://api\\.weibo\\.cn/2/ad/preload(?:\\?|$)", "action": "reject-dict", "reason": "广告素材预加载", "positive": ["https://api.weibo.cn/2/ad/preload?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/push/active(?:\\?|$)", "action": "reject-dict", "reason": "启动时下发的全局悬浮红包、活动挂件等推广配置；fmz200 的微博插件整条拦截它", "positive": ["https://api.weibo.cn/2/push/active?gsid=example"]},
     {"pattern": "^https://api\\.weibo\\.cn/2/client/addlog_batch(?:\\?|$)", "action": "reject-dict", "reason": "客户端行为日志批量上报", "positive": ["https://api.weibo.cn/2/client/addlog_batch?gsid=example"]}
   ],
   "scripts": [

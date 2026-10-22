@@ -7,7 +7,7 @@
 | `sources/upstreams.json` | 三个自动跟踪的数据源（anti-AD、HaGeZi Light、fmz200 插件）的格式、路径、体积/时效边界和许可 |
 | `sources/upstreams.lock.json` | 原始数据和 LICENSE 的 SHA-256；首次快照未解析 Git commit ID，不伪造提交锁 |
 | `vendor/`、`licenses/` | 可离线重建的原始快照和许可；`fmz-blockads.plugin` 是整份插件快照，构建时只解析静态部分 |
-| `tools/plugin_import.py` | 从 fmz 插件快照提取静态 REJECT 域名/IP 与 `reject` 系列重写，按需收窄解密主机；从不导入脚本 |
+| `tools/plugin_import.py` | 从 fmz 插件快照提取静态 REJECT 域名/IP（构建时并入去广告①，与其他域名库一起去重）与 `reject` 系列重写（进 app-ads），按需收窄解密主机；从不导入脚本 |
 | `data/apps.json` | 14 个实验 App 模块的端点、解密主机、正样例和来源 |
 | `data/manual-direct.list` | 旧配置开头的手工直连例外，原样保留在主配置最前面；不写私人服务器 IP/私人域名 |
 | `data/legacy-proxy.list` | 旧配置全部 257 条显式 PROXY 规则，原样、原顺序，排在国内直连之前 |
@@ -79,7 +79,7 @@ make test
 | 某 App 的广告接口，按路径拦 | `data/apps.json`，附正样例和同主机登录/支付负样例 |
 | 某个域名被误拦 | `data/allowlist.json`（base、lite、app-ads 都会放行） |
 | 自动导入的规则让某个 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` 填该 App 的主机（包含子域），该主机不再被导入规则拦截、重写或解密；只想去掉某一条时填 `exclude_patterns` |
-| 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会自动合并进 app-ads |
+| 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会把它的静态域名并入去广告①、重写并入 app-ads |
 | 微博完整版又出现某种广告或推荐卡片 | 抓日志找到接口。路径已在 `data/weibo.json` 里，就改 `scripts/weibo.js` 里对应的处理函数；新接口同时加进 `data/weibo.json` 的 `scripts` 和脚本的 `ROUTES`。两种情况都在 `tests/fixtures/weibo.json` 加样例，并按下文更新脚本哈希与审核说明 |
 | 想在日志里看到某个主机的完整地址（找广告接口） | `data/app-ads-overrides.json` 的 `observe_hosts`：只解密，不拦截也不改写；规则写好后删掉这一项 |
 | 永不解密或永不误拦的关键站点 | `data/policy.json` 的 `never_mitm_suffixes`、`critical_url_probes` |

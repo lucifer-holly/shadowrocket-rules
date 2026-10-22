@@ -6,7 +6,7 @@ from pathlib import Path
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from common import ROOT, read_json, sha256, load_inputs, load_policy, optimize, is_blocked
+from common import ROOT, read_json, sha256, load_policy, optimize, is_blocked
 import build
 
 
@@ -65,7 +65,7 @@ class WeiboModuleTests(unittest.TestCase):
                     self.assertFalse(any(re.search(r, url) for r in self.routes))
 
     def test_domain_rules_keep_the_api_and_block_the_extra_ad_hosts(self):
-        rules = optimize(load_inputs()[0], load_policy())[0]
+        rules = optimize(build.blocking_inputs()[0], load_policy())[0]
         self.assertFalse(is_blocked('api.weibo.cn', rules))
         for host in ['wax.weibo.com', 'dsp.edm.weibo.cn', 'adpinpai.video.weibocdn.com']:
             with self.subTest(host=host):

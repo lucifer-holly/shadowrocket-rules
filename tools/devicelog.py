@@ -50,27 +50,29 @@ def load_rows(path):
         con.close()
 
 
+DECRYPTING_MODULES = {'app-ads': 'app-ads 解密', 'weibo': '微博模块解密', 'response-cleaner': 'B站/知乎模块解密', 'youtube': 'YouTube 模块解密'}
+
+
 def rule_check(hosts):
-    """Which part of the current build touches each host: base/lite block, app-ads block or decryption."""
+    """Which part of the current build touches each host: the domain modules (①) block it, or a module decrypts it."""
     import fnmatch
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from common import ROOT, load_inputs, load_policy, optimize, is_blocked
-    from build import imported_app_ads
+    from common import ROOT, load_policy, optimize, is_blocked
+    from build import imported_app_ads, blocking_inputs
     policy = load_policy()
-    base = optimize(load_inputs()[0], policy)[0]
     imported = imported_app_ads(ROOT, policy)
-    module = (ROOT / 'dist/modules/app-ads.sgmodule').read_text(encoding='utf-8')
-    mitm = next((l.split('= %APPEND% ', 1)[1].split(', ') for l in module.splitlines()
-                 if l.startswith('hostname = %APPEND% ')), [])
+    base = optimize(blocking_inputs(ROOT, policy=policy, imported=imported)[0], policy)[0]
+    mitm = {}
+    for name in DECRYPTING_MODULES:
+        module = (ROOT / f'dist/modules/{name}.sgmodule').read_text(encoding='utf-8')
+        mitm[name] = next((l.split('= %APPEND% ', 1)[1].split(', ') for l in module.splitlines()
+                           if l.startswith('hostname = %APPEND% ')), [])
     lines = []
     for host in sorted(hosts):
-        tags = []
-        if is_blocked(host, base):
-            tags.append('base 拦截')
-        if is_blocked(host, imported['domains']):
-            tags.append('app-ads 拦截')
-        if any(fnmatch.fnmatchcase(host, h) for h in mitm):
-            tags.append('只解密（排查用）' if host in imported['observed'] else 'app-ads 解密')
+        tags = ['base 拦截'] if is_blocked(host, base) else []
+        for name, label in DECRYPTING_MODULES.items():
+            if any(fnmatch.fnmatchcase(host, h) for h in mitm[name]):
+                tags.append('只解密（排查用）' if name == 'app-ads' and host in imported['observed'] else label)
         lines.append(f'  {host}: ' + ('、'.join(tags) if tags else '未拦截、未解密'))
     return lines
 

@@ -3,13 +3,13 @@
 import argparse
 import re
 from urllib.parse import urlsplit
-from common import ROOT,read_json,parse_rules,load_inputs,load_policy,optimize,is_blocked,within,exception_for
-from build import imported_app_ads, weibo_routes
+from common import ROOT,read_json,parse_rules,load_policy,optimize,is_blocked,within,exception_for
+from build import imported_app_ads, blocking_inputs, weibo_routes
 
 def explain(value):
     host=urlsplit(value).hostname if '://' in value else value
-    policy=load_policy();rules,_=load_inputs();active,_,_=optimize(rules,policy)
-    imported=imported_app_ads(ROOT,policy)
+    policy=load_policy();imported=imported_app_ads(ROOT,policy)
+    rules,_=blocking_inputs(ROOT,policy=policy,imported=imported);active,_,_=optimize(rules,policy)
     hits=[','.join(x) for x in active if x[1]==host or (x[0]=='DOMAIN-SUFFIX' and within(host,x[1]))]
     result={'host':host,'domain_blocked':bool(hits),'active_matches':hits,'rewrite_matches':[],'script_matches':[],'source_matches':{}}
     result['app_ads_domain_blocked']=is_blocked(host,imported['domains'])

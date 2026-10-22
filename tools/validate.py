@@ -6,7 +6,7 @@ import os
 import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain,within
-from build import run, imported_app_ads, weibo_routes
+from build import run, imported_app_ads, blocking_inputs, weibo_routes, YOUTUBE_ROUTE
 from profiles import sections as routing_sections
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
@@ -128,7 +128,8 @@ def validate(root=ROOT):
         for key in ['snapshot','license_file']:
             p=root/s[key]
             if root.resolve() not in p.resolve().parents:raise ValueError('source path traversal')
-    entries,_=load_inputs(root);rules,_,_=optimize(entries,policy)
+    imported=imported_app_ads(root,policy)
+    entries,_=blocking_inputs(root,policy=policy,imported=imported);rules,_,_=optimize(entries,policy)
     for item in policy['exceptions']:
         if is_blocked(item['domain'],rules):raise ValueError('protected domain blocked: '+item['domain'])
     apps=read_json(root/'data/apps.json')
@@ -151,7 +152,6 @@ def validate(root=ROOT):
                     raise ValueError('MITM wildcard requires separate review')
             if pattern in patterns:raise ValueError('duplicate/conflicting rewrite')
             patterns.append(pattern)
-    imported=imported_app_ads(root,policy)
     for key,app in apps.items():
         for rule in app['rules']:
             for url in rule['positive']:
@@ -161,11 +161,20 @@ def validate(root=ROOT):
     for route in read_json(root/'data/script-routes.json'):
         compiled=re.compile(route['pattern'])
         if not compiled.search(route['positive']):raise ValueError('script positive route fails')
-        if any(re.search(p,route['positive']) for p in patterns):raise ValueError('rewrite shadows response script')
         for h in route['hosts']:
             domain(h)
             if is_blocked(h,rules):raise ValueError('domain blocks response script')
-    check_weibo(read_json(root/'data/weibo.json'),policy,[rules,imported['domains']])
+    weibo=read_json(root/'data/weibo.json')
+    check_weibo(weibo,policy,[rules,imported['domains']])
+    # The modules run together: no rewrite in any module and no domain block may pre-empt another module's script.
+    rewrites=patterns+[p for p,_ in imported['rewrites']]+[r['pattern'] for r in weibo['rewrites']]
+    youtube=[f'https://youtubei.googleapis.com/youtubei/v1/{p}?key=example' for p in ['browse','next','player','search']]
+    if not all(re.search(YOUTUBE_ROUTE,url) for url in youtube):raise ValueError('YouTube script samples are stale')
+    samples=[r['positive'] for r in read_json(root/'data/script-routes.json')]+youtube
+    samples+=[f'https://api.weibo.cn/2/{p}?gsid=example' for g in weibo['scripts'] for p in g['paths']]
+    for url in samples:
+        if any(re.search(p,url) for p in rewrites):raise ValueError('a rewrite pre-empts a response script: '+url)
+        if is_blocked(urlsplit(url).hostname,rules):raise ValueError('a domain block pre-empts a response script: '+url)
     lock=read_json(root/'sources/scripts.lock.json')['scripts']
     for item in lock:
         data=(root/item['path']).read_bytes()
