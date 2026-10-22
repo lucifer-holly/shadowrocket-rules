@@ -11,7 +11,7 @@
 
 | 事项 | 现状 | 下一步 |
 |---|---|---|
-| 微博轻享版：用户主页、展开文章打不开 | 断开 Shadowrocket 也打不开，不是规则造成的（App 或账号侧），主人决定先放着。问题出现在 2026-10-22 解密 `api.weibo.cn` 的约 12 分钟之后，那次改动已撤回 | 主人恢复后确认；正常后再做首页信息流广告（粉丝头条、微博视频号），做成可以单独开关的模块 |
+| 微博轻享版：用户主页、首页「关注」「推荐」刷不出内容 | 配置模式下热门榜、话题页正常，开屏已去除。日志里这些页面用的 `api.weibo.cn`、`weibointl.api.weibo.cn` 走直连、不解密，当前构建不拦也不改；登录、验证码相关主机也没拦。问题出现在 2026-10-22 解密 `api.weibo.cn` 的约 12 分钟之后，那次改动已撤回，之后断开 Shadowrocket 也打不开，推测是那段时间给 App 或账号留下的异常 | 主人按顺序试：退出登录再登录 → 删除重装 → Safari 打开 `m.weibo.cn` 看主页（网页也打不开就是账号被限制）。恢复后再做首页信息流广告（粉丝头条、微博视频号）：这需要解密 `api.weibo.cn`，先跟主人说明上次的后果，做成可以单独开关的模块 |
 | `DOMAIN` 精确规则对照实验 | `sdkmonitor.biz.weibo.com` 故意用 `DOMAIN` 写法，主配置里有 `DOMAIN-SUFFIX,weibo.com,DIRECT` | 下一份微博日志里看它是 REJECT 还是 DIRECT。DIRECT 就把 app-ads 里约 220 条落在主配置分组下的 `DOMAIN` 规则改成 `DOMAIN-SUFFIX`，并改回这一条 |
 | 虎牙开屏广告 | 素材下载（`business.msstatic.com/ssp/material/…`、P2P 节点 `business-qnpcdn.msstatic.com`）全部被拦，开屏仍出现，清缓存无效；推测是 App 长期保存的旧素材 | 主人过几天再看；还在就抓一份日志 |
 | 虎牙活动弹窗 | 可能来自 `diy-assets.msstatic.com/hyys/activity/…` 的图片或 `hd.huya.com` 的网页，未确认 | 主人截图确认后只拦对应路径；不要整个拦 `hd.huya.com`（活动页、可能还有充值页都在上面） |
