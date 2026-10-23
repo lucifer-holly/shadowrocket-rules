@@ -25,6 +25,7 @@ DOMAIN,ads.snapchat.com,REJECT
 DOMAIN,ads.yahoo.de,REJECT
 DOMAIN,adv-adlog.variflight.com,REJECT
 DOMAIN,adv-ads.variflight.com,REJECT
+DOMAIN,adv.ccb.com,REJECT
 DOMAIN,adx-os.bridgeturbo.com,REJECT
 DOMAIN,adx.adtaipo.com,REJECT
 DOMAIN,adx.yiche.com,REJECT
@@ -82,6 +83,7 @@ DOMAIN,httpdns.yunxindns.com,REJECT
 DOMAIN,huyafile.msstatic.com,REJECT
 DOMAIN,i-lq.snssdk.com,REJECT
 DOMAIN,icloud-amap.com,REJECT
+DOMAIN,imageadv.ccb.com,REJECT
 DOMAIN,info4.video.qq.com,REJECT
 DOMAIN,info6.video.qq.com,REJECT
 DOMAIN,iqiyim.adtrack.enlightent.cn,REJECT

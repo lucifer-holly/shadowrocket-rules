@@ -83,6 +83,15 @@ class IntegrationTests(unittest.TestCase):
                           ('https://amdc.alipay.com/amdc/mobileDispatch',ua),('http://59.82.113.219/gw/mtop.x/1.0/',ua)]:
             self.assertFalse(hit(url,agent),(url,agent))
         self.assertTrue(is_blocked('acs.m.goofish.com',self.rules) is False)
+    def test_ccb_ad_hosts_from_device_log(self):
+        # 建设银行 App (2026-10-23 log): ad pictures over plain HTTP and the ad server go; banking hosts stay reachable and undecrypted.
+        for h in ['imageadv.ccb.com','adv.ccb.com']:
+            with self.subTest(blocked=h):self.assertTrue(is_blocked(h,self.rules))
+        for h in ['login1.ccb.com','mobile3.ccb.com','mb1.mp.ccb.com','mp3.ccb.com','ebanking3.ccb.com.cn','push2.msgpush.ccb.com','www.ccb.com']:
+            with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
+        protected=load_policy()['never_mitm_suffixes']
+        for s in ['ccb.com','ccb.cn','ccb.com.cn','citicbank.com','citicbank.cn','ecitic.com']:
+            with self.subTest(protected=s):self.assertIn(s,protected)
     def test_jump_endpoints_from_device_log(self):
         # Jump 3.30 (2026-10-23 log, switch.jumpvg.com decrypted): only ad and popup calls are answered with {}.
         patterns=[r['pattern'] for r in self.apps['jump']['rules']]

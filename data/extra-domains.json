@@ -13,5 +13,7 @@
   {"type":"DOMAIN-SUFFIX","domain":"business-qnpcdn.msstatic.com","reason":"虎牙开屏广告素材的 P2P 加速节点；主地址 business.msstatic.com 已拦（2026-10-22 设备日志）"},
   {"type":"DOMAIN-SUFFIX","domain":"wax.weibo.com","reason":"微博广告投放主机；同名的 wax.weibo.com.cn 上游已拦，fmz200 与 iKeLee 的微博规则也拦"},
   {"type":"DOMAIN-SUFFIX","domain":"dsp.edm.weibo.cn","reason":"微博广告 DSP（Demand-Side Platform，需求方平台）"},
-  {"type":"DOMAIN-SUFFIX","domain":"adpinpai.video.weibocdn.com","reason":"微博品牌广告视频；主配置里 weibocdn.com 直连，所以写 DOMAIN-SUFFIX"}
+  {"type":"DOMAIN-SUFFIX","domain":"adpinpai.video.weibocdn.com","reason":"微博品牌广告视频；主配置里 weibocdn.com 直连，所以写 DOMAIN-SUFFIX"},
+  {"type":"DOMAIN","domain":"imageadv.ccb.com","reason":"建设银行 App 的广告图片，明文 HTTP 的 /adpic/…/ad/ 路径；启动后营销弹窗的图片（2026-10-23 设备日志）"},
+  {"type":"DOMAIN","domain":"adv.ccb.com","reason":"建设银行 App 的广告服务器，启动时与广告图片同时连接；只拦这一台，登录和交易主机不碰（2026-10-23 设备日志）"}
 ]}

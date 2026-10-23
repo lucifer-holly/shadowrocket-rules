@@ -46,6 +46,7 @@ DOMAIN,adshows.21cn.com,REJECT
 DOMAIN,adsstatic.vivo.com.cn,REJECT
 DOMAIN,adv-adlog.variflight.com,REJECT
 DOMAIN,adv-ads.variflight.com,REJECT
+DOMAIN,adv.ccb.com,REJECT
 DOMAIN,advertise.baicizhan.org,REJECT
 DOMAIN,adx-os.bridgeturbo.com,REJECT
 DOMAIN,adx.adtaipo.com,REJECT
@@ -125,6 +126,7 @@ DOMAIN,huyafile.msstatic.com,REJECT
 DOMAIN,i-lq.snssdk.com,REJECT
 DOMAIN,iadmatapk.nosdn.127.net,REJECT
 DOMAIN,icloud-amap.com,REJECT
+DOMAIN,imageadv.ccb.com,REJECT
 DOMAIN,imgadpai.thepaper.cn,REJECT
 DOMAIN,info4.video.qq.com,REJECT
 DOMAIN,info6.video.qq.com,REJECT
