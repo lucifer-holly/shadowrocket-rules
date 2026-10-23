@@ -11,7 +11,7 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | 较小域名库（与 base 二选一） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/lite.sgmodule |
 | 开屏与应用内广告（手机，需证书，推荐） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule |
 | 仅自维护 App 路径规则（与 app-ads 二选一） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps-all.sgmodule |
-| 哔哩哔哩/知乎响应处理（实验） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule |
+| 哔哩哔哩/知乎/公众号响应处理（实验） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule |
 | YouTube 去广告（实验，第三方脚本已审核并固定版本） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/youtube.sgmodule |
 | 微博完整版去广告与精简（实验，需证书） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/weibo.sgmodule |
 | 主配置示例（优先保留原配置） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/adblock-example.conf |

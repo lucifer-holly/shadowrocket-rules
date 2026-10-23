@@ -1,13 +1,14 @@
-#!name=去广告③ 信息流净化·B站/知乎（需证书）
-#!desc=删除哔哩哔哩、知乎推荐流里明确标注的广告卡片；需 HTTPS 解密与本机证书模块；未知内容原样返回
+#!name=去广告③ 信息流净化·B站/知乎/公众号（需证书）
+#!desc=删除哔哩哔哩、知乎推荐流里明确标注的广告卡片，以及微信公众号文章底部的广告位；需 HTTPS 解密与本机证书模块；未知内容原样返回
 #!category=去广告
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
 
 [Script]
-personal-bili-feed = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/feed/index(?:/story)?(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js
-personal-bili-splash = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/splash/(?:list|show|event/list2)(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js
-personal-zhihu-feed = type=http-response,pattern=^https://api\.zhihu\.com/topstory/recommend(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js
+personal-bili-feed = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/feed/index(?:/story)?(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc.js
+personal-bili-splash = type=http-response,pattern=^https://app\.bilibili\.com/x/v2/splash/(?:list|show|event/list2)(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc.js
+personal-zhihu-feed = type=http-response,pattern=^https://api\.zhihu\.com/topstory/recommend(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc.js
+personal-wechat-article-ad = type=http-response,pattern=^https://mp\.weixin\.qq\.com/mp/getappmsgad(?:\?|$),requires-body=true,max-size=1048576,timeout=5,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/response-cleaner.abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc.js
 
 [MITM]
-hostname = %APPEND% api.zhihu.com, app.bilibili.com
+hostname = %APPEND% api.zhihu.com, app.bilibili.com, mp.weixin.qq.com

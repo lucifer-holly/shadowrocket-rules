@@ -2,9 +2,9 @@
   "scripts": [
     {
       "path": "scripts/response-cleaner.js",
-      "sha256": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
+      "sha256": "abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc",
       "license": "GPL-3.0-only",
-      "review": "Original implementation reviewed: exact JSON endpoints; pass-through on unknown shapes/errors; no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified."
+      "review": "Original implementation reviewed: exact JSON endpoints (Bilibili feed and splash, Zhihu recommend, WeChat article ad call mp.weixin.qq.com/mp/getappmsgad). WeChat: deletes only keys containing \"advertisement\", at most six levels deep, so read counts, likes, comments and other fields stay; it is the only route parsed without a JSON content type, and non-JSON still passes. Pass-through on unknown shapes/errors; no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified."
     },
     {
       "path": "scripts/weibo.js",
@@ -28,6 +28,11 @@
       "path": "dist/scripts/weibo.daab057fb22cd6bb56bb9b98abf102ae8284a1189ad491f73dc5100c00171ba1.js",
       "sha256": "daab057fb22cd6bb56bb9b98abf102ae8284a1189ad491f73dc5100c00171ba1",
       "review": "Original implementation reviewed 2026-10-22: exact api.weibo.cn/2/ paths listed in data/weibo.json. Removes only entries the API marks as ads or promotions (mblogtypename 广告/热推, promotion objects, ad flags, ad item ids, wide banner card types 118/247) and recommendation modules: named trend cards and non-post modules whose wording is a recommendation (推荐优质博主, 可能感兴趣, 推荐关注, 为你推荐); posts are never matched by wording and groups holding a profile header are never removed. In the owner's own following list (containers 231093…) it removes people the API marks as not followed (following false) and the recommendation headings above them. On the 我 page it removes modules and entries by visible name (钱包, 任务, AI伴聊, 活动, 红包, 会员, 商城, 游戏, 直播 and similar) plus known event/task ids; 相册, 赞/收藏, 草稿箱, 设置 and unknown modules stay. Post pages lose related-recommendation, product-placement and follow blocks, recommendation groups and the share card (other cards only when marked as ads); comment and repost areas lose ad and recommended entries; hot-search rows stay unless promoted. API errors, non-JSON, unknown shapes and other paths pass unchanged. No network, storage, notifications or logs. Synthetic fixtures only; iOS not verified. Superseded the same day by a stricter following-list section rule and a posts-group guard; kept for modules cached in between."
+    },
+    {
+      "path": "dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js",
+      "sha256": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
+      "review": "Original implementation reviewed: exact JSON endpoints; pass-through on unknown shapes/errors; no external requests, storage, logging, authentication or payment edits. Synthetic fixtures only; iOS not verified. Superseded 2026-10-23 when the WeChat article-ad route was added; kept for modules cached in between."
     }
   ],
   "third_party": [

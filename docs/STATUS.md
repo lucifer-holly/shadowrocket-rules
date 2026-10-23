@@ -1,11 +1,11 @@
 # 当前状态与交接
 
-最后更新：2026-10-22。每次工作结束时更新本页：做了什么、在等主人什么、临时措施什么时候撤掉。已有的真机结果见 [DEVICE_RESULTS](DEVICE_RESULTS.md)，网络规则做不到的事见 [TROUBLESHOOTING](TROUBLESHOOTING.md)。
+最后更新：2026-10-23。每次工作结束时更新本页：做了什么、在等主人什么、临时措施什么时候撤掉。已有的真机结果见 [DEVICE_RESULTS](DEVICE_RESULTS.md)，网络规则做不到的事见 [TROUBLESHOOTING](TROUBLESHOOTING.md)。
 
 ## 主人的设备
 
 - iPhone（iOS 27）+ Mac，Shadowrocket「配置」模式，节点是主人自建的 DMIT 服务器。
-- 手机启用：主配置、去广告①（base）、去广告②（app-ads）、去广告⑤（weibo）、本机证书模块；③④按需。Mac 只用主配置。
+- 手机启用：主配置、去广告①（base）、去广告②（app-ads）、去广告⑤（weibo）、本机证书模块；③④按需（③也管公众号文章的广告位）。Mac 只用主配置。
 - 模块分工（2026-10-22 整理）：广告域名、IP 的拦截全部在①，fmz200 插件的静态域名也并进①统一去重；②③④⑤只放各 App 的接口规则和脚本（②里另有按网址 + User-Agent 拦的少数明文请求，见 `connection_rules`）。`tools/validate.py` 检查任何模块的重写或域名拦截都不会抢先挡掉另一个模块的脚本。
 - 微博：主人改用「微博」完整版（同一账号在完整版里一切正常），轻享版不再维护。
 
@@ -21,6 +21,7 @@
 | 虎牙活动弹窗 | 可能来自 `diy-assets.msstatic.com/hyys/activity/…` 的图片或 `hd.huya.com` 的网页，未确认 | 主人截图确认后只拦对应路径；不要整个拦 `hd.huya.com`（活动页、可能还有充值页都在上面） |
 | 虎牙未成年提示 | 日志里没有对应请求，可能是本地弹窗 | 暂不处理 |
 | 被拦后的高频重试 | 虎牙的 `cdn.wup.huya.com/launch/queryHttpDns`、`livewebbs2.msstatic.com` 被拦后每秒重试多次 | 影响耗电时再试：域名解析接口改用 `reject-dict`，或评估放行 `livewebbs2` |
+| 微信朋友圈、公众号广告 | 2026-10-23 主人反馈：两处广告都只剩文字和占位，图片没了。没有用微信时的日志；按规则推测图片是去广告①拦的：anti-AD 整个拦 `wxs.qq.com`（微信广告素材的地址），公众号正文图片 `mmbiz.qpic.cn`、视频 `mpvideo.qpic.cn` 不受影响。朋友圈广告卡片走微信自己的加密通道，网络规则删不掉。公众号文章的广告位来自 `mp.weixin.qq.com/mp/getappmsgad`：②一直解密这个主机（还带着 fmz200 拦商品卡片的 `cps_product_info`），但 fmz200 处理广告位用的是改响应内容的规则、不是拦截规则，导入时没带上；现在由③删掉响应里名字带 advertisement 的字段，效果同 fmz200、ddgksf2013 的规则 | 主人添加或更新③后，打开之前有广告的公众号文章，看广告位是否消失、阅读数和留言是否正常。还在就抓日志，看文章页实际请求了哪些 `mp.weixin.qq.com` 接口（oo226/egern-config PR #143 的日志里没出现 getappmsgad，广告却还在）。正文图片或视频打不开时，放行 `wximg.wxs.qq.com`、`wxsmw.wxs.qq.com`（同一 PR 认为整域拦 `wxs.qq.com` 会误伤）。朋友圈广告只能在微信里点「广告」→ 不感兴趣 |
 | 中国电信号码认证 `id6.me` | 上游列表拦截；用电信卡时「本机号码一键登录」可能失败，短信登录不受影响 | 主人需要时加进 allowlist |
 
 ## 临时措施

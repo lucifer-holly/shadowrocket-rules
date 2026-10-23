@@ -28,6 +28,7 @@
 - Modifications: `tools/plugin_import.py` keeps only static `DOMAIN`/`DOMAIN-SUFFIX`/narrow `IP-CIDR` REJECT rules and `reject`-family URL rewrites, converts them to Shadowrocket module syntax, removes protected hosts and critical-URL matches, and narrows MITM hostnames to those the kept rules need (always a subset of the plugin's own list). The domain and IP rules are merged and deduplicated with the other domain sources into `dist/rules/` and the domain modules (`base`, `lite`); the rewrites and MITM hostnames form `dist/modules/app-ads.sgmodule`.
 - This project does not redistribute as runtime code or execute the upstream plugin's scripts, jq filters, body rewrites, redirects, arguments, account handling or entitlement changes.
 - Bilibili JSON field/route observations were checked against the same public plugin. The response-cleaner implementation is original, small and narrower in scope; it does not copy the plugin's broader content filtering or account features.
+- The WeChat article-ad route (`mp.weixin.qq.com/mp/getappmsgad`) and its `advertisement` field names come from the same plugin, which renames those fields with a body-replace rule that is not imported. `scripts/response-cleaner.js` deletes the fields with its own code.
 
 ## Maasea/sgmodule — YouTube response script (pinned copy)
 

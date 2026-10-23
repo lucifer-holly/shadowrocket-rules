@@ -179,8 +179,8 @@ def outputs(root=ROOT):
     routes = read_json(root/'data/script-routes.json')
     script_lines = [f"personal-{r['id']} = type=http-response,pattern={r['pattern']},requires-body=true,max-size=1048576,timeout=5,script-path={base}/{script_rel}" for r in routes]
     hosts = sorted({h for r in routes for h in r['hosts']})
-    out['dist/modules/response-cleaner.sgmodule'] = module('去广告③ 信息流净化·B站/知乎（需证书）',
-        [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '删除哔哩哔哩、知乎推荐流里明确标注的广告卡片；需 HTTPS 解密与本机证书模块；未知内容原样返回')
+    out['dist/modules/response-cleaner.sgmodule'] = module('去广告③ 信息流净化·B站/知乎/公众号（需证书）',
+        [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '删除哔哩哔哩、知乎推荐流里明确标注的广告卡片，以及微信公众号文章底部的广告位；需 HTTPS 解密与本机证书模块；未知内容原样返回')
     out.update(youtube_outputs(root, base))
     out.update(weibo_outputs(root, base, scripts['scripts/weibo.js']))
     weibo = read_json(root/'data/weibo.json')
@@ -206,7 +206,7 @@ def outputs(root=ROOT):
         ('较小域名库（与 base 二选一）','dist/modules/lite.sgmodule'),
         ('开屏与应用内广告（手机，需证书，推荐）','dist/modules/app-ads.sgmodule'),
         ('仅自维护 App 路径规则（与 app-ads 二选一）','dist/modules/apps-all.sgmodule'),
-        ('哔哩哔哩/知乎响应处理（实验）','dist/modules/response-cleaner.sgmodule'),
+        ('哔哩哔哩/知乎/公众号响应处理（实验）','dist/modules/response-cleaner.sgmodule'),
         ('YouTube 去广告（实验，第三方脚本已审核并固定版本）','dist/modules/youtube.sgmodule'),
         ('微博完整版去广告与精简（实验，需证书）','dist/modules/weibo.sgmodule'),
         ('主配置示例（优先保留原配置）','dist/config/adblock-example.conf'),

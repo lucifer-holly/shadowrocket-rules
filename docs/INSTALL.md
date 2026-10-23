@@ -28,6 +28,7 @@
 - 哔哩哔哩 JSON 推荐流中有明确广告标记的条目；保留正常视频、直播、分页字段。
 - 哔哩哔哩开屏 JSON 的 `show`、`event_list` 数组。
 - 知乎推荐流中明确 `type=ad` 的条目。
+- 微信公众号文章底部的广告位（`mp.weixin.qq.com/mp/getappmsgad` 里名字带 advertisement 的字段）；阅读数、点赞、留言等其余内容不动。朋友圈广告走微信自己的加密通道，规则改不了。
 
 它不处理 gRPC / Protobuf。对于未知结构、应用错误码、非成功 HTTP 状态、非 JSON 或超过 1 MiB 的响应，原样返回。样例是合成数据，不能代表当前所有 App 版本。
 

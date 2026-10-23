@@ -1,5 +1,6 @@
 [
   {"id":"bili-feed","pattern":"^https://app\\.bilibili\\.com/x/v2/feed/index(?:/story)?(?:\\?|$)","hosts":["app.bilibili.com"],"positive":"https://app.bilibili.com/x/v2/feed/index?idx=1"},
   {"id":"bili-splash","pattern":"^https://app\\.bilibili\\.com/x/v2/splash/(?:list|show|event/list2)(?:\\?|$)","hosts":["app.bilibili.com"],"positive":"https://app.bilibili.com/x/v2/splash/list?build=1"},
-  {"id":"zhihu-feed","pattern":"^https://api\\.zhihu\\.com/topstory/recommend(?:\\?|$)","hosts":["api.zhihu.com"],"positive":"https://api.zhihu.com/topstory/recommend?limit=10"}
+  {"id":"zhihu-feed","pattern":"^https://api\\.zhihu\\.com/topstory/recommend(?:\\?|$)","hosts":["api.zhihu.com"],"positive":"https://api.zhihu.com/topstory/recommend?limit=10"},
+  {"id":"wechat-article-ad","pattern":"^https://mp\\.weixin\\.qq\\.com/mp/getappmsgad(?:\\?|$)","hosts":["mp.weixin.qq.com"],"positive":"https://mp.weixin.qq.com/mp/getappmsgad?__biz=example&mid=1"}
 ]
