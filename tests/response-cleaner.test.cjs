@@ -36,12 +36,9 @@ test('deterministic and idempotent', () => {
   const input={code:0,data:{items:[{card_goto:'ad_av'},{card_goto:'av',title:'normal'}]}};
   const out=run(bili,input);assert.deepEqual(run(bili,input),out);assert.deepEqual(run(bili,out.body),{});
 });
-test('WeChat article ads are removed even when the reply is not labelled JSON', () => {
-  const url = 'https://mp.weixin.qq.com/mp/getappmsgad?__biz=x';
-  const result = run(url, {advertisement_num: 1, appmsgstat: {read_num: 3}}, {headers: {'Content-Type': 'text/html; charset=utf-8'}});
-  assert.deepEqual(JSON.parse(result.body), {appmsgstat: {read_num: 3}});
-  for (const other of ['https://mp.weixin.qq.com/s/abc', 'https://mp.weixin.qq.com/mp/getappmsgext?x=1', 'https://mp.weixin.qq.com.evil.test/mp/getappmsgad'])
-    assert.deepEqual(run(other, {advertisement_num: 1}), {}, other);
+test('WeChat calls are left to the WeChat module', () => {
+  for (const url of ['https://mp.weixin.qq.com/mp/getappmsgad?f=json', 'https://mp.weixin.qq.com/s/abc'])
+    assert.deepEqual(run(url, {advertisement_num: 1, advertisement_info: [{}]}), {}, url);
 });
 test('upstream auth error is preserved', () => assert.deepEqual(run(bili,{code:-101,data:{items:[{card_goto:'ad_av'}]}}),{}));
 

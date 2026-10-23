@@ -16,6 +16,8 @@
 | `scripts/response-cleaner.js` | 原创 JSON 过滤代码，不访问网络、存储或凭据 |
 | `data/weibo.json` | 微博完整版模块（去广告⑤）：唯一的解密主机、直接回空 JSON 的推广接口、脚本处理的接口路径，以及任何规则都不许匹配的登录/私信/发布地址 |
 | `scripts/weibo.js` | 原创微博 JSON 过滤代码；接口表 `ROUTES` 与 `data/weibo.json` 的路径一一对应，测试会核对 |
+| `data/wechat.json` | 微信公众号文章模块（去广告⑥）：唯一的解密主机 `mp.weixin.qq.com`（②不再导入这个主机的规则）、文章页和广告数据两条脚本入口、回空 JSON 的推广接口，以及任何规则都不许匹配的文章功能地址；文章页入口是唯一允许碰关键网址探针的脚本，探针要写在 `probes` 里 |
+| `scripts/wechat.js` | 原创公众号文章过滤代码：给文章页加隐藏广告位的样式、删转发表里的广告项，删广告数据里的 advertisement 字段；依据见 `docs/WECHAT.md` |
 | `sources/scripts.lock.json` | 当前脚本审核指纹和历史脚本保留清单 |
 | `data/extra-domains.json` | 自己加的广告域名，进入 base/lite；每条写明原因 |
 | `data/allowlist.json` | 从广告库中移除的域名例外；不输出 DIRECT，不改变路由 |
@@ -82,6 +84,7 @@ make test
 | 自动导入的规则让某个 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` 填该 App 的主机（包含子域），该主机不再被导入规则拦截、重写或解密；只想去掉某一条时填 `exclude_patterns` |
 | 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会把它的静态域名并入去广告①、重写并入 app-ads |
 | 微博完整版又出现某种广告或推荐卡片 | 抓日志找到接口。路径已在 `data/weibo.json` 里，就改 `scripts/weibo.js` 里对应的处理函数；新接口同时加进 `data/weibo.json` 的 `scripts` 和脚本的 `ROUTES`。两种情况都在 `tests/fixtures/weibo.json` 加样例，并按下文更新脚本哈希与审核说明 |
+| 公众号文章又出现广告位 | 按 `docs/WECHAT.md` 的「维护」一节复查页面代码：广告容器换了类名就改 `scripts/wechat.js` 的样式，转发表换了格式就改它的匹配；在 `tests/wechat-script.test.cjs` 加样例，并按下文更新脚本哈希与审核说明 |
 | 想在日志里看到某个主机的完整地址（找广告接口） | `data/app-ads-overrides.json` 的 `observe_hosts`：只解密，不拦截也不改写；规则写好后删掉这一项 |
 | 永不解密或永不误拦的关键站点 | `data/policy.json` 的 `never_mitm_suffixes`、`critical_url_probes` |
 

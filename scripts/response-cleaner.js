@@ -14,14 +14,12 @@
     Object.keys($response.headers || {}).forEach(function (k) {
       if (k.toLowerCase() === 'content-type') contentType = String($response.headers[k]);
     });
+    if (contentType && !/json/i.test(contentType)) return {};
     var url = String($request.url || '');
     var bili = /^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index(?:\/story)?(?:\?|$)/.test(url);
     var splash = /^https:\/\/app\.bilibili\.com\/x\/v2\/splash\/(?:list|show|event\/list2)(?:\?|$)/.test(url);
     var zhihu = /^https:\/\/api\.zhihu\.com\/topstory\/recommend(?:\?|$)/.test(url);
-    var wechat = /^https:\/\/mp\.weixin\.qq\.com\/mp\/getappmsgad(?:\?|$)/.test(url);
-    if (!bili && !splash && !zhihu && !wechat) return {};
-    // The article ad call is not always labelled JSON; parsing below still rejects anything else.
-    if (!wechat && contentType && !/json/i.test(contentType)) return {};
+    if (!bili && !splash && !zhihu) return {};
     var obj;
     try { obj = JSON.parse(body); } catch (_) { return {}; }
     if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return {};
@@ -46,16 +44,6 @@
           obj.data[key] = []; changed = true;
         }
       });
-    }
-    if (wechat) {
-      // WeChat article pages draw the ad slots only from advertisement* fields; everything else stays.
-      (function strip(node, depth) {
-        if (!node || typeof node !== 'object' || depth > 6) return;
-        Object.keys(node).forEach(function (k) {
-          if (/advertisement/i.test(k)) { delete node[k]; changed = true; }
-          else strip(node[k], depth + 1);
-        });
-      }(obj, 0));
     }
     if (zhihu && Array.isArray(obj.data)) {
       obj.data = filter(obj.data, function (item) {

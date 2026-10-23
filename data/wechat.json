@@ -1,0 +1,31 @@
+{
+  "description": "WeChat module (去广告⑥) for Official Account articles. Only mp.weixin.qq.com is decrypted; this module owns that host, so app-ads imports no rule or decryption there. scripts: routes handled by scripts/wechat.js, each with sample URLs; probes lists the critical content URLs a route touches on purpose (only the article page, whose script adds a style element and edits the ad entries of the transfer table, nothing else). rewrites answer pure ad calls with an empty JSON object. negative: article functions no rewrite or script may match. Findings behind each rule: docs/WECHAT.md.",
+  "mitm": ["mp.weixin.qq.com"],
+  "scripts": [
+    {"id": "article", "pattern": "^https://mp\\.weixin\\.qq\\.com/s(?:/|\\?)", "max_size": 5242880, "timeout": 10,
+     "reason": "文章页：加一段样式隐藏广告位（文末、文中、赞助、评论区、关键词广告和商品推广卡片），并把广告请求移出微信原生通道的转发表，让它们回到普通 HTTPS",
+     "positive": ["https://mp.weixin.qq.com/s/r6pfSU-88e86cUjxp3yFnQ", "https://mp.weixin.qq.com/s?__biz=MzI5NjUyNzkxMg==&mid=2247487541&idx=1&sn=example"],
+     "probes": ["https://mp.weixin.qq.com/s/abc"]},
+    {"id": "ad", "pattern": "^https://mp\\.weixin\\.qq\\.com/mp/getappmsgad(?:\\?|$)", "max_size": 1048576, "timeout": 5,
+     "reason": "文章的广告数据：删掉名字带 advertisement 的字段，页面就不画广告；fmz200 插件改的也是这些字段",
+     "positive": ["https://mp.weixin.qq.com/mp/getappmsgad?f=json&mockid=&rtx="]}
+  ],
+  "rewrites": [
+    {"pattern": "^https://mp\\.weixin\\.qq\\.com/mp/cps_product_info\\?action=", "action": "reject-dict",
+     "reason": "文章里按成交返佣的推广卡片（商品、小游戏、短剧）的数据；fmz200 插件同样整条拦截",
+     "positive": ["https://mp.weixin.qq.com/mp/cps_product_info?action=GetCpsVersion&kol_uin_c=example", "https://mp.weixin.qq.com/mp/cps_product_info?action=Detail"]}
+  ],
+  "negative": [
+    "https://mp.weixin.qq.com/mp/getappmsgext?f=json&mock=",
+    "https://mp.weixin.qq.com/mp/appmsg_comment?action=getcomment&__biz=example",
+    "https://mp.weixin.qq.com/mp/appmsg_like?__biz=example&action=like",
+    "https://mp.weixin.qq.com/mp/reward?action=getrewardlist",
+    "https://mp.weixin.qq.com/mp/videoplayer?action=get_mp_video_play_url",
+    "https://mp.weixin.qq.com/mp/readtemplate?t=pages/video_player_tmpl",
+    "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=example",
+    "https://mp.weixin.qq.com/mp/wapwxaproduct?action=get",
+    "https://mp.weixin.qq.com/mp/relatedarticle?action=getlist",
+    "https://mp.weixin.qq.com/cgi-bin/bizlogin?action=startlogin",
+    "https://mp.weixin.qq.com/cgi-bin/home?t=home/index"
+  ]
+}

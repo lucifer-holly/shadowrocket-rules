@@ -2,7 +2,7 @@
 
 个人 Shadowrocket 规则仓库：**手机和 Mac 共用一个远程主配置**（国内直连、国外代理、旧配置要求代理的站点全部继续代理），手机再加去广告模块（域名拦截、开屏与应用内广告）。保留自己的 DMIT 节点和「配置」路由模式。所有文件都放在本仓库，第三方规则以快照形式保存并由 GitHub Actions 每天跟踪；仓库不包含节点、账号、证书或私人服务器地址。
 
-当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；去广告①含 anti-AD、HaGeZi Light 和 fmz200 去广告插件的静态域名，合并去重后约 14.6 万条（每天自动更新）；`app-ads` 只含各 App 的接口规则：fmz200 插件的约 1,100 条静态拒绝重写、19 条自维护路径规则，以及 1 条只对闲鱼生效的调度请求拦截；另有哔哩哔哩与知乎的 3 条 JSON 响应处理，微博完整版的 34 个接口过滤和 11 条推广接口拦截。各模块之间没有重复的规则，`tools/validate.py` 会检查一个模块的规则不会抢先拦掉另一个模块要处理的接口。已在主人的 iPhone 上用真实请求日志验证了部分 App（见 [真机验收记录](docs/DEVICE_RESULTS.md)），其余只经过离线检查与合成样例测试。规则数量不等于广告拦截率。
+当前数据：主配置保留旧配置全部 257 条显式 PROXY 规则；去广告①含 anti-AD、HaGeZi Light 和 fmz200 去广告插件的静态域名，合并去重后约 14.6 万条（每天自动更新）；`app-ads` 只含各 App 的接口规则：fmz200 插件的约 1,100 条静态拒绝重写、19 条自维护路径规则，以及 1 条只对闲鱼生效的调度请求拦截；另有哔哩哔哩与知乎的 3 条 JSON 响应处理，微博完整版的 34 个接口过滤和 11 条推广接口拦截，以及公众号文章的广告位隐藏（见 [微信分析](docs/WECHAT.md)）。各模块之间没有重复的规则，`tools/validate.py` 会检查一个模块的规则不会抢先拦掉另一个模块要处理的接口。已在主人的 iPhone 上用真实请求日志验证了部分 App（见 [真机验收记录](docs/DEVICE_RESULTS.md)），其余只经过离线检查与合成样例测试。规则数量不等于广告拦截率。
 
 ## 先用起来
 
@@ -11,14 +11,15 @@
 | 主配置（「配置」页导入，不是模块） | 手机 + Mac | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/main.conf` |
 | 去广告① 广告域名拦截（免证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/base.sgmodule` |
 | 去广告② App 开屏与应用内广告（需证书） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/app-ads.sgmodule` |
-| 去广告③ 信息流净化·B站/知乎/公众号（需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
+| 去广告③ 信息流净化·B站/知乎（需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
 | 去广告④ YouTube（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/youtube.sgmodule` |
 | 去广告⑤ 微博完整版（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/weibo.sgmodule` |
+| 去广告⑥ 微信公众号文章（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/wechat.sgmodule` |
 | 本机证书（你自己建的本地模块，不在仓库里） | 手机 | — |
 
 1. 备份旧配置。两台设备都在「配置」页从 URL 添加主配置并使用，首页选 DMIT 节点，路由选「配置」，打开配置与模块的自动后台更新。
 2. 手机在「模块」页添加 `base`（资源不足换 `lite`，二选一），先验证网页、AI、微信、登录、支付和 SSH。
-3. 手机生成并信任 HTTPS 解密证书，**再建一个只存在手机上的本地证书模块**，否则远程主配置更新后证书会失效。然后添加 `app-ads`，需要时加 `response-cleaner`、`youtube`、`weibo`（后两个是实验模块）。
+3. 手机生成并信任 HTTPS 解密证书，**再建一个只存在手机上的本地证书模块**，否则远程主配置更新后证书会失效。然后添加 `app-ads`，需要时加 `response-cleaner`、`youtube`、`weibo`、`wechat`（后三个是实验模块）。
 4. 完全退出目标 App 后重新打开，检查开屏、登录、下单、支付和视频播放。异常时先关 `app-ads`，再关 `base`。
 
 逐步操作、证书模块模板、分流顺序见 [两端共用配置](docs/DEVICE_PROFILES.md)；证书与模块细节见 [安装说明](docs/INSTALL.md)。菜单名称可能随 Shadowrocket/iOS 版本变化，真实解析和业务行为需要在设备上验收。
@@ -76,6 +77,6 @@ GitHub Actions 每天北京时间约 **12:17** 检查三个第三方数据源：
 
 ## 能做到的范围
 
-域名规则覆盖 App 与 Safari 的独立广告/跟踪请求；可选重写与脚本覆盖列明的接口。Shadowrocket 不负责 Safari 页面元素隐藏、App UI 布局修改（`weibo` 模块只能删掉接口返回的推荐卡片等内容，改不了 App 自带的布局），也不能保证过滤证书锁定、加密/Protobuf 响应、本地素材或视频服务端拼接广告。YouTube、抖音等没有“全去广告”的承诺。
+域名规则覆盖 App 与 Safari 的独立广告/跟踪请求；可选重写与脚本覆盖列明的接口。Shadowrocket 不负责 Safari 页面元素隐藏、App UI 布局修改（`weibo` 模块只能删掉接口返回的推荐卡片等内容，改不了 App 自带的布局；`wechat` 模块只在公众号文章页里加一段隐藏广告位的样式），也不能保证过滤证书锁定、加密/Protobuf 响应、本地素材或视频服务端拼接广告。YouTube、抖音等没有“全去广告”的承诺。
 
 仓库采用 GPL-3.0-only；第三方快照保留各自许可与署名，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。许可不明确的脚本没有被打包为运行依赖。

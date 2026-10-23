@@ -110,6 +110,35 @@ def check_weibo(spec, policy, blocklists):
         if any(is_blocked(host,listed) for listed in blocklists):raise ValueError('domain block shadows Weibo module: '+host)
 
 
+def check_wechat(spec, policy, blocklists):
+    # Only the article page may touch a critical content URL, and only the probes it names; article functions stay untouched.
+    routes=[re.compile(r['pattern']) for r in spec['scripts']]
+    rewrites=[re.compile(r['pattern']) for r in spec['rewrites']]
+    probes=policy['critical_url_probes']
+    if len({r['id'] for r in spec['scripts']})!=len(spec['scripts']):raise ValueError('WeChat script ids must be unique')
+    for route,compiled in zip(spec['scripts'],routes):
+        if not route['pattern'].startswith('^https://mp\\.weixin\\.qq\\.com/') or not route['reason'] or not route['positive']:
+            raise ValueError('unsafe WeChat script route: '+route['pattern'][:120])
+        if not all(compiled.search(u) for u in route['positive']):raise ValueError('WeChat script sample fails: '+route['id'])
+        touched=sorted(u for u in probes if compiled.search(u))
+        if touched!=sorted(route.get('probes',[])) or (touched and route['id']!='article'):
+            raise ValueError('WeChat script reaches critical URLs it does not declare: '+route['id'])
+    for rule,compiled in zip(spec['rewrites'],rewrites):
+        if rule['action']!='reject-dict' or not rule['pattern'].startswith('^https://mp\\.weixin\\.qq\\.com/mp/') or not rule['reason'] or not rule['positive']:
+            raise ValueError('unsafe WeChat rewrite: '+rule['pattern'][:120])
+        for url in rule['positive']:
+            if not compiled.search(url) or any(r.search(url) for r in routes):raise ValueError('WeChat rewrite sample fails or overlaps a script route: '+url)
+    for url in [u for r in spec['scripts'] for u in r['positive']]:
+        if any(r.search(url) for r in rewrites):raise ValueError('rewrite shadows WeChat script: '+url)
+    for url in spec['negative']:
+        if any(r.search(url) for r in routes+rewrites):raise ValueError('WeChat module matches a protected URL: '+url)
+    for url in probes:
+        if any(r.search(url) for r in rewrites):raise ValueError('WeChat rewrite matches a critical URL: '+url)
+    for host in spec['mitm']:
+        domain(host)
+        if any(is_blocked(host,listed) for listed in blocklists):raise ValueError('domain block shadows WeChat module: '+host)
+
+
 def scan_public(root=ROOT):
     patterns=[re.compile(r'-----BEGIN (?:[A-Z ]*PRIVATE KEY|PKCS12)-----'),
               re.compile(r'(?:ss|ssr|vmess|vless|trojan|hysteria2)://[A-Za-z0-9+/_=-]{8,}'),
@@ -177,12 +206,19 @@ def validate(root=ROOT):
             if is_blocked(h,rules):raise ValueError('domain blocks response script')
     weibo=read_json(root/'data/weibo.json')
     check_weibo(weibo,policy,[rules,imported['domains']])
+    wechat=read_json(root/'data/wechat.json')
+    check_wechat(wechat,policy,[rules,imported['domains']])
+    # The WeChat module owns its host: no other module decrypts it, so no other rule can reach those pages.
+    others=set(imported['mitm'])|{h for app in apps.values() for r in app['rules'] for h in r['hosts']}
+    others|={h for r in read_json(root/'data/script-routes.json') for h in r['hosts']}|set(weibo['mitm'])
+    if set(wechat['mitm'])&others:raise ValueError('another module decrypts a WeChat module host: '+', '.join(sorted(set(wechat['mitm'])&others)))
     # The modules run together: no rewrite in any module and no domain block may pre-empt another module's script.
-    rewrites=patterns+[p for p,_ in imported['rewrites']]+[r['pattern'] for r in weibo['rewrites']]
+    rewrites=patterns+[p for p,_ in imported['rewrites']]+[r['pattern'] for r in weibo['rewrites']]+[r['pattern'] for r in wechat['rewrites']]
     youtube=[f'https://youtubei.googleapis.com/youtubei/v1/{p}?key=example' for p in ['browse','next','player','search']]
     if not all(re.search(YOUTUBE_ROUTE,url) for url in youtube):raise ValueError('YouTube script samples are stale')
     samples=[r['positive'] for r in read_json(root/'data/script-routes.json')]+youtube
     samples+=[f'https://api.weibo.cn/2/{p}?gsid=example' for g in weibo['scripts'] for p in g['paths']]
+    samples+=[u for r in wechat['scripts'] for u in r['positive']]
     for url in samples:
         if any(re.search(p,url) for p in rewrites):raise ValueError('a rewrite pre-empts a response script: '+url)
         if is_blocked(urlsplit(url).hostname,rules):raise ValueError('a domain block pre-empts a response script: '+url)
@@ -221,7 +257,9 @@ def validate(root=ROOT):
                 m=re.search(r'script-path=([^,\s]+)',line)
                 if not m or not m[1].startswith(base+'/dist/scripts/'):raise ValueError('script is not self hosted')
                 route=re.search(r'pattern=([^,]+),',line)
-                if not route or any(re.search(route[1],url) for url in policy['critical_url_probes']):
+                # The WeChat article page is the one reviewed exception, limited to the probes data/wechat.json names.
+                exempt=next((set(r.get('probes',[])) for r in wechat['scripts'] if route and r['pattern']==route[1]),set()) if path.name=='wechat.sgmodule' else set()
+                if not route or any(re.search(route[1],url) and url not in exempt for url in policy['critical_url_probes']):
                     raise ValueError('response script matches a critical login/payment/content URL')
                 rel=m[1][len(base)+1:]
                 if rel not in manifest:raise ValueError('script dependency is missing')

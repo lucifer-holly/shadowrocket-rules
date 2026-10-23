@@ -194,12 +194,12 @@
       "domains": 2584,
       "dropped_bad_example": 7,
       "dropped_no_mitm": 145,
-      "dropped_override": 0,
+      "dropped_override": 1,
       "dropped_probe": 0,
       "dropped_protected_domain": 20,
-      "mitm_hosts": 730,
+      "mitm_hosts": 729,
       "networks": 34,
-      "rewrites": 1133
+      "rewrites": 1132
     }
   },
   "lite_rules": 69775,
@@ -214,7 +214,7 @@
     "v-huya-img2.msstatic.com"
   ],
   "protected_removed": 46,
-  "response_routes": 4,
+  "response_routes": 3,
   "source_counts": {
     "anti-ad": 103677,
     "hagezi-light": 68940,
@@ -222,6 +222,8 @@
   },
   "unique_before_policy": 156345,
   "url_rewrites": 19,
+  "wechat_rewrites": 1,
+  "wechat_script_routes": 2,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
 }

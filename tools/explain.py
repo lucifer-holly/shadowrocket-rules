@@ -25,6 +25,9 @@ def explain(value):
         weibo=read_json(ROOT/'data/weibo.json')
         result['rewrite_matches'] += [f"weibo ({r['action']})" for r in weibo['rewrites'] if re.search(r['pattern'],value)]
         result['script_matches'] += ['weibo-'+ident for ident,pattern in weibo_routes(weibo) if re.search(pattern,value)]
+        wechat=read_json(ROOT/'data/wechat.json')
+        result['rewrite_matches'] += [f"wechat ({r['action']})" for r in wechat['rewrites'] if re.search(r['pattern'],value)]
+        result['script_matches'] += ['wechat-'+r['id'] for r in wechat['scripts'] if re.search(r['pattern'],value)]
     result['routing']='未被本项目拦截的流量继续使用原主配置；本工具不模拟主配置路由或 HTTPS 解密状态。'
     return result
 
