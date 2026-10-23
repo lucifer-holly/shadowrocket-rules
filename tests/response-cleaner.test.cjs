@@ -36,7 +36,7 @@ test('deterministic and idempotent', () => {
   const input={code:0,data:{items:[{card_goto:'ad_av'},{card_goto:'av',title:'normal'}]}};
   const out=run(bili,input);assert.deepEqual(run(bili,input),out);assert.deepEqual(run(bili,out.body),{});
 });
-test('WeChat calls are left to the WeChat module', () => {
+test('WeChat calls pass unchanged', () => {
   for (const url of ['https://mp.weixin.qq.com/mp/getappmsgad?f=json', 'https://mp.weixin.qq.com/s/abc'])
     assert.deepEqual(run(url, {advertisement_num: 1, advertisement_info: [{}]}), {}, url);
 });

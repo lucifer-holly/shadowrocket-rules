@@ -23,7 +23,7 @@ APPS = {
     # 闲鱼's User-Agent is the URL-encoded app name; it also connects straight to IPs after the AMDC dispatch.
     'xianyu': (r'goofish|xianyu|idlefish', r'%E9%97%B2%E9%B1%BC|闲鱼|idlefish'),
     'jump': (r'vgjump|jumpvg', r'^Jump/'),
-    # Articles, their ad frames and ad media; the chat servers (*.weixin.qq.com long/short links) carry Moments ads unseen.
+    # Articles, their ad frames and ad media; Moments ads arrive unseen with the chat traffic (*.weixin.qq.com long/short links).
     'wechat': (r'weixin|wechat|wxs\.qq\.com|qpic\.cn|qlogo\.cn|servicewechat|daihuo\.qq\.com', r'MicroMessenger|WeChat'),
 }
 EMPTY_EXPORT = ('导出的文件里没有记录表（通常只有 4 KB）：导出时新记录还在临时文件里。\n'
@@ -55,8 +55,7 @@ def load_rows(path):
         con.close()
 
 
-DECRYPTING_MODULES = {'app-ads': 'app-ads 解密', 'weibo': '微博模块解密', 'response-cleaner': 'B站/知乎模块解密', 'youtube': 'YouTube 模块解密',
-                      'wechat': '微信模块解密'}
+DECRYPTING_MODULES = {'app-ads': 'app-ads 解密', 'weibo': '微博模块解密', 'response-cleaner': 'B站/知乎模块解密', 'youtube': 'YouTube 模块解密'}
 
 
 def rule_check(hosts):

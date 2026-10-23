@@ -28,7 +28,7 @@
 - Modifications: `tools/plugin_import.py` keeps only static `DOMAIN`/`DOMAIN-SUFFIX`/narrow `IP-CIDR` REJECT rules and `reject`-family URL rewrites, converts them to Shadowrocket module syntax, removes protected hosts and critical-URL matches, and narrows MITM hostnames to those the kept rules need (always a subset of the plugin's own list). The domain and IP rules are merged and deduplicated with the other domain sources into `dist/rules/` and the domain modules (`base`, `lite`); the rewrites and MITM hostnames form `dist/modules/app-ads.sgmodule`.
 - This project does not redistribute as runtime code or execute the upstream plugin's scripts, jq filters, body rewrites, redirects, arguments, account handling or entitlement changes.
 - Bilibili JSON field/route observations were checked against the same public plugin. The response-cleaner implementation is original, small and narrower in scope; it does not copy the plugin's broader content filtering or account features.
-- The WeChat article-ad route (`mp.weixin.qq.com/mp/getappmsgad`) and its `advertisement` field names come from the same plugin, which renames those fields with a body-replace rule that is not imported. `scripts/wechat.js` deletes the fields with its own code. The plugin's `cps_product_info` reject rule is re-stated in `data/wechat.json`, because the WeChat module owns that host and the importer skips it.
+- The WeChat article-ad route (`mp.weixin.qq.com/mp/getappmsgad`) and its `advertisement` field names come from the same plugin, which renames those fields with a body-replace rule that is not imported. The retired WeChat module deleted the fields with its own code (`dist/scripts/wechat.<SHA-256>.js`, kept as an archive); the plugin's `cps_product_info` reject rule is imported into app-ads as before.
 
 ## Maasea/sgmodule — YouTube response script (pinned copy)
 
@@ -45,7 +45,7 @@
 
 ## WeChat page observations
 
-- `scripts/wechat.js` is this project's own GPL-3.0-only code. The names it relies on — the `window.__ajaxTransferConfig` table and its `mmbizwap_cgi_appmsgad` scope, the ad containers (`.mpda_bottom_container`, `.iframe_ad_container`, `.comment-ad-container`, `mpcpc`, `mp-sponsor-ad`, `mp-common-cpsad`, `#js_top_ad_area`) and the ad positions — were read from the public article page code that WeChat serves to any browser (`mp.weixin.qq.com/s/…` and `res.wx.qq.com/mmbizappmsg/…`), on 2026-10-23. No WeChat code is copied, bundled or fetched at runtime.
+- The archived `dist/scripts/wechat.<SHA-256>.js` (module retired 2026-10-23) is this project's own GPL-3.0-only code. The names it relies on — the `window.__ajaxTransferConfig` table and its `mmbizwap_cgi_appmsgad` scope, the ad containers (`.mpda_bottom_container`, `.iframe_ad_container`, `.comment-ad-container`, `mpcpc`, `mp-sponsor-ad`, `mp-common-cpsad`, `#js_top_ad_area`) and the ad positions — were read from the public article page code that WeChat serves to any browser (`mp.weixin.qq.com/s/…` and `res.wx.qq.com/mmbizappmsg/…`), on 2026-10-23. No WeChat code is copied, bundled or fetched at runtime.
 - oo226/egern-config pull request 143 (missing `getappmsgad` in logs, caution about rejecting all of `wxs.qq.com`) was read for context only.
 
 ## User-provided starting material

@@ -61,8 +61,6 @@ def imported_app_ads(root, policy):
         if not item['reason'] or any(host == h or host.endswith('.' + h) for h in overrides['exclude_hosts']):
             raise ValueError('observed host needs a reason and must not be an excluded host: ' + host)
         observed.add(host)
-    # Hosts the WeChat module owns get no imported rewrite or decryption here, so the two modules never overlap.
-    excluded = overrides['exclude_hosts'] + read_json(root/'data/wechat.json')['mitm']
     merged = {'domains': set(), 'networks': set(), 'rewrites': {}, 'mitm': set(), 'report': {}}
     for source in read_json(root/'sources/upstreams.json')['sources']:
         if source.get('role') != 'app-ads':
@@ -71,7 +69,7 @@ def imported_app_ads(root, policy):
         if sha256(body) != lock[source['id']]['sha256']:
             raise ValueError(source['id']+': snapshot does not match lock')
         part = select(parse_plugin(body), policy, policy['critical_url_probes'],
-                      excluded, overrides['exclude_patterns'])
+                      overrides['exclude_hosts'], overrides['exclude_patterns'])
         merged['domains'].update(part['domains']); merged['networks'].update(part['networks'])
         for pattern, action in part['rewrites']:
             merged['rewrites'].setdefault(pattern, action)
@@ -145,19 +143,6 @@ def weibo_outputs(root, base, item):
     return {rel: text, 'dist/modules/weibo.sgmodule': module_text}
 
 
-def wechat_outputs(root, base, item):
-    spec = read_json(root/'data/wechat.json')
-    rel, text = reviewed_script(root, item, 'wechat')
-    # Article pages run 3.5-4.2 MB; the script only slices them, and larger pages pass unchanged.
-    scripts = [f"wechat-{r['id']} = type=http-response,pattern={r['pattern']},requires-body=true,max-size={r['max_size']},"
-               f"timeout={r['timeout']},script-path={base}/{rel}" for r in spec['scripts']]
-    rewrites = [f"{r['pattern']} - {r['action']}" for r in spec['rewrites']]
-    module_text = module('去广告⑥ 微信公众号文章（实验，需证书）', [
-        ('URL Rewrite', rewrites), ('Script', scripts), ('MITM', ['hostname = %APPEND% ' + ', '.join(spec['mitm'])])],
-        '隐藏公众号文章里的广告位（文末、文中、赞助、评论区和商品推广卡片），并删掉文章广告数据；朋友圈广告卡片网络规则改不了；需 HTTPS 解密与本机证书模块；文章打不开时先关闭本模块')
-    return {rel: text, 'dist/modules/wechat.sgmodule': module_text}
-
-
 def outputs(root=ROOT):
     base = repo_base(root)
     policy = load_policy(root)
@@ -187,7 +172,7 @@ def outputs(root=ROOT):
         out[f'dist/modules/apps/{ident}.sgmodule'] = module(f"去广告② 单 App·{spec['name']}（需证书）", app_sections({ident:spec}),
             '只含这个 App 的规则，用于排查；需 HTTPS 解密；与其他「去广告②」模块只开一个')
     scripts = {s['path']: s for s in read_json(root/'sources/scripts.lock.json')['scripts']}
-    if set(scripts) != {'scripts/response-cleaner.js', 'scripts/weibo.js', 'scripts/wechat.js'}:
+    if set(scripts) != {'scripts/response-cleaner.js', 'scripts/weibo.js'}:
         raise ValueError('script inventory requires manual compiler review')
     script_rel, script_text = reviewed_script(root, scripts['scripts/response-cleaner.js'], 'response-cleaner')
     out[script_rel] = script_text
@@ -198,9 +183,7 @@ def outputs(root=ROOT):
         [('Script', script_lines), ('MITM', ['hostname = %APPEND% '+', '.join(hosts)])], '删除哔哩哔哩、知乎推荐流里明确标注的广告卡片；需 HTTPS 解密与本机证书模块；未知内容原样返回')
     out.update(youtube_outputs(root, base))
     out.update(weibo_outputs(root, base, scripts['scripts/weibo.js']))
-    out.update(wechat_outputs(root, base, scripts['scripts/wechat.js']))
     weibo = read_json(root/'data/weibo.json')
-    wechat = read_json(root/'data/wechat.json')
     out['dist/config/adblock.fragment.conf'] = '# 仅供合并进原 [Rule]；不是完整主配置。\n[Rule]\n'+f'RULE-SET,{base}/dist/rules/base.list,REJECT\n'
     out['dist/config/main.conf'] = profile(root, base)
     out['dist/config/adblock-example.conf'] = '\n'.join([
@@ -215,7 +198,6 @@ def outputs(root=ROOT):
               'imported_app_ads':imported['report'],'observed_mitm_hosts':imported['observed'],
               'response_routes':len(routes),
               'weibo_script_paths':sum(len(g['paths']) for g in weibo['scripts']),'weibo_rewrites':len(weibo['rewrites']),
-              'wechat_script_routes':len(wechat['scripts']),'wechat_rewrites':len(wechat['rewrites']),
               'device_verified':False,
               'exceptions': [{'rule':','.join(k),'reason':v} for k,v in sorted(removed.items())]}
     subscription_rows = [
@@ -227,7 +209,6 @@ def outputs(root=ROOT):
         ('哔哩哔哩/知乎响应处理（实验）','dist/modules/response-cleaner.sgmodule'),
         ('YouTube 去广告（实验，第三方脚本已审核并固定版本）','dist/modules/youtube.sgmodule'),
         ('微博完整版去广告与精简（实验，需证书）','dist/modules/weibo.sgmodule'),
-        ('微信公众号文章去广告（实验，需证书）','dist/modules/wechat.sgmodule'),
         ('主配置示例（优先保留原配置）','dist/config/adblock-example.conf'),
         ('主配置合并片段','dist/config/adblock.fragment.conf')]
     subscription_rows += [(app['name']+'（独立实验模块）', f'dist/modules/apps/{ident}.sgmodule') for ident,app in apps.items()]
@@ -235,7 +216,7 @@ def outputs(root=ROOT):
         '# 订阅地址','',
         '由 project.json 自动生成；当前地址对应自己的仓库。使用方法见 DEVICE_PROFILES.md。',
         '主配置 URL 在「配置」页导入；模块 URL 在「模块」中导入，都不是节点订阅。手机与 Mac 使用同一 main.conf；手机另加广告模块，Mac 默认只用主配置。',
-        'base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；response-cleaner、youtube、weibo、wechat 可按需额外启用。',
+        'base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；response-cleaner、youtube、weibo 可按需额外启用。',
         '', '| 内容 | Raw 地址 |', '|---|---|',
         *[f'| {name} | {base}/{rel} |' for name,rel in subscription_rows], '',
         '脚本只引用本仓库按内容哈希命名的文件；更新需要先审阅合并，再在手机更新模块/配置。',

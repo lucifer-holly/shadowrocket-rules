@@ -12,14 +12,12 @@
 | 去广告③ 信息流净化·B站/知乎（需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/response-cleaner.sgmodule` |
 | 去广告④ YouTube（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/youtube.sgmodule` |
 | 去广告⑤ 微博完整版（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/weibo.sgmodule` |
-| 去广告⑥ 微信公众号文章（实验，需证书，可选） | 手机 | `https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/wechat.sgmodule` |
 | 本机证书（你自己建的本地模块，不在仓库里） | 手机 | — |
 
 - `base` 内存吃紧或 VPN 频繁断开时换 `lite.sgmodule`，两者二选一。
-- 名字里的编号就是作用：① 拦广告域名，② App 开屏/应用内广告，③ 信息流净化，④ YouTube，⑤ 微博完整版，⑥ 微信公众号文章。名字里带「需证书」的模块要配合本机证书模块。
+- 名字里的编号就是作用：① 拦广告域名，② App 开屏/应用内广告，③ 信息流净化，④ YouTube，⑤ 微博完整版。名字里带「需证书」的模块要配合本机证书模块。
 - 微博模块只针对 App Store 里的「微博」（完整版），会解密 `api.weibo.cn`：删信息流、热搜、评论区、视频流里标了广告或推广的内容和推荐卡片，热搜本身保留。微博哪个页面打不开或变空白，先关它，再从后台划掉微博重新打开。
-- 微信模块只解密 `mp.weixin.qq.com`：在公众号文章页里隐藏文末、文中、赞助、评论区的广告位和商品推广卡片，并删掉文章的广告数据；留言、点赞、阅读数、赞赏不动。朋友圈广告的卡片它改不了（见 [微信分析](WECHAT.md)）。文章打不开或显示不全，先关它。
-- 广告域名、广告 IP 的拦截全部在①；②③④⑤⑥只放各 App 的接口规则和脚本，各模块之间没有重复的规则。
+- 广告域名、广告 IP 的拦截全部在①；②③④⑤只放各 App 的接口规则和脚本，各模块之间没有重复的规则。
 - `app-ads` 已包含 `apps-all` 的全部自维护规则；名字以「去广告②」开头的模块只开一个。
 - YouTube 模块是实验性的：脚本来自第三方（已审核并固定版本），在 Surge 上测试，Shadowrocket 不保证兼容。YouTube 出现播放或加载异常时先关它。
 - 主配置里没有广告规则、证书和脚本，Mac 直接用不会误解密。
@@ -46,7 +44,7 @@
    ```
 
    再在 `[MITM]` 下面加两行：`ca-passphrase` 加等号再写 HTTPS 解密页面「密码」一栏显示的值（每台设备生成的证书密码不同）；`ca-p12` 加等号再粘贴刚复制的证书内容。必须先完成第 6 步的安装和信任，再启用这个模块，否则可能提示 `No PKCS12 Certificates`。这个模块含私钥，只留在手机里。
-8. 模块 → `+` → 粘贴 `app-ads` 链接；需要时再加 `response-cleaner`、`youtube`、`weibo`、`wechat`。完全退出目标 App 后重新打开，检查开屏、登录、下单和支付。
+8. 模块 → `+` → 粘贴 `app-ads` 链接；需要时再加 `response-cleaner`、`youtube`、`weibo`。完全退出目标 App 后重新打开，检查开屏、登录、下单和支付。
 
 某个 App 异常时，先断开 Shadowrocket 试一次：断开后仍异常，就不是规则的问题。断开后正常，再逐个排查：先关 `app-ads`，仍异常再关 `base`。
 
