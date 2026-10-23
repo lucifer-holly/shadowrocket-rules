@@ -162,6 +162,11 @@ def select(data, policy, probes=(), exclude_hosts=(), exclude_patterns=()):
     never_mitm = [*policy['never_mitm_suffixes'], *exclude_hosts]
     excluded = lambda host: any(within(host, h) for h in exclude_hosts)
     entries = [e for e in data['mitm'] if _mitm_entry_ok(e, never_mitm)]
+    # Reviewed exact hosts inside a protected suffix (bank image servers) stay decryptable where the plugin decrypts
+    # them, unless the owner opted out; the rest of that suffix stays protected.
+    reviewed = {x['host'] for x in policy.get('mitm_exceptions', [])}
+    entries += sorted(h for h in reviewed if h not in entries and not excluded(h)
+                      and any(fnmatch.fnmatchcase(h, e) for e in data['mitm']))
     exact = set(entries)
     report = {'dropped_protected_domain': 0, 'dropped_override': 0, 'dropped_probe': 0, 'dropped_no_mitm': 0,
               'dropped_bad_example': 0}

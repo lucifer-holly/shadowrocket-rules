@@ -53,7 +53,7 @@ python3 tools/devicelog.py 日志.db --app huya --check
 python3 tools/devicelog.py 日志.db --host 'example|examplecdn' --ua 'ExampleApp/' --timeline
 ```
 
-- `--app` 预设：weibo、huya、xiaohongshu、bilibili、zhihu、youtube、xianyu、jump、wechat。新 App 用 `--host` / `--ua`，确认特征后加进 `tools/devicelog.py` 的 `APPS`。
+- `--app` 预设：weibo、huya、xiaohongshu、bilibili、zhihu、youtube、xianyu、jump、wechat、citic（中信银行）、ccb（建设银行）。新 App 用 `--host` / `--ua`，确认特征后加进 `tools/devicelog.py` 的 `APPS`。
 - `--check` 对照当前构建，列出每个主机是被去广告①拦截（`base 拦截`，含 fmz200 插件的静态域名），还是被哪个模块解密，或者都没有。
 - 工具只读，不改文件；不显示与 App 无关的条目、查询参数和节点名。
 

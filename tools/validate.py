@@ -216,7 +216,7 @@ def validate(root=ROOT):
             if section=='URL Rewrite':check_rewrite(line,policy['critical_url_probes'])
             if section=='MITM':
                 if not line.startswith('hostname = %APPEND% '):raise ValueError('MITM overwrites main config')
-                for host in line[len('hostname = %APPEND% '):].split(', '):check_mitm_host(host,policy['never_mitm_suffixes'],policy.get('mitm_exceptions',[]))
+                for host in line[len('hostname = %APPEND% '):].split(', '):check_mitm_host(host,policy['never_mitm_suffixes'],[x['host'] for x in policy.get('mitm_exceptions',[])])
             if section=='Script':
                 m=re.search(r'script-path=([^,\s]+)',line)
                 if not m or not m[1].startswith(base+'/dist/scripts/'):raise ValueError('script is not self hosted')

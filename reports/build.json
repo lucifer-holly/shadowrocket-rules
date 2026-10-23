@@ -193,13 +193,13 @@
     "fmz-blockads": {
       "domains": 2584,
       "dropped_bad_example": 7,
-      "dropped_no_mitm": 145,
+      "dropped_no_mitm": 166,
       "dropped_override": 0,
       "dropped_probe": 0,
       "dropped_protected_domain": 20,
-      "mitm_hosts": 730,
+      "mitm_hosts": 713,
       "networks": 34,
-      "rewrites": 1133
+      "rewrites": 1112
     }
   },
   "lite_rules": 69775,

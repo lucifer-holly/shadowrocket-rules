@@ -70,6 +70,10 @@ def parse_rules(body, fmt):
 def load_policy(root=ROOT):
     p = read_json(root / 'data/policy.json')
     p['exceptions'] = read_json(root / 'data/allowlist.json')['entries']
+    for item in p.get('mitm_exceptions', []):
+        domain(item['host'])
+        if '*' in item['host'] or not item['reason']:
+            raise ValueError('decryption exception needs an exact host and a reason')
     for item in p['exceptions']:
         domain(item['domain'])
         if item['scope'] not in {'host', 'subtree'} or not item['reason']:

@@ -39,7 +39,7 @@ make test
 
 规则例外优先于拒绝：如父后缀会命中需要保留的登录主机，会移除整个父拒绝项。这样牺牲该父项的覆盖范围，保留更精确的广告子域规则。`never_block_suffixes` 是显式共享根保护表，**不是完整 Public Suffix List（公共后缀列表）**。扩大来源或支持全新域后缀时需要补充保护和审查，不能仅靠语法检查保证无误杀。
 
-检查能发现语法错误、重复、样例上的重写/脚本相互覆盖、被域名规则提前拒绝的目标 API、产物漂移、缺失脚本依赖及常见密钥；主配置还检查 257 条代理规则是否完整且排在国内直连之前、是否误写入可路由的私人 DIRECT 地址、是否依赖远程规则集；广告模块检查重写是否命中 `critical_url_probes` 里的登录/支付/内容网址，解密主机是否落在 `never_mitm_suffixes`。它不能证明所有正则互不相交，不能替代业务实测，也不是通用恶意 JS 检测器。
+检查能发现语法错误、重复、样例上的重写/脚本相互覆盖、被域名规则提前拒绝的目标 API、产物漂移、缺失脚本依赖及常见密钥；主配置还检查 257 条代理规则是否完整且排在国内直连之前、是否误写入可路由的私人 DIRECT 地址、是否依赖远程规则集；广告模块检查重写是否命中 `critical_url_probes` 里的登录/支付/内容网址，解密主机是否落在 `never_mitm_suffixes`（`mitm_exceptions` 里审核过的单个主机除外）。它不能证明所有正则互不相交，不能替代业务实测，也不是通用恶意 JS 检测器。
 
 ## GitHub Actions 设置
 
@@ -83,7 +83,8 @@ make test
 | 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会把它的静态域名并入去广告①、重写并入 app-ads |
 | 微博完整版又出现某种广告或推荐卡片 | 抓日志找到接口。路径已在 `data/weibo.json` 里，就改 `scripts/weibo.js` 里对应的处理函数；新接口同时加进 `data/weibo.json` 的 `scripts` 和脚本的 `ROUTES`。两种情况都在 `tests/fixtures/weibo.json` 加样例，并按下文更新脚本哈希与审核说明 |
 | 想在日志里看到某个主机的完整地址（找广告接口） | `data/app-ads-overrides.json` 的 `observe_hosts`：只解密，不拦截也不改写；规则写好后删掉这一项 |
-| 永不解密或永不误拦的关键站点 | `data/policy.json` 的 `never_mitm_suffixes`、`critical_url_probes` |
+| 永不解密或永不误拦的关键站点 | `data/policy.json` 的 `never_mitm_suffixes`、`critical_url_probes`。银行、支付的主域名都要写进 `never_mitm_suffixes` |
+| 某家银行的开屏图片放在单独的图片主机上，想让 fmz200 的规则拦它 | 先用日志确认这台主机只放图片（CDN、静态资源），不是登录、转账所在的主机，再把它连同理由写进 `data/policy.json` 的 `mitm_exceptions`；只能写单个主机，不能写通配 |
 
 改完运行 `make build && make test`，提交到 main。
 

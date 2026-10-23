@@ -55,6 +55,39 @@
     "icbc.com.cn",
     "bankcomm.com",
     "boc.cn",
+    "abchina.com.cn",
+    "bankcomm.cn",
+    "citicbank.com",
+    "ecitic.com",
+    "spdb.com.cn",
+    "spdbccc.com.cn",
+    "psbc.com",
+    "cebbank.com",
+    "cmbc.com.cn",
+    "pingan.com",
+    "pingan.com.cn",
+    "hxb.com.cn",
+    "cib.com.cn",
+    "cgbchina.com.cn",
+    "bankofbeijing.com.cn",
+    "bosc.cn",
+    "nbcb.com.cn",
+    "hzbank.com.cn",
+    "czbank.com",
+    "hfbank.com.cn",
+    "cbhb.com.cn",
+    "srcb.com",
+    "bjrcb.com",
+    "jsbchina.cn",
+    "grcbank.com",
+    "jlbank.com.cn",
+    "z-bank.com",
+    "aibank.com",
+    "tf.cn",
+    "webank.com",
+    "mybank.cn",
+    "bestpay.com.cn",
+    "jr.jd.com",
     "github.com",
     "githubusercontent.com",
     "dmit.io",
@@ -118,6 +151,45 @@
     "https://github.com/login"
   ],
   "mitm_exceptions": [
-    "youtubei.googleapis.com"
+    {
+      "host": "youtubei.googleapis.com",
+      "reason": "YouTube 模块（去广告④）要处理的接口主机，单独审核过"
+    },
+    {
+      "host": "imcs.citicbank.com",
+      "reason": "中信银行的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "midc.cdn-static.abchina.com.cn",
+      "reason": "农业银行的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "iobs.pingan.com.cn",
+      "reason": "平安银行的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "pacdn.m.stock.pingan.com",
+      "reason": "平安证券的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "static.creditcard.hxb.com.cn",
+      "reason": "华夏银行信用卡的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "cdnmobibank.bankofbeijing.com.cn",
+      "reason": "北京银行的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "cdn-xyk-app.bankofbeijing.com.cn",
+      "reason": "北京银行信用卡的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "cdn.jlbank.com.cn",
+      "reason": "吉林银行的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    },
+    {
+      "host": "mres.aibank.com",
+      "reason": "百信银行的图片和静态资源主机（按主机名和规则路径判断），不是登录、转账所在的主机；只为 fmz200 拦开屏和广告图片的规则放行解密"
+    }
   ]
 }

@@ -80,6 +80,16 @@ class PluginImportTests(unittest.TestCase):
         self.assertNotIn(('DOMAIN-SUFFIX', 'ads.example.com'), out['domains'])
         self.assertNotIn('*.example.com', out['mitm'])
 
+    def test_reviewed_exact_hosts_inside_protected_suffixes_stay_decryptable(self):
+        policy = dict(self.policy, never_mitm_suffixes=['alipay.com', 'example.com'],
+                      mitm_exceptions=[{'host': 'ad.cdn.example.com', 'reason': 'image host'}])
+        out = select(self.data, policy, PROBES)
+        self.assertEqual(out['mitm'], ['ad.cdn.example.com'])
+        self.assertEqual([p for p, _ in out['rewrites']], [r'^https?:\/\/ad\.cdn\.example\.com\/splash'])
+        # Without the exact plugin entry the exception cannot widen decryption, and an owner opt-out still wins.
+        self.assertEqual(select(parse_plugin(SAMPLE.replace(', feed.example.com', '').replace('*.example.com, ', '').encode()), policy, PROBES)['mitm'], [])
+        self.assertEqual(select(self.data, policy, PROBES, exclude_hosts=['cdn.example.com'])['mitm'], [])
+
     def test_layout_change_fails_closed(self):
         with self.assertRaises(ValueError):
             parse_plugin(b'[Rule]\nDOMAIN,ad.example.com,REJECT\n')
@@ -144,6 +154,15 @@ class RealSnapshotTests(unittest.TestCase):
             text = (ROOT / f'dist/modules/{name}.sgmodule').read_text()
             for network in self.out['networks']:
                 self.assertIn('\n' + network + '\n', text)
+
+    def test_banks_and_payments_are_decrypted_only_on_reviewed_image_hosts(self):
+        reviewed = {x['host'] for x in self.policy['mitm_exceptions']}
+        protected = [h for h in self.out['mitm'] if any(h == s or h.endswith('.' + s) for s in self.policy['never_mitm_suffixes'])]
+        self.assertTrue(set(protected) <= reviewed, set(protected) - reviewed)
+        for host in ['m.creditcard.ecitic.com', 'wap.spdb.com.cn', 'mbank5.jsbchina.cn', 'mobile.cebbank.com', 'ms.jr.jd.com', 'mapi-app.bestpay.com.cn']:
+            with self.subTest(host=host):
+                self.assertNotIn(host, self.out['mitm'])
+                self.assertFalse(any(host in p.replace('\\', '') for p, _ in self.out['rewrites']))
 
     def test_safari_fraud_warning_service_is_not_blocked(self):
         base = optimize(blocking_inputs(policy=self.policy, imported=self.out)[0], self.policy)[0]
