@@ -38,10 +38,10 @@
 | 地址只有 `主机:443`，User-Agent 是 `TCP Stream` | 没有解密，只看得到域名 |
 | 完整的 `https://…` 地址 | 已解密（主机在 MITM 列表里） |
 
-2026-10-22 的真机日志确认过：
+真机日志确认过（2026-10-22、10-23）：
 
-- 模块的 `DOMAIN-SUFFIX` 拦截能压过主配置里更宽的分组规则，例如 `uve.weibo.com` 的拦截压过 `weibo.com` 直连。
-- 模块的 `DOMAIN` 精确规则能否压过主配置的 `DOMAIN-SUFFIX` 分组还没确认。`sdkmonitor.biz.weibo.com` 故意保留 `DOMAIN` 写法作对照，见 [STATUS](STATUS.md)。
+- 模块的 `DOMAIN-SUFFIX` 和 `DOMAIN` 拦截都能压过主配置里更宽的分组规则，例如 `uve.weibo.com`、`sdkmonitor.biz.weibo.com` 的拦截都压过了 `weibo.com` 直连。
+- 阿里系 App（闲鱼）启动时先用明文 HTTP 向 `http://<IP>/amdc/mobileDispatch` 要服务器列表，拿到后直接连 IP。日志里只剩 `IP:443` 的 TCP Stream，按域名的解密和重写全部失效。办法是按 User-Agent 拦掉这个 App 的调度请求，让它退回走域名（`data/apps.json` 的 `connection_rules`）。
 - 请求被拦截后，有的 App 会高频重试（虎牙 3 分钟上百次），这不代表规则失效。
 - 开屏素材常被 App 提前下载并长期保存，拦截后可能还会显示一段时间，「清除缓存」不一定清得掉。
 
@@ -64,4 +64,5 @@ python3 tools/devicelog.py 日志.db --host 'example|examplecdn' --ua 'ExampleAp
 | 启动前几秒有 DIRECT 主机，名字或路径像广告素材（ad、ssp、dsp、splash、material…） | 整个主机都是广告：加进 `data/extra-domains.json`（写 `DOMAIN-SUFFIX`） |
 | 广告和正常内容在同一个主机上 | 按路径拦：`data/apps.json`；路径看不到时，把主机加进 `data/app-ads-overrides.json` 的 `observe_hosts` 临时解密，下一份日志就能看到完整地址 |
 | App 自己的功能请求被 REJECT（消息长连接、内容接口） | `data/allowlist.json`；如果是自动导入的规则误伤，用 `app-ads-overrides.json` 的 `exclude_hosts` / `exclude_patterns` |
+| App 的请求只剩 `IP:443`、看不到它的域名，规则写对了也不生效 | App 绕过了域名。先找它启动时的调度请求（阿里系是明文的 `/amdc/mobileDispatch`），在 `data/apps.json` 的 `connection_rules` 里按网址和 User-Agent 只拦这个 App 的 |
 | 规则已经写了，日志里却没生效 | 手机可能还是旧模块：手动更新模块，断开再连接 VPN；GitHub raw 链接有约 5 分钟缓存 |

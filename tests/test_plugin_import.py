@@ -130,8 +130,11 @@ class RealSnapshotTests(unittest.TestCase):
         self.assertIn('# 只解密、不拦截', self.module)
 
     def test_static_domain_rules_live_in_the_domain_modules_only(self):
-        # ② carries only what needs decryption; every plugin domain and IP rule is enforced by both variants of ①.
-        self.assertNotIn('[Rule]', self.module)
+        # ② carries app-specific rules only; every plugin domain and IP rule is enforced by both variants of ①.
+        rules = self.module.split('[Rule]\n')[1].split('\n\n')[0].splitlines()
+        self.assertTrue(rules)
+        for line in rules:
+            self.assertRegex(line, r'^AND,\(\(URL-REGEX,\^http://[^,()\s]+\),\(USER-AGENT,[^,()\s]+\)\),REJECT$')
         base = optimize(blocking_inputs(policy=self.policy, imported=self.out)[0], self.policy)[0]
         lite = optimize(blocking_inputs(subset={'hagezi-light'}, policy=self.policy, imported=self.out)[0], self.policy)[0]
         for rule in self.out['domains']:

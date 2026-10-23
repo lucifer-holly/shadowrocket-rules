@@ -75,6 +75,16 @@ def check_mitm_host(host, never_mitm, exceptions=()):
     if any(within(sample, s) or within(s, host.lstrip('*.')) for s in never_mitm):
         raise ValueError('MITM would decrypt a protected login/payment/AI host: '+host)
 
+def check_connection_rule(rule):
+    # Plain HTTP only (visible without decryption), one app's User-Agent, nothing that breaks the rule syntax.
+    url,ua=rule['url_regex'],rule['user_agent']
+    if not url.startswith('^http://') or re.search(r'[,()\s]',url) or re.search(r'[,()\s]',ua) or len(ua.replace('*',''))<4 or not rule['reason']:
+        raise ValueError('unsafe connection rule: '+url[:80])
+    matches=lambda s:bool(re.search(url,s['url'])) and fnmatch.fnmatchcase(s['user_agent'],ua)
+    if not rule['positive'] or not rule['negative'] or not all(matches(s) for s in rule['positive']) or any(matches(s) for s in rule['negative']):
+        raise ValueError('connection rule samples fail: '+url[:80])
+
+
 def check_weibo(spec, policy, blocklists):
     # Rewrites answer whole calls with {}; scripts edit exact paths; neither may reach login, messages or posting.
     rewrites=[re.compile(r['pattern']) for r in spec['rewrites']]
@@ -152,6 +162,7 @@ def validate(root=ROOT):
                     raise ValueError('MITM wildcard requires separate review')
             if pattern in patterns:raise ValueError('duplicate/conflicting rewrite')
             patterns.append(pattern)
+        for rule in app.get('connection_rules',[]):check_connection_rule(rule)
     for key,app in apps.items():
         for rule in app['rules']:
             for url in rule['positive']:
@@ -199,7 +210,8 @@ def validate(root=ROOT):
                 continue
             if (section,line) in seen:raise ValueError('duplicate module line')
             seen.add((section,line))
-            if section=='Rule' and not re.fullmatch(r'DOMAIN(?:-SUFFIX)?,[^,]+,REJECT|IP-CIDR6?,[^,]+,REJECT,no-resolve|AND,\(\(DOMAIN,[^,()]+\),\(PROTOCOL,UDP\)\),REJECT-NO-DROP',line):
+            if section=='Rule' and not re.fullmatch(r'DOMAIN(?:-SUFFIX)?,[^,]+,REJECT|IP-CIDR6?,[^,]+,REJECT,no-resolve|AND,\(\(DOMAIN,[^,()]+\),\(PROTOCOL,UDP\)\),REJECT-NO-DROP'
+                                                      r'|AND,\(\(URL-REGEX,\^http://[^,()\s]+\),\(USER-AGENT,[^,()\s]+\)\),REJECT',line):
                 raise ValueError('unexpected routing in ad module')
             if section=='URL Rewrite':check_rewrite(line,policy['critical_url_probes'])
             if section=='MITM':

@@ -106,6 +106,22 @@
         ],
         "action": "reject-dict"
       }
+    ],
+    "connection_rules": [
+      {
+        "url_regex": "^http://[0-9.:]+/amdc/mobileDispatch",
+        "user_agent": "%E9%97%B2%E9%B1%BC*",
+        "reason": "闲鱼启动时用明文 HTTP 向阿里的调度服务（AMDC）要服务器 IP，拿到后直接连 IP，解密和按网址的开屏规则都碰不到（2026-10-23 设备日志）。拦掉后闲鱼改走 acs.m.goofish.com 域名。fmz200 去广告插件里有同一条（GPL-3.0），只对闲鱼的 User-Agent 生效",
+        "positive": [
+          {"url": "http://59.82.113.219/amdc/mobileDispatch?appkey=example", "user_agent": "%E9%97%B2%E9%B1%BC/59062879 CFNetwork/3826.500 Darwin/24.4.0"},
+          {"url": "http://59.82.14.162:80/amdc/mobileDispatch", "user_agent": "%E9%97%B2%E9%B1%BC/59062879 CFNetwork/3826.500 Darwin/24.4.0"}
+        ],
+        "negative": [
+          {"url": "http://59.82.113.219/amdc/mobileDispatch", "user_agent": "Taobao4iPhone/10.40 CFNetwork/3826.500 Darwin/24.4.0"},
+          {"url": "https://amdc.m.taobao.com/amdc/mobileDispatch", "user_agent": "%E9%97%B2%E9%B1%BC/59062879 CFNetwork/3826.500"},
+          {"url": "http://59.82.113.219/gw/mtop.common.getTimestamp/", "user_agent": "%E9%97%B2%E9%B1%BC/59062879 CFNetwork/3826.500"}
+        ]
+      }
     ]
   },
   "amap": {

@@ -4,6 +4,9 @@
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
 
+[Rule]
+AND,((URL-REGEX,^http://[0-9.:]+/amdc/mobileDispatch),(USER-AGENT,%E9%97%B2%E9%B1%BC*)),REJECT
+
 [URL Rewrite]
 # 闲鱼 (xianyu); 真机效果未验证
 ^https?://(?:g-)?acs\.m\.goofish\.com/gw/mtop\.taobao\.idlecommerce\.splash(?:/|\?|$) - reject-dict

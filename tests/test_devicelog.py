@@ -84,6 +84,19 @@ class DeviceLogTests(unittest.TestCase):
         self.assertIn('business-qnpcdn.msstatic.com: base 拦截', out.getvalue())
         self.assertIn('hd.huya.com: 只解密', out.getvalue())
 
+    def test_rule_check_handles_apps_that_connect_by_ip(self):
+        db = Path(self.tmp.name) / 'xianyu.db'
+        ua = '%E9%97%B2%E9%B1%BC/59062879 CFNetwork/3826'
+        export(db, [('http://59.82.113.219/amdc/mobileDispatch?appkey=SECRET', ua, 'GEOIP,CN,DIRECT', 'DIRECT', '2026-10-23 11:45:22'),
+                    ('acs.m.goofish.com:443', ua, 'DOMAIN-SUFFIX,goofish.com,DIRECT', 'DIRECT', '2026-10-23 11:45:23')])
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = devicelog.main([str(db), '--app', 'xianyu', '--check'])
+        self.assertEqual(code, 0)
+        self.assertIn('59.82.113.219: 未拦截、未解密', out.getvalue())
+        self.assertIn('acs.m.goofish.com: app-ads 解密', out.getvalue())
+        self.assertNotIn('SECRET', out.getvalue())
+
 
 if __name__ == '__main__':
     unittest.main()

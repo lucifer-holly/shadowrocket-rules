@@ -19,9 +19,15 @@ def module(name, sections, note=''):
     return '\n'.join(lines) + '\n'
 
 
+def connection_rule(rule):
+    """A plain-HTTP request from one app, matched by URL and User-Agent; no decryption needed."""
+    return f"AND,((URL-REGEX,{rule['url_regex']}),(USER-AGENT,{rule['user_agent']})),REJECT"
+
+
 def app_sections(apps, imported=None):
-    # Only what needs decryption: the plugins' static domain and IP rules are part of the domain modules (①).
-    rewrites, hosts = [], set()
+    # App-specific rules only: URL rewrites, plus the few plain-HTTP connection rules that keep an app on
+    # decryptable hostnames. Plain domain and IP blocks, the plugins' included, live in the domain modules (①).
+    rewrites, hosts, rules = [], set(), []
     seen = set()
     for ident, app in apps.items():
         rewrites.append(f"# {app['name']} ({ident}); 真机效果未验证")
@@ -30,6 +36,7 @@ def app_sections(apps, imported=None):
             if line not in seen:
                 rewrites.append(line); seen.add(line)
             hosts.update(rule['hosts'])
+        rules += [connection_rule(r) for r in app.get('connection_rules', [])]
     if imported:
         own = {line.split(' - ')[0] for line in seen}
         rewrites.append('# 自动跟踪的第三方插件静态拒绝规则（见 THIRD_PARTY_NOTICES.md）；未导入脚本')
@@ -38,7 +45,7 @@ def app_sections(apps, imported=None):
     mitm = ['hostname = %APPEND% ' + ', '.join(sorted(hosts))]
     if imported and imported['observed']:
         mitm.insert(0, '# 只解密、不拦截（排查用，日志里能看到完整地址）：' + ', '.join(imported['observed']))
-    return [('URL Rewrite', rewrites), ('MITM', mitm)]
+    return [('Rule', rules), ('URL Rewrite', rewrites), ('MITM', mitm)]
 
 
 def imported_app_ads(root, policy):

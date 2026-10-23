@@ -67,6 +67,22 @@ class IntegrationTests(unittest.TestCase):
         self.assertTrue(is_blocked('business.msstatic.com',app))
         for h in ['live-cover.msstatic.com','tx-live-cover.msstatic.com','huyaimg.msstatic.com','anchorpost.msstatic.com','s1-static.msstatic.com','cdnws.api.huya.com','wsapi.huya.com','wswup.cdn.huya.com','hs.p2p.huya.com','fileserver.cdn.huya.com','p2td-cv.cdn.huya.com','hd.huya.com','diy-front.cdn.huya.com','diy-assets.msstatic.com']:
             with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules) or is_blocked(h,app))
+    def test_xianyu_dispatch_rule_from_device_log(self):
+        # 闲鱼 7.x (2026-10-23 log): an allowed AMDC dispatch made it connect straight to IP addresses,
+        # out of reach of every hostname rule. Only its own plain-HTTP dispatch is refused.
+        import fnmatch
+        rule=self.apps['xianyu']['connection_rules'][0]
+        line=build.connection_rule(rule)
+        for name in ['app-ads','apps-all','apps/xianyu']:
+            with self.subTest(module=name):self.assertIn('\n'+line+'\n',(ROOT/f'dist/modules/{name}.sgmodule').read_text())
+        hit=lambda url,ua:bool(re.search(rule['url_regex'],url)) and fnmatch.fnmatchcase(ua,rule['user_agent'])
+        ua='%E9%97%B2%E9%B1%BC/59062879 CFNetwork/3826.500 Darwin/24.4.0'
+        for url in ['http://59.82.113.219/amdc/mobileDispatch','http://59.82.14.162:80/amdc/mobileDispatch?appkey=1']:
+            self.assertTrue(hit(url,ua))
+        for url,agent in [('http://59.82.113.219/amdc/mobileDispatch','AlipayClient/10.6 CFNetwork'),
+                          ('https://amdc.alipay.com/amdc/mobileDispatch',ua),('http://59.82.113.219/gw/mtop.x/1.0/',ua)]:
+            self.assertFalse(hit(url,agent),(url,agent))
+        self.assertTrue(is_blocked('acs.m.goofish.com',self.rules) is False)
     def test_all_app_positive_fixtures(self):
         for ident,app in self.apps.items():
             for r in app['rules']:

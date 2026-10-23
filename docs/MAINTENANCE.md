@@ -8,7 +8,7 @@
 | `sources/upstreams.lock.json` | 原始数据和 LICENSE 的 SHA-256；首次快照未解析 Git commit ID，不伪造提交锁 |
 | `vendor/`、`licenses/` | 可离线重建的原始快照和许可；`fmz-blockads.plugin` 是整份插件快照，构建时只解析静态部分 |
 | `tools/plugin_import.py` | 从 fmz 插件快照提取静态 REJECT 域名/IP（构建时并入去广告①，与其他域名库一起去重）与 `reject` 系列重写（进 app-ads），按需收窄解密主机；从不导入脚本 |
-| `data/apps.json` | 14 个实验 App 模块的端点、解密主机、正样例和来源 |
+| `data/apps.json` | 14 个实验 App 模块的端点、解密主机、正样例和来源；`connection_rules` 是少数按网址和 User-Agent 拦的明文请求 |
 | `data/manual-direct.list` | 旧配置开头的手工直连例外，原样保留在主配置最前面；不写私人服务器 IP/私人域名 |
 | `data/legacy-proxy.list` | 旧配置全部 257 条显式 PROXY 规则，原样、原顺序，排在国内直连之前 |
 | `data/routing.json`、`tools/profiles.py` | 其余代理/直连分组、已改走代理的旧海外直连名单，以及主配置构建 |
@@ -75,8 +75,9 @@ make test
 
 | 想做的事 | 改哪里 |
 |---|---|
-| 新出现的广告域名，直接拦 | `data/extra-domains.json`（进入 base/lite）。主配置分组里已有的域名（如 `weibo.com` 直连）下的子域名写 `DOMAIN-SUFFIX`：设备日志证实这种写法能压过主配置的分组规则，`DOMAIN` 写法还没在真机上确认 |
+| 新出现的广告域名，直接拦 | `data/extra-domains.json`（进入 base/lite）。主配置分组里已有的域名（如 `weibo.com` 直连）下的子域名也可以直接写：设备日志证实 `DOMAIN-SUFFIX` 和 `DOMAIN` 都能压过主配置的分组规则 |
 | 某 App 的广告接口，按路径拦 | `data/apps.json`，附正样例和同主机登录/支付负样例 |
+| App 绕过域名直接连 IP，按路径的规则碰不到 | `data/apps.json` 的 `connection_rules`：按明文 HTTP 网址和这个 App 的 User-Agent 拦它的调度请求（例：闲鱼的 `/amdc/mobileDispatch`），附命中和不命中的样例；生成为 app-ads 的 `AND,((URL-REGEX,…),(USER-AGENT,…)),REJECT` |
 | 某个域名被误拦 | `data/allowlist.json`（base、lite、app-ads 都会放行） |
 | 自动导入的规则让某个 App 出问题 | `data/app-ads-overrides.json` 的 `exclude_hosts` 填该 App 的主机（包含子域），该主机不再被导入规则拦截、重写或解密；只想去掉某一条时填 `exclude_patterns` |
 | 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会把它的静态域名并入去广告①、重写并入 app-ads |

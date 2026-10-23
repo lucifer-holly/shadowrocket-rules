@@ -20,6 +20,9 @@ APPS = {
     'bilibili': (r'bilibili|biliapi|bilivideo|hdslb', r'bili'),
     'zhihu': (r'zhihu|zhimg', r'zhihu'),
     'youtube': (r'youtube|googlevideo|ytimg|youtubei', r'youtube'),
+    # 闲鱼's User-Agent is the URL-encoded app name; it also connects straight to IPs after the AMDC dispatch.
+    'xianyu': (r'goofish|xianyu|idlefish', r'%E9%97%B2%E9%B1%BC|闲鱼|idlefish'),
+    'jump': (r'vgjump|jumpvg', r'^Jump/'),
 }
 EMPTY_EXPORT = ('导出的文件里没有记录表（通常只有 4 KB）：导出时新记录还在临时文件里。\n'
                 '让用户先关掉「启用日志记录」，断开 VPN，从后台划掉 Shadowrocket 再打开，然后导出最新的日志；'
@@ -67,9 +70,16 @@ def rule_check(hosts):
         module = (ROOT / f'dist/modules/{name}.sgmodule').read_text(encoding='utf-8')
         mitm[name] = next((l.split('= %APPEND% ', 1)[1].split(', ') for l in module.splitlines()
                            if l.startswith('hostname = %APPEND% ')), [])
+    import ipaddress
+    networks = [ipaddress.ip_network(n.split(',')[1], strict=False) for n in imported['networks']]
     lines = []
     for host in sorted(hosts):
-        tags = ['base 拦截'] if is_blocked(host, base) else []
+        try:  # Apps that connect by IP address: only the IP rules of ① can match.
+            ip = ipaddress.ip_address(host)
+            blocked = any(ip.version == n.version and ip in n for n in networks)
+        except ValueError:
+            blocked = is_blocked(host, base)
+        tags = ['base 拦截'] if blocked else []
         for name, label in DECRYPTING_MODULES.items():
             if any(fnmatch.fnmatchcase(host, h) for h in mitm[name]):
                 tags.append('只解密（排查用）' if name == 'app-ads' and host in imported['observed'] else label)
