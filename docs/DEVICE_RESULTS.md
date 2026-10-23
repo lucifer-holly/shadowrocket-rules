@@ -14,4 +14,6 @@
 | 2026-10-23 | iPhone / iOS 27 | Jump 3.30 | — | 当天最新 | 开屏 | 又出现 | — | 第三方广告组件全被拦；主接口 `switch.jumpvg.com` 没解密，已临时只解密待查 |
 | 2026-10-23 | iPhone / iOS 27 | 闲鱼 | — | 当天最新 | 开屏 | 又出现（之前也是隔一天就回来） | — | 明文调度请求 `/amdc/mobileDispatch` 放行后直接连 IP，开屏重写碰不到；已按闲鱼 User-Agent 拦调度请求，待验证 |
 | 2026-10-23 | iPhone / iOS 27 | 微博（完整版） | — | 去广告⑤ 第二版 | — | `push/active` 被拦下 | — | 证明⑤在手机上生效；`sdkmonitor.biz.weibo.com` 的 `DOMAIN` 规则也压过了主配置的直连 |
+| 2026-10-23 | iPhone / iOS 27 | 闲鱼 | — | 加调度拦截后 | 开屏 | 试了几次都没有 | — | 6 个 `/amdc/mobileDispatch` 地址全被 AND 规则拦下；仍有少量直连 IP，需隔天再确认 |
+| 2026-10-23 | iPhone / iOS 27 | Jump 3.30 | — | 临时解密 `switch.jumpvg.com` | 开屏 | 几次里出现一次 | 解密后正常使用 | 找到开屏 `/jump/getlaunchad/v2` 和 `/jump/ad/…` 广告接口，已改为回空 JSON，待验证 |
 | 2026-10-22 | iPhone / iOS 27 | 哔哩哔哩、X 等 | 流量 | 当天最新 | — | 未反馈问题 | 正常 | — |

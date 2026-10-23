@@ -279,5 +279,37 @@
         "action": "reject"
       }
     ]
+  },
+  "jump": {
+    "name": "Jump",
+    "status": "experimental-unverified-on-device",
+    "risk": "low",
+    "source": "2026-10-23 device log of Jump 3.30 with switch.jumpvg.com decrypted: launch ad, home-screen ads, ad configs and operational popups",
+    "rules": [
+      {
+        "pattern": "^https://switch\\.jumpvg\\.com/jump/getlaunchad/",
+        "hosts": ["switch.jumpvg.com"],
+        "positive": ["https://switch.jumpvg.com/jump/getlaunchad/v2?platform=ios"],
+        "action": "reject-dict"
+      },
+      {
+        "pattern": "^https://switch\\.jumpvg\\.com/jump/ad/",
+        "hosts": ["switch.jumpvg.com"],
+        "positive": ["https://switch.jumpvg.com/jump/ad/home/screen/full_v2", "https://switch.jumpvg.com/jump/ad/home/screen", "https://switch.jumpvg.com/jump/ad/kiko_down_page/conf"],
+        "action": "reject-dict"
+      },
+      {
+        "pattern": "^https://switch\\.jumpvg\\.com/jump/recommend/ad_conf(?:\\?|$)",
+        "hosts": ["switch.jumpvg.com"],
+        "positive": ["https://switch.jumpvg.com/jump/recommend/ad_conf?page=1"],
+        "action": "reject-dict"
+      },
+      {
+        "pattern": "^https://switch\\.jumpvg\\.com/jump/notice/popup(?:\\?|$)",
+        "hosts": ["switch.jumpvg.com"],
+        "positive": ["https://switch.jumpvg.com/jump/notice/popup"],
+        "action": "reject-dict"
+      }
+    ]
   }
 }

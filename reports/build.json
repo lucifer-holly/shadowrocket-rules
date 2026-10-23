@@ -1,5 +1,5 @@
 {
-  "app_modules": 14,
+  "app_modules": 15,
   "base_rules": 145869,
   "covered_by_parent": 10430,
   "device_verified": false,
@@ -205,14 +205,12 @@
   "lite_rules": 69775,
   "observed_mitm_hosts": [
     "anchorpost.msstatic.com",
-    "b.jumpvg.com",
     "diy-assets.msstatic.com",
     "diy-front.cdn.huya.com",
     "fileserver.cdn.huya.com",
     "hd.huya.com",
     "huyaimg.msstatic.com",
     "s1-static.msstatic.com",
-    "switch.jumpvg.com",
     "v-huya-img2.msstatic.com"
   ],
   "protected_removed": 46,
@@ -223,7 +221,7 @@
     "plugin_domains": 2584
   },
   "unique_before_policy": 156345,
-  "url_rewrites": 15,
+  "url_rewrites": 19,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
 }

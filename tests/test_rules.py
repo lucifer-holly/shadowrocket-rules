@@ -83,6 +83,16 @@ class IntegrationTests(unittest.TestCase):
                           ('https://amdc.alipay.com/amdc/mobileDispatch',ua),('http://59.82.113.219/gw/mtop.x/1.0/',ua)]:
             self.assertFalse(hit(url,agent),(url,agent))
         self.assertTrue(is_blocked('acs.m.goofish.com',self.rules) is False)
+    def test_jump_endpoints_from_device_log(self):
+        # Jump 3.30 (2026-10-23 log, switch.jumpvg.com decrypted): only ad and popup calls are answered with {}.
+        patterns=[r['pattern'] for r in self.apps['jump']['rules']]
+        mitm=next(l for l in (ROOT/'dist/modules/app-ads.sgmodule').read_text().splitlines() if l.startswith('hostname = %APPEND% '))
+        self.assertIn('switch.jumpvg.com',mitm.split('= %APPEND% ')[1].split(', '))
+        for path in ['getlaunchad/v2','ad/home/screen/full_v2','ad/home/screen','ad/kiko_down_page/conf','recommend/ad_conf','notice/popup']:
+            with self.subTest(blocked=path):self.assertTrue(any(re.search(p,'https://switch.jumpvg.com/jump/'+path) for p in patterns))
+        for path in ['recommend/content_v3_1','mine/userinfo','notice/appVersionUpdate/v2','notice/getprivacyversion','app/conf',
+                     'showFailLaunchAd','imserver/token','push/registered','kiko/config','interest_v2/home']:
+            with self.subTest(kept=path):self.assertFalse(any(re.search(p,'https://switch.jumpvg.com/jump/'+path) for p in patterns))
     def test_all_app_positive_fixtures(self):
         for ident,app in self.apps.items():
             for r in app['rules']:

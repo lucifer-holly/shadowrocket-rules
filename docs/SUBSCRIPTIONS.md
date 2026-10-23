@@ -30,6 +30,7 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | Keep（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/keep.sgmodule |
 | 携程（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/ctrip.sgmodule |
 | AppSo（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/appso.sgmodule |
+| Jump（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/jump.sgmodule |
 
 脚本只引用本仓库按内容哈希命名的文件；更新需要先审阅合并，再在手机更新模块/配置。
 模块内嵌域名表；不依赖手机另行拉取上游规则。规则集方式仅访问本仓库。

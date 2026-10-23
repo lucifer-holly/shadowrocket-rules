@@ -42,6 +42,7 @@
 
 - 模块的 `DOMAIN-SUFFIX` 和 `DOMAIN` 拦截都能压过主配置里更宽的分组规则，例如 `uve.weibo.com`、`sdkmonitor.biz.weibo.com` 的拦截都压过了 `weibo.com` 直连。
 - 阿里系 App（闲鱼）启动时先用明文 HTTP 向 `http://<IP>/amdc/mobileDispatch` 要服务器列表，拿到后直接连 IP。日志里只剩 `IP:443` 的 TCP Stream，按域名的解密和重写全部失效。办法是按 User-Agent 拦掉这个 App 的调度请求，让它退回走域名（`data/apps.json` 的 `connection_rules`）。
+- Shadowrocket 认 `AND,((URL-REGEX,…),(USER-AGENT,…)),REJECT` 这种规则：闲鱼的 6 个调度地址都被它拦下，日志「规则」一栏会显示整条规则。
 - 请求被拦截后，有的 App 会高频重试（虎牙 3 分钟上百次），这不代表规则失效。
 - 开屏素材常被 App 提前下载并长期保存，拦截后可能还会显示一段时间，「清除缓存」不一定清得掉。
 

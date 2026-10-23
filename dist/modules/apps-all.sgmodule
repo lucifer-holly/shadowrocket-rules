@@ -37,6 +37,11 @@ AND,((URL-REGEX,^http://[0-9.:]+/amdc/mobileDispatch),(USER-AGENT,%E9%97%B2%E9%B
 ^https?://m\.ctrip\.com/restapi/soa2/13916/json/tripAds(?:\?|$) - reject-200
 # AppSo (appso); 真机效果未验证
 ^https?://sso\.ifanr\.com/jiong/IOS/appso/splash/ - reject
+# Jump (jump); 真机效果未验证
+^https://switch\.jumpvg\.com/jump/getlaunchad/ - reject-dict
+^https://switch\.jumpvg\.com/jump/ad/ - reject-dict
+^https://switch\.jumpvg\.com/jump/recommend/ad_conf(?:\?|$) - reject-dict
+^https://switch\.jumpvg\.com/jump/notice/popup(?:\?|$) - reject-dict
 
 [MITM]
-hostname = %APPEND% acs.m.goofish.com, acs.m.taobao.com, adstrategy.biz.weibo.com, amap-aos-info-nogw.amap.com, api.bilibili.com, api.gotokeep.com, api.m.jd.com, api.pinduoduo.com, api.yangkeduo.com, api.zhihu.com, cn-acs.m.cainiao.com, edith.xiaohongshu.com, g-acs.m.goofish.com, m*.amap.com, m.ctrip.com, sqt.meituan.com, sso.ifanr.com
+hostname = %APPEND% acs.m.goofish.com, acs.m.taobao.com, adstrategy.biz.weibo.com, amap-aos-info-nogw.amap.com, api.bilibili.com, api.gotokeep.com, api.m.jd.com, api.pinduoduo.com, api.yangkeduo.com, api.zhihu.com, cn-acs.m.cainiao.com, edith.xiaohongshu.com, g-acs.m.goofish.com, m*.amap.com, m.ctrip.com, sqt.meituan.com, sso.ifanr.com, switch.jumpvg.com
