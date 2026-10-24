@@ -1,16 +1,28 @@
 {
   "app_modules": 15,
-  "base_rules": 147276,
+  "base_rules": 147266,
   "covered_by_parent": 10550,
   "device_verified": false,
   "exceptions": [
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,ads.netflix.com"
+    },
     {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,advertising.apple.com"
     },
     {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,aidsvc.netflix.com"
+    },
+    {
       "reason": "混合 API 使用路径级规则；保留非广告请求",
       "rule": "DOMAIN-SUFFIX,amap-aos-info-nogw.amap.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,analytics.jobs.netflix.net"
     },
     {
       "reason": "Apple 登录、系统服务、App Store",
@@ -31,6 +43,10 @@
     {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,banners.itunes.apple.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,beaconimages.netflix.net"
     },
     {
       "reason": "混合 API 使用路径级规则；保留非广告请求",
@@ -59,6 +75,14 @@
     {
       "reason": "自身规则与脚本更新",
       "rule": "DOMAIN-SUFFIX,copilot-telemetry.githubusercontent.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,customerevents.dradis.netflix.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,customerevents.netflix.com"
     },
     {
       "reason": "支付",
@@ -113,6 +137,10 @@
       "rule": "DOMAIN-SUFFIX,iadsdk.apple.com"
     },
     {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,ichnaea-web.netflix.com"
+    },
+    {
       "reason": "支付宝支付",
       "rule": "DOMAIN-SUFFIX,loggw-ex.alipay.com"
     },
@@ -123,6 +151,14 @@
     {
       "reason": "支付宝支付",
       "rule": "DOMAIN-SUFFIX,loggw.alipay.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,logs.dradis.netflix.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,logs.netflix.com"
     },
     {
       "reason": "iCloud 同步",
@@ -155,6 +191,10 @@
     {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,proxy.advp.apple.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,pulse.perfmetrics.netflix.com"
     },
     {
       "reason": "Safari「欺诈性网站警告」等安全浏览服务（中国大陆地区由腾讯提供，其他地区为 Google，经 Apple 转发）；拦掉后钓鱼网站不再提示",
@@ -206,7 +246,7 @@
       "rewrites": 1112
     }
   },
-  "lite_rules": 71210,
+  "lite_rules": 71201,
   "observed_mitm_hosts": [
     "anchorpost.msstatic.com",
     "diy-assets.msstatic.com",
@@ -217,7 +257,7 @@
     "s1-static.msstatic.com",
     "v-huya-img2.msstatic.com"
   ],
-  "protected_removed": 47,
+  "protected_removed": 57,
   "response_routes": 3,
   "source_counts": {
     "anti-ad": 104448,

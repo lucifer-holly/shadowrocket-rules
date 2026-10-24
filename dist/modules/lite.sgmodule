@@ -5009,7 +5009,6 @@ DOMAIN-SUFFIX,ads.nazaretyan.com,REJECT
 DOMAIN-SUFFIX,ads.ndevs.eu,REJECT
 DOMAIN-SUFFIX,ads.ndtv1.com,REJECT
 DOMAIN-SUFFIX,ads.net.id,REJECT
-DOMAIN-SUFFIX,ads.netflix.com,REJECT
 DOMAIN-SUFFIX,ads.newsbook.com.mt,REJECT
 DOMAIN-SUFFIX,ads.newtention.net,REJECT
 DOMAIN-SUFFIX,ads.nextdoor.com,REJECT
@@ -6445,7 +6444,6 @@ DOMAIN-SUFFIX,aid-ad.jp,REJECT
 DOMAIN-SUFFIX,aidata.io,REJECT
 DOMAIN-SUFFIX,aidennapus.qpon,REJECT
 DOMAIN-SUFFIX,aider-res.meizu.com,REJECT
-DOMAIN-SUFFIX,aidsvc.netflix.com,REJECT
 DOMAIN-SUFFIX,aieov.com,REJECT
 DOMAIN-SUFFIX,aifbxzmkovbwx.online,REJECT
 DOMAIN-SUFFIX,aifpleasurebeh.org,REJECT
@@ -9319,7 +9317,6 @@ DOMAIN-SUFFIX,analytics.jjshouse.com,REJECT
 DOMAIN-SUFFIX,analytics.jobfactory.de,REJECT
 DOMAIN-SUFFIX,analytics.jobnet.dk,REJECT
 DOMAIN-SUFFIX,analytics.joboase.com,REJECT
-DOMAIN-SUFFIX,analytics.jobs.netflix.net,REJECT
 DOMAIN-SUFFIX,analytics.jobstairs.de,REJECT
 DOMAIN-SUFFIX,analytics.jobvoodoo.de,REJECT
 DOMAIN-SUFFIX,analytics.jodelapis.com,REJECT
@@ -14215,7 +14212,6 @@ DOMAIN-SUFFIX,beacon.www.lider.cl,REJECT
 DOMAIN-SUFFIX,beacon01.alma.exlibrisgroup.com,REJECT
 DOMAIN-SUFFIX,beaconads.com,REJECT
 DOMAIN-SUFFIX,beaconcdn.qq.com,REJECT
-DOMAIN-SUFFIX,beaconimages.netflix.net,REJECT
 DOMAIN-SUFFIX,beacons.digital.disneyadvertising.com,REJECT
 DOMAIN-SUFFIX,beacons.digital.disneyadvertising.com.edgekey.net,REJECT
 DOMAIN-SUFFIX,beacons.trafficmanager.net,REJECT
@@ -19857,8 +19853,6 @@ DOMAIN-SUFFIX,customer-analytics.starship.xyz,REJECT
 DOMAIN-SUFFIX,customer-feedbacks.web.roku.com,REJECT
 DOMAIN-SUFFIX,customer.fra-01.braze.eu,REJECT
 DOMAIN-SUFFIX,customer.guru,REJECT
-DOMAIN-SUFFIX,customerevents.dradis.netflix.com,REJECT
-DOMAIN-SUFFIX,customerevents.netflix.com,REJECT
 DOMAIN-SUFFIX,customerlabs.co,REJECT
 DOMAIN-SUFFIX,customfingerprints.bablosoft.com,REJECT
 DOMAIN-SUFFIX,customsails.com,REJECT
@@ -35623,7 +35617,6 @@ DOMAIN-SUFFIX,logs.collector.eu-01.cloud.solarwinds.com,REJECT
 DOMAIN-SUFFIX,logs.collector.solarwinds.com,REJECT
 DOMAIN-SUFFIX,logs.companycam.com,REJECT
 DOMAIN-SUFFIX,logs.coursesmith.net,REJECT
-DOMAIN-SUFFIX,logs.dradis.netflix.com,REJECT
 DOMAIN-SUFFIX,logs.dynamicauth.com,REJECT
 DOMAIN-SUFFIX,logs.fbox.fpt.vn,REJECT
 DOMAIN-SUFFIX,logs.felmo.de,REJECT
@@ -35641,7 +35634,6 @@ DOMAIN-SUFFIX,logs.linkplatforms.com,REJECT
 DOMAIN-SUFFIX,logs.md.av-cloud.net,REJECT
 DOMAIN-SUFFIX,logs.mezmo.com,REJECT
 DOMAIN-SUFFIX,logs.naukri.com,REJECT
-DOMAIN-SUFFIX,logs.netflix.com,REJECT
 DOMAIN-SUFFIX,logs.ng.colortokens.com,REJECT
 DOMAIN-SUFFIX,logs.openbank.com,REJECT
 DOMAIN-SUFFIX,logs.ottrun.com,REJECT
@@ -47993,7 +47985,6 @@ DOMAIN-SUFFIX,pulse.ora.fi,REJECT
 DOMAIN-SUFFIX,pulse.parkmundo.com.au,REJECT
 DOMAIN-SUFFIX,pulse.parkmundo.com.br,REJECT
 DOMAIN-SUFFIX,pulse.parkmundo.de,REJECT
-DOMAIN-SUFFIX,pulse.perfmetrics.netflix.com,REJECT
 DOMAIN-SUFFIX,pulse.rac.co.uk,REJECT
 DOMAIN-SUFFIX,pulse.scratchnomore.nl,REJECT
 DOMAIN-SUFFIX,pulseadnetwork.com,REJECT

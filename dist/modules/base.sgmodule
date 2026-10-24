@@ -9573,7 +9573,6 @@ DOMAIN-SUFFIX,ads.nazaretyan.com,REJECT
 DOMAIN-SUFFIX,ads.ndevs.eu,REJECT
 DOMAIN-SUFFIX,ads.ndtv1.com,REJECT
 DOMAIN-SUFFIX,ads.net.id,REJECT
-DOMAIN-SUFFIX,ads.netflix.com,REJECT
 DOMAIN-SUFFIX,ads.newsbook.com.mt,REJECT
 DOMAIN-SUFFIX,ads.newtention.net,REJECT
 DOMAIN-SUFFIX,ads.nextdoor.com,REJECT
@@ -11773,7 +11772,6 @@ DOMAIN-SUFFIX,aidfni7yk0.com,REJECT
 DOMAIN-SUFFIX,aidlifempowerment.com,REJECT
 DOMAIN-SUFFIX,aidsro.ostin.com,REJECT
 DOMAIN-SUFFIX,aidsswaggertrimness.com,REJECT
-DOMAIN-SUFFIX,aidsvc.netflix.com,REJECT
 DOMAIN-SUFFIX,aidthewallowtoh.org,REJECT
 DOMAIN-SUFFIX,aiea6gaza.com,REJECT
 DOMAIN-SUFFIX,aiecrhvddyaqb.website,REJECT
@@ -15357,7 +15355,6 @@ DOMAIN-SUFFIX,analytics.jjshouse.com,REJECT
 DOMAIN-SUFFIX,analytics.jobfactory.de,REJECT
 DOMAIN-SUFFIX,analytics.jobnet.dk,REJECT
 DOMAIN-SUFFIX,analytics.joboase.com,REJECT
-DOMAIN-SUFFIX,analytics.jobs.netflix.net,REJECT
 DOMAIN-SUFFIX,analytics.jobstairs.de,REJECT
 DOMAIN-SUFFIX,analytics.jobvoodoo.de,REJECT
 DOMAIN-SUFFIX,analytics.jodelapis.com,REJECT
@@ -23388,7 +23385,6 @@ DOMAIN-SUFFIX,beacon01.alma.exlibrisgroup.com,REJECT
 DOMAIN-SUFFIX,beaconadnetwork.com,REJECT
 DOMAIN-SUFFIX,beaconads.com,REJECT
 DOMAIN-SUFFIX,beaconcdn.qq.com,REJECT
-DOMAIN-SUFFIX,beaconimages.netflix.net,REJECT
 DOMAIN-SUFFIX,beacons.digital.disneyadvertising.com.edgekey.net,REJECT
 DOMAIN-SUFFIX,beacons.mediamelon.com,REJECT
 DOMAIN-SUFFIX,beacons.trafficmanager.net,REJECT
@@ -34854,8 +34850,6 @@ DOMAIN-SUFFIX,customer.libertycarz.com,REJECT
 DOMAIN-SUFFIX,customer.newsflare.com,REJECT
 DOMAIN-SUFFIX,customercare.aircycle.com,REJECT
 DOMAIN-SUFFIX,customerconversio.com,REJECT
-DOMAIN-SUFFIX,customerevents.dradis.netflix.com,REJECT
-DOMAIN-SUFFIX,customerevents.netflix.com,REJECT
 DOMAIN-SUFFIX,customerexperience.verintsystemsinc.com,REJECT
 DOMAIN-SUFFIX,customerlabs.co,REJECT
 DOMAIN-SUFFIX,customerrelations.theinstitutes.org,REJECT
@@ -59404,7 +59398,6 @@ DOMAIN-SUFFIX,ichc1.xinglinpukang.com,REJECT
 DOMAIN-SUFFIX,iche88.cn,REJECT
 DOMAIN-SUFFIX,ichemia.pl,REJECT
 DOMAIN-SUFFIX,ichfzso7f.com,REJECT
-DOMAIN-SUFFIX,ichnaea-web.netflix.com,REJECT
 DOMAIN-SUFFIX,ichwteqdufxed.website,REJECT
 DOMAIN-SUFFIX,iciakrqnrmwrl.online,REJECT
 DOMAIN-SUFFIX,iciapyduboymc.space,REJECT
@@ -72179,7 +72172,6 @@ DOMAIN-SUFFIX,logs.collector.solarwinds.com,REJECT
 DOMAIN-SUFFIX,logs.companycam.com,REJECT
 DOMAIN-SUFFIX,logs.coursesmith.net,REJECT
 DOMAIN-SUFFIX,logs.datadoghq.com,REJECT
-DOMAIN-SUFFIX,logs.dradis.netflix.com,REJECT
 DOMAIN-SUFFIX,logs.dynamicauth.com,REJECT
 DOMAIN-SUFFIX,logs.fbox.fpt.vn,REJECT
 DOMAIN-SUFFIX,logs.felmo.de,REJECT
@@ -72199,7 +72191,6 @@ DOMAIN-SUFFIX,logs.md.av-cloud.net,REJECT
 DOMAIN-SUFFIX,logs.mezmo.com,REJECT
 DOMAIN-SUFFIX,logs.nandu.com,REJECT
 DOMAIN-SUFFIX,logs.naukri.com,REJECT
-DOMAIN-SUFFIX,logs.netflix.com,REJECT
 DOMAIN-SUFFIX,logs.ng.colortokens.com,REJECT
 DOMAIN-SUFFIX,logs.openbank.com,REJECT
 DOMAIN-SUFFIX,logs.ottrun.com,REJECT
@@ -97712,7 +97703,6 @@ DOMAIN-SUFFIX,pulse.ora.fi,REJECT
 DOMAIN-SUFFIX,pulse.parkmundo.com.au,REJECT
 DOMAIN-SUFFIX,pulse.parkmundo.com.br,REJECT
 DOMAIN-SUFFIX,pulse.parkmundo.de,REJECT
-DOMAIN-SUFFIX,pulse.perfmetrics.netflix.com,REJECT
 DOMAIN-SUFFIX,pulse.rac.co.uk,REJECT
 DOMAIN-SUFFIX,pulse.scratchnomore.nl,REJECT
 DOMAIN-SUFFIX,pulse.shopflo.com,REJECT

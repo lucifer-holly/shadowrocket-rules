@@ -83,6 +83,11 @@ class IntegrationTests(unittest.TestCase):
                           ('https://amdc.alipay.com/amdc/mobileDispatch',ua),('http://59.82.113.219/gw/mtop.x/1.0/',ua)]:
             self.assertFalse(hit(url,agent),(url,agent))
         self.assertTrue(is_blocked('acs.m.goofish.com',self.rules) is False)
+    def test_netflix_is_never_blocked(self):
+        # The owner could not open Netflix in Config mode (2026-10-24); ad lists must never touch Netflix's own domains.
+        for h in ['www.netflix.com','customerevents.netflix.com','logs.netflix.com','ios.sharkboot.netflix.com','ichnaea.netflix.com',
+                  'assets.nflxext.com','art-s.nflximg.net','occ-0-1.1.nflxso.net','ipv4-c001.1.oca.nflxvideo.net','events.backtrace.io']:
+            with self.subTest(host=h):self.assertFalse(is_blocked(h,self.rules))
     def test_ccb_ad_hosts_from_device_log(self):
         # 建设银行 App (2026-10-23 log): ad pictures over plain HTTP and the ad server go; banking hosts stay reachable and undecrypted.
         for h in ['imageadv.ccb.com','adv.ccb.com']:

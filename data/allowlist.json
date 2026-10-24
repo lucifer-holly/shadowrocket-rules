@@ -249,6 +249,41 @@
       "domain": "events.backtrace.io",
       "scope": "host",
       "reason": "Netflix 游戏（Solitaire）启动时唯一被拦的请求，拦掉后配置模式下打不开（2026-10-24 设备日志）；这是崩溃上报，放行不影响去广告"
+    },
+    {
+      "domain": "netflix.com",
+      "scope": "subtree",
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix"
+    },
+    {
+      "domain": "netflix.net",
+      "scope": "subtree",
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix"
+    },
+    {
+      "domain": "nflxext.com",
+      "scope": "subtree",
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix"
+    },
+    {
+      "domain": "nflximg.net",
+      "scope": "subtree",
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix"
+    },
+    {
+      "domain": "nflximg.com",
+      "scope": "subtree",
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix"
+    },
+    {
+      "domain": "nflxso.net",
+      "scope": "subtree",
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix"
+    },
+    {
+      "domain": "nflxvideo.net",
+      "scope": "subtree",
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix"
     }
   ]
 }
