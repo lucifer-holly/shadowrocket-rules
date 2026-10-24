@@ -23,7 +23,6 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | 知乎（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/zhihu.sgmodule |
 | 闲鱼（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/xianyu.sgmodule |
 | 高德地图（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/amap.sgmodule |
-| 微博（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/weibo.sgmodule |
 | 哔哩哔哩（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/bilibili.sgmodule |
 | 拼多多（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/pdd.sgmodule |
 | 菜鸟（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/cainiao.sgmodule |

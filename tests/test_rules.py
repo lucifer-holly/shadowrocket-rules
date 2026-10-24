@@ -51,15 +51,15 @@ class IntegrationTests(unittest.TestCase):
         for h in ['doubleclick.net','pagead2.googlesyndication.com','optimus-ads.amap.com','ads-img-qc.xhscdn.com']:
             with self.subTest(host=h):self.assertTrue(is_blocked(h,self.rules))
     def test_weibo_hosts_from_device_log(self):
-        # Hosts Weibo Lite 7.2 contacted on a cold start, profile open and article expand (2026-10-22 log).
-        for h in ['bootpreload.uve.weibo.com','brandvideo.biz.weibo.com','kadmimage.biz.weibo.com','sdkaction.biz.weibo.com','sdkclick.biz.weibo.com','sdkmonitor.biz.weibo.com','u1.img.mobile.sina.cn']:
+        # Hosts Weibo Lite 7.2 (2026-10-22 log) and the full app (2026-10-23/24 logs) contacted on cold starts and page opens.
+        # The splash came back on 10-24 while adstrategy's /v1/strategy/first_show passed, so the whole ad business domain is blocked.
+        for h in ['bootpreload.uve.weibo.com','adstrategy.biz.weibo.com','vs.biz.weibo.com','brandvideo.biz.weibo.com','kadmimage.biz.weibo.com',
+                  'sdkaction.biz.weibo.com','sdkclick.biz.weibo.com','sdkmonitor.biz.weibo.com','u1.img.mobile.sina.cn']:
             with self.subTest(blocked=h):self.assertTrue(is_blocked(h,self.rules))
-        for h in ['api.weibo.cn','weibointl.api.weibo.cn','adstrategy.biz.weibo.com','h5.sinaimg.cn','tvax3.sinaimg.cn','wx1.sinaimg.cn','f.video.weibocdn.com','m.weibo.cn','weibo.com']:
+        for h in ['api.weibo.cn','weibointl.api.weibo.cn','h5.sinaimg.cn','d.sinaimg.cn','tvax3.sinaimg.cn','wx1.sinaimg.cn','f.video.weibocdn.com','m.weibo.cn','weibo.com']:
             with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
-        p=self.apps['weibo']['rules'][0]['pattern']
-        self.assertRegex('https://adstrategy.biz.weibo.com/v3/strategy/ad?reqid=x&sign=y',p)
-        for url in ['https://adstrategy.biz.weibo.com/v3/strategy/adx','https://adstrategy.biz.weibo.com/v3/strategy/config','https://api.weibo.cn/v3/strategy/ad']:
-            with self.subTest(url=url):self.assertIsNone(re.search(p,url))
+        hosts=[h for app in self.apps.values() for r in app['rules'] for h in r['hosts']]
+        self.assertFalse([h for h in hosts if h.endswith('biz.weibo.com')], 'no module rewrites a host that ① already blocks')
     def test_huya_hosts_from_device_log(self):
         # Huya 13.5 cold starts (2026-10-22 log): the splash image came from the P2P mirror of business.msstatic.com.
         app=build.imported_app_ads(ROOT,load_policy())['domains']

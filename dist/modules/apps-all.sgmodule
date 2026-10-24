@@ -23,8 +23,6 @@ AND,((URL-REGEX,^http://[0-9.:]+/amdc/mobileDispatch),(USER-AGENT,%E9%97%B2%E9%B
 # 高德地图 (amap); 真机效果未验证
 ^https?://amap-aos-info-nogw\.amap\.com/ws/aos/alimama/splash_screen_rt(?:\?|$) - reject-dict
 ^https?://m\d+\.amap\.com/ws/shield/dsp/app/startup/init(?:\?|$) - reject-dict
-# 微博 (weibo); 真机效果未验证
-^https?://adstrategy\.biz\.weibo\.com/v\d+/strategy/ad(?:\?|$) - reject-dict
 # 哔哩哔哩 (bilibili); 真机效果未验证
 ^https?://api\.bilibili\.com/x/mengqi/v\d+/resource(?:\?|$) - reject-dict
 # 拼多多 (pdd); 真机效果未验证
@@ -44,4 +42,4 @@ AND,((URL-REGEX,^http://[0-9.:]+/amdc/mobileDispatch),(USER-AGENT,%E9%97%B2%E9%B
 ^https://switch\.jumpvg\.com/jump/notice/popup(?:\?|$) - reject-dict
 
 [MITM]
-hostname = %APPEND% acs.m.goofish.com, acs.m.taobao.com, adstrategy.biz.weibo.com, amap-aos-info-nogw.amap.com, api.bilibili.com, api.gotokeep.com, api.m.jd.com, api.pinduoduo.com, api.yangkeduo.com, api.zhihu.com, cn-acs.m.cainiao.com, edith.xiaohongshu.com, g-acs.m.goofish.com, m*.amap.com, m.ctrip.com, sqt.meituan.com, sso.ifanr.com, switch.jumpvg.com
+hostname = %APPEND% acs.m.goofish.com, acs.m.taobao.com, amap-aos-info-nogw.amap.com, api.bilibili.com, api.gotokeep.com, api.m.jd.com, api.pinduoduo.com, api.yangkeduo.com, api.zhihu.com, cn-acs.m.cainiao.com, edith.xiaohongshu.com, g-acs.m.goofish.com, m*.amap.com, m.ctrip.com, sqt.meituan.com, sso.ifanr.com, switch.jumpvg.com

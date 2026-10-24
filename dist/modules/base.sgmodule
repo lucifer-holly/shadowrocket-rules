@@ -111,7 +111,6 @@ DOMAIN,richmanmain.jxedt.com,REJECT
 DOMAIN,richmanrules.jxedt.com,REJECT
 DOMAIN,rpt.hpplay.cn,REJECT
 DOMAIN,rttrack.ddxq.mobi,REJECT
-DOMAIN,sdkmonitor.biz.weibo.com,REJECT
 DOMAIN,security-lq.snssdk.com,REJECT
 DOMAIN,soul-ad.soulapp.cn,REJECT
 DOMAIN,ssp-partner.alibaba.com,REJECT
@@ -24563,6 +24562,7 @@ DOMAIN-SUFFIX,biz-cdn.varzesh3.com,REJECT
 DOMAIN-SUFFIX,biz.coface.com,REJECT
 DOMAIN-SUFFIX,biz.gexing.com,REJECT
 DOMAIN-SUFFIX,biz.varzesh3.com,REJECT
+DOMAIN-SUFFIX,biz.weibo.com,REJECT
 DOMAIN-SUFFIX,biz.weibo.com.cn,REJECT
 DOMAIN-SUFFIX,biz1.kddi.com,REJECT
 DOMAIN-SUFFIX,biz37.net,REJECT
@@ -26110,7 +26110,6 @@ DOMAIN-SUFFIX,brandsfive.com,REJECT
 DOMAIN-SUFFIX,brandshow.58.com,REJECT
 DOMAIN-SUFFIX,brandsmat.com,REJECT
 DOMAIN-SUFFIX,brandturbo.vip,REJECT
-DOMAIN-SUFFIX,brandvideo.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,brandybison.com,REJECT
 DOMAIN-SUFFIX,brandyjaggers.com,REJECT
 DOMAIN-SUFFIX,brasencracket.cyou,REJECT
@@ -66307,7 +66306,6 @@ DOMAIN-SUFFIX,kadam.ru,REJECT
 DOMAIN-SUFFIX,kaden.netoff.co.jp,REJECT
 DOMAIN-SUFFIX,kadime.cc,REJECT
 DOMAIN-SUFFIX,kadlec.psjhealth.org,REJECT
-DOMAIN-SUFFIX,kadmimage.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,kadmkyie.com,REJECT
 DOMAIN-SUFFIX,kadrawheerga.com,REJECT
 DOMAIN-SUFFIX,kaebyy.autouncle.se,REJECT
@@ -106198,13 +106196,11 @@ DOMAIN-SUFFIX,sdk.zadn.vn,REJECT
 DOMAIN-SUFFIX,sdk.zsdfm.com,REJECT
 DOMAIN-SUFFIX,sdk4push.com,REJECT
 DOMAIN-SUFFIX,sdk6.ibm.xtify.com,REJECT
-DOMAIN-SUFFIX,sdkaction.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,sdkapi.dsp-api.moloco.com,REJECT
 DOMAIN-SUFFIX,sdkapi.kookong.com,REJECT
 DOMAIN-SUFFIX,sdkapiv2.bizport.cn,REJECT
 DOMAIN-SUFFIX,sdkapp.mobile.sina.cn,REJECT
 DOMAIN-SUFFIX,sdkauth.hpplay.cn,REJECT
-DOMAIN-SUFFIX,sdkclick.biz.weibo.com,REJECT
 DOMAIN-SUFFIX,sdkclick.com,REJECT
 DOMAIN-SUFFIX,sdkclick.mobile.sina.cn,REJECT
 DOMAIN-SUFFIX,sdkconf.avlyun.com,REJECT

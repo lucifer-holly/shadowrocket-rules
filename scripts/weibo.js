@@ -3,10 +3,13 @@
  * Removes what the API itself marks as an ad or promotion, plus a few named recommendation modules.
  * Hot-search rows stay unless marked as promoted; groups holding a profile header are never removed.
  * Unknown paths, API errors, non-JSON bodies and unexpected shapes pass unchanged.
+ * Self-test: a routed path opened with ?personal_filter_selftest=1 (e.g. in Safari) answers a fixed JSON naming VERSION.
  */
 (function () {
   'use strict';
   var MAX_BODY = 3145728;
+  var VERSION = '2026-10-24';
+  var SELF_TEST = /[?&]personal_filter_selftest=1(?:[&#]|$)/;
 
   function isObj(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
   function str(x) { return typeof x === 'string' ? x : ''; }
@@ -115,7 +118,7 @@
 
   var ME_HIDDEN = /^(?:mine_attent_title|100505_-_meattent_pic|100505_-_meattent_-_\d+|100505_-_newusertask|100505_-_vipkaitong|100505_-_hongbao2022|100505_-_adphoto|100505_-_advideo|100505_-_hongrenjie2022|100505_-_weibonight2023)$/;
   // Names on the 我 page the owner does not use; entries such as 相册, 赞/收藏, 浏览记录, 草稿箱 and 设置 stay.
-  var ME_JUNK = /钱包|任务|伴聊|AI|活动|红包|会员|商城|小店|购物|微博购|游戏|直播|短剧|装扮|卡券|免流|抽奖|福利|充值|推广|广告|订单|日历|主队|好友趣|双十一|双11/;
+  var ME_JUNK = /钱包|任务|伴聊|AI|活动|红包|会员|商城|小店|购物|微博购|游戏|直播|短剧|装扮|卡券|免流|抽奖|福利|充值|推广|广告|订单|日历|主队|友趣|双十一|双11/;
   var ME_JUNK_IDS = /^100505_-_(?:pay|ordercenter|promote)$/;
 
   function isJunkEntry(x) {
@@ -345,14 +348,16 @@
 
   function main() {
     if (typeof $request !== 'object' || typeof $response !== 'object') return {};
-    var status = String($response.status || $response.statusCode || '200');
-    if (!/^(?:200(?:$|\s)|HTTP\/\S+ 200(?:$|\s))/.test(status)) return {};
-    var body = $response.body;
-    if (typeof body !== 'string' || body.length > MAX_BODY) return {};
     var url = String($request.url || '');
     var m = /^https:\/\/api\.weibo\.cn\/2\/([^?#]+)(?:[?#]|$)/.exec(url);
     var handler = m && Object.prototype.hasOwnProperty.call(ROUTES, m[1]) ? ROUTES[m[1]] : null;
     if (!handler) return {};
+    // The app never sends this marker; whatever Weibo answered, the owner sees that this version runs on the phone.
+    if (SELF_TEST.test(url)) return { body: JSON.stringify({ personal_filter: 'weibo', ok: true, version: VERSION, path: m[1] }) };
+    var status = String($response.status || $response.statusCode || '200');
+    if (!/^(?:200(?:$|\s)|HTTP\/\S+ 200(?:$|\s))/.test(status)) return {};
+    var body = $response.body;
+    if (typeof body !== 'string' || body.length > MAX_BODY) return {};
     var obj;
     try { obj = JSON.parse(body); } catch (_) { return {}; }
     if (!isObj(obj)) return {};

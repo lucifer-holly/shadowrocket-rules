@@ -66,6 +66,24 @@ test('paths outside the route table pass unchanged', () => {
     assert.deepEqual(run(url, ad), {}, url);
 });
 
+test('the self-test marker on a routed path answers a fixed JSON, whatever Weibo returned', () => {
+  // Weibo answers a request without login with HTTP 200 and errno -200.
+  const loggedOut = { errmsg: '校验参数不存在', errno: -200, errtype: 'DEFAULT_ERROR', isblock: false };
+  for (const [url, path] of [['https://api.weibo.cn/2/profile/me?personal_filter_selftest=1', 'profile/me'],
+    ['https://api.weibo.cn/2/checkin/show?gsid=x&personal_filter_selftest=1&v=2', 'checkin/show']]) {
+    const answer = JSON.parse(run(url, loggedOut).body);
+    assert.equal(answer.personal_filter, 'weibo');
+    assert.equal(answer.ok, true);
+    assert.equal(answer.path, path);
+    assert.match(answer.version, /^\d{4}-\d{2}-\d{2}$/);
+    assert.deepEqual(JSON.parse(run(url, '<html></html>', { status: 403 }).body), answer);
+  }
+  for (const url of ['https://api.weibo.cn/2/profile/me?personal_filter_selftest=0', 'https://api.weibo.cn/2/profile/me?x_personal_filter_selftest=1',
+    'https://api.weibo.cn/2/profile/me?personal_filter_selftest=12', 'https://api.weibo.cn/2/statuses/show?personal_filter_selftest=1',
+    'https://api.weibo.cn.evil.test/2/profile/me?personal_filter_selftest=1'])
+    assert.deepEqual(run(url, loggedOut), {}, url);
+});
+
 test('a malformed container id in the request does not trigger the following-list filter', () => {
   const body = { cards: [{ card_group: [{ user: { id: 2, following: false } }] }] };
   assert.deepEqual(run('https://api.weibo.cn/2/cardlist?containerid=231093%E0%A4%A', body), {});

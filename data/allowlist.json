@@ -141,11 +141,6 @@
       "reason": "混合 API 使用路径级规则；保留非广告请求"
     },
     {
-      "domain": "adstrategy.biz.weibo.com",
-      "scope": "host",
-      "reason": "混合 API 使用路径级规则；保留非广告请求"
-    },
-    {
       "domain": "api.pinduoduo.com",
       "scope": "host",
       "reason": "混合 API 使用路径级规则；保留非广告请求"
