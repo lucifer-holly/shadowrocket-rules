@@ -2,7 +2,7 @@
   "description": "Weibo iOS app (full version) module. Only api.weibo.cn is decrypted. rewrites answer pure promotion calls with an empty JSON object; scripts lists the exact paths under https://api.weibo.cn/2/ that scripts/weibo.js filters (its ROUTES table must list the same paths). negative: URLs no rewrite or script may match (login, messages, posting, follow, profile basics).",
   "mitm": ["api.weibo.cn"],
   "rewrites": [
-    {"pattern": "^https://api\\.weibo\\.cn/2/!/live/media_homelist(?:\\?|$)", "action": "reject-dict", "reason": "首页顶部的直播条", "positive": ["https://api.weibo.cn/2/!/live/media_homelist?gsid=example"]},
+    {"pattern": "^https://api\\.weibo\\.cn/2/(?:!/)?live/media_homelist(?:\\?|$)", "action": "reject-dict", "reason": "首页顶部的直播条；2026-10-24 日志里的地址没有 !/", "positive": ["https://api.weibo.cn/2/!/live/media_homelist?gsid=example", "https://api.weibo.cn/2/live/media_homelist?gsid=example"]},
     {"pattern": "^https://api\\.weibo\\.cn/2/push/daily(?:\\?|$)", "action": "reject-dict", "reason": "首页左上角每天弹出的提示", "positive": ["https://api.weibo.cn/2/push/daily?gsid=example"]},
     {"pattern": "^https://api\\.weibo\\.cn/2/ug/checkin/list(?:\\?|$)", "action": "reject-dict", "reason": "签到任务弹窗", "positive": ["https://api.weibo.cn/2/ug/checkin/list?gsid=example"]},
     {"pattern": "^https://api\\.weibo\\.cn/2/video/redpacket(?:\\?|$)", "action": "reject-dict", "reason": "视频页的红包活动", "positive": ["https://api.weibo.cn/2/video/redpacket?gsid=example"]},

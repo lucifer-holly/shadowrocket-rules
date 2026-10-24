@@ -50,7 +50,7 @@
     "url": "https://api.weibo.cn/2/profile/me?gsid=x",
     "input": {"vipHeaderBgImage": "u", "items": [
       {"itemId": "profileme_mine", "header": {"vipView": {"a": 1}, "vipCenter": {"b": 1}, "name": "me"}, "items": [{"itemId": "mainnums_friends", "title": "关注", "click": {"modules": [{"scheme": "sinaweibo://cardlist?containerid=231093_-_selfrecomm"}]}}]},
-      {"itemId": "100505_-_top8", "items": [{"itemId": "100505_-_album", "title": "我的相册"}, {"itemId": "100505_-_pay", "title": "x"}, {"itemId": "a1", "title": {"content": "任务中心"}}, {"itemId": "a2", "title": {"text": "AI伴聊"}}, {"itemId": "100505_-_like", "title": "赞/收藏"}, {"itemId": "100505_-_draft", "name": "草稿箱"}]},
+      {"itemId": "100505_-_top8", "items": [{"itemId": "100505_-_album", "title": "我的相册"}, {"itemId": "100505_-_pay", "title": "x"}, {"itemId": "a1", "title": {"content": "任务中心"}}, {"itemId": "a2", "title": {"text": "AI伴聊"}}, {"itemId": "a3", "title": "微博购"}, {"itemId": "a4", "title": "短剧"}, {"itemId": "a5", "title": "稀缺装扮"}, {"itemId": "a6", "title": "双十一好东东日历"}, {"itemId": "a7", "title": "点亮主队"}, {"itemId": "a8", "title": "好友趣"}, {"itemId": "100505_-_like", "title": "赞/收藏"}, {"itemId": "100505_-_draft", "name": "草稿箱"}]},
       {"itemId": "100505_-_newcreator", "type": "grid"},
       {"itemId": "100505_-_newcreator", "type": "banner"},
       {"itemId": "100505_-_vipkaitong"},

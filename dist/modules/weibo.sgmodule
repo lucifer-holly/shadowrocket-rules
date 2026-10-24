@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
 
 [URL Rewrite]
-^https://api\.weibo\.cn/2/!/live/media_homelist(?:\?|$) - reject-dict
+^https://api\.weibo\.cn/2/(?:!/)?live/media_homelist(?:\?|$) - reject-dict
 ^https://api\.weibo\.cn/2/push/daily(?:\?|$) - reject-dict
 ^https://api\.weibo\.cn/2/ug/checkin/list(?:\?|$) - reject-dict
 ^https://api\.weibo\.cn/2/video/redpacket(?:\?|$) - reject-dict
@@ -18,10 +18,10 @@
 ^https://api\.weibo\.cn/2/client/addlog_batch(?:\?|$) - reject-dict
 
 [Script]
-weibo-feed = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/friends/timeline|statuses/friends_timeline|statuses/unread_friends_timeline|statuses/unread_hot_timeline|groups/timeline|statuses/container_timeline|statuses/container_timeline_unread|statuses/container_timeline_hot|statuses/container_timeline_topicpage|profile/container_timeline|profile/me)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.8d9b78ab2925f257277e3f8fc10039dd92304de283b412951de017d2f2478197.js
-weibo-detail = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/extend|statuses/container_detail|statuses/container_detail_comment|statuses/container_detail_mix|statuses/container_detail_forward|statuses/repost_timeline|comments/build_comments|comments/mix_comments)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.8d9b78ab2925f257277e3f8fc10039dd92304de283b412951de017d2f2478197.js
-weibo-search = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:page|cardlist|flowpage|searchall|search/finder|search/container_timeline|search/container_discover)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.8d9b78ab2925f257277e3f8fc10039dd92304de283b412951de017d2f2478197.js
-weibo-video = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:video/tiny_stream_video_list|video/tiny_stream_mid_detail|video/full_screen_stream|video/community_tab|video/remind_info|statuses/video_mixtimeline|messageflow|checkin/show)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.8d9b78ab2925f257277e3f8fc10039dd92304de283b412951de017d2f2478197.js
+weibo-feed = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/friends/timeline|statuses/friends_timeline|statuses/unread_friends_timeline|statuses/unread_hot_timeline|groups/timeline|statuses/container_timeline|statuses/container_timeline_unread|statuses/container_timeline_hot|statuses/container_timeline_topicpage|profile/container_timeline|profile/me)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.e6ddac9cc95b6dee2e8c4f8dfb0429a6d973121a52864cb17fdcfbf22a0c7933.js
+weibo-detail = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/extend|statuses/container_detail|statuses/container_detail_comment|statuses/container_detail_mix|statuses/container_detail_forward|statuses/repost_timeline|comments/build_comments|comments/mix_comments)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.e6ddac9cc95b6dee2e8c4f8dfb0429a6d973121a52864cb17fdcfbf22a0c7933.js
+weibo-search = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:page|cardlist|flowpage|searchall|search/finder|search/container_timeline|search/container_discover)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.e6ddac9cc95b6dee2e8c4f8dfb0429a6d973121a52864cb17fdcfbf22a0c7933.js
+weibo-video = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:video/tiny_stream_video_list|video/tiny_stream_mid_detail|video/full_screen_stream|video/community_tab|video/remind_info|statuses/video_mixtimeline|messageflow|checkin/show)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.e6ddac9cc95b6dee2e8c4f8dfb0429a6d973121a52864cb17fdcfbf22a0c7933.js
 
 [MITM]
 hostname = %APPEND% api.weibo.cn

@@ -115,7 +115,7 @@
 
   var ME_HIDDEN = /^(?:mine_attent_title|100505_-_meattent_pic|100505_-_meattent_-_\d+|100505_-_newusertask|100505_-_vipkaitong|100505_-_hongbao2022|100505_-_adphoto|100505_-_advideo|100505_-_hongrenjie2022|100505_-_weibonight2023)$/;
   // Names on the 我 page the owner does not use; entries such as 相册, 赞/收藏, 浏览记录, 草稿箱 and 设置 stay.
-  var ME_JUNK = /钱包|任务|伴聊|AI|活动|红包|会员|商城|小店|购物|游戏|直播|卡券|免流|抽奖|福利|充值|推广|广告|订单/;
+  var ME_JUNK = /钱包|任务|伴聊|AI|活动|红包|会员|商城|小店|购物|微博购|游戏|直播|短剧|装扮|卡券|免流|抽奖|福利|充值|推广|广告|订单|日历|主队|好友趣|双十一|双11/;
   var ME_JUNK_IDS = /^100505_-_(?:pay|ordercenter|promote)$/;
 
   function isJunkEntry(x) {
