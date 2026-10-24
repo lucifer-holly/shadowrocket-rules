@@ -22,13 +22,36 @@ class WeiboModuleTests(unittest.TestCase):
     def section(self, name):
         return self.module.split(f'[{name}]\n')[1].split('\n\n')[0].strip().splitlines()
 
-    def test_module_only_decrypts_the_weibo_api(self):
-        self.assertEqual(self.section('MITM'), ['hostname = %APPEND% api.weibo.cn'])
+    def test_module_decrypts_only_the_api_and_the_splash_hosts(self):
+        self.assertEqual(self.section('MITM'), ['hostname = %APPEND% ' + ', '.join(self.spec['mitm'])])
+        self.assertEqual(set(self.spec['mitm']), {'api.weibo.cn', *self.spec['splash']['hosts']})
         self.assertNotIn('[Rule]', self.module)
+
+    def test_splash_requests_are_rewritten_or_refused_never_passed(self):
+        script, refused = build.weibo_splash(self.spec)
+        lines = self.module.split('\n')
+        self.assertIn(refused + ' - reject-dict', lines)
+        self.assertTrue(any(line.startswith('weibo-splash = type=http-response,pattern=' + script + ',') for line in lines))
+        # Shadowrocket separates rule fields with commas.
+        self.assertNotIn(',', script + refused)
+        calls = [u for c in self.spec['splash']['calls'] for u in c['positive']]
+        bare = {u.split('?')[0] for u in calls}
+        paths = ['', 'v1/ad/preload', 'interface/sdk/sdkad.php', 'wbapplua/wbpullad.lua', 'a?b=1']
+        others = self.spec['splash']['refused'] + [f'https://{h}/{p}' for h in self.spec['splash']['hosts'] for p in paths]
+        for url in calls + others:
+            with self.subTest(url=url):
+                rewritten = bool(re.search(script, url))
+                self.assertNotEqual(rewritten, bool(re.search(refused, url)))
+                self.assertEqual(rewritten, url in calls or url in bare)
+        for url in ['https://api.weibo.cn/2/ad/preload', 'https://fastimage.uve.weibo.com/x', 'https://sdkapp.uve.weibo.com.evil.test/interface/sdk/sdkad.php',
+                    *self.spec['negative'], *load_policy()['critical_url_probes']]:
+            with self.subTest(untouched=url):
+                self.assertIsNone(re.search(script, url))
+                self.assertIsNone(re.search(refused, url))
 
     def test_scripts_use_the_pinned_reviewed_copy(self):
         lines = self.section('Script')
-        self.assertEqual(len(lines), len(self.spec['scripts']))
+        self.assertEqual(len(lines), len(self.spec['scripts']) + 1)
         for line in lines:
             path = re.search(r'script-path=\S+/(dist/scripts/[^,\s]+)', line)[1]
             self.assertEqual(path, f"dist/scripts/weibo.{self.item['sha256']}.js")
@@ -55,7 +78,7 @@ class WeiboModuleTests(unittest.TestCase):
 
     def test_rewrites_answer_whole_promotion_calls_only(self):
         lines = self.section('URL Rewrite')
-        self.assertEqual(len(lines), len(self.spec['rewrites']))
+        self.assertEqual(len(lines), len(self.spec['rewrites']) + 1)  # the last one refuses the rest of the splash hosts
         for rule, line in zip(self.spec['rewrites'], lines):
             self.assertEqual(line, rule['pattern'] + ' - reject-dict')
             self.assertTrue(rule['pattern'].startswith('^https://api\\.weibo\\.cn/2/'))
@@ -70,7 +93,7 @@ class WeiboModuleTests(unittest.TestCase):
         for host in ['wax.weibo.com', 'dsp.edm.weibo.cn', 'adpinpai.video.weibocdn.com']:
             with self.subTest(host=host):
                 self.assertTrue(is_blocked(host, rules))
-        for host in ['f.video.weibocdn.com', 'weibo.com', 'm.weibo.cn']:
+        for host in ['f.video.weibocdn.com', 'weibo.com', 'm.weibo.cn', *self.spec['splash']['hosts']]:
             with self.subTest(allowed=host):
                 self.assertFalse(is_blocked(host, rules))
 

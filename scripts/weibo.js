@@ -3,12 +3,13 @@
  * Removes what the API itself marks as an ad or promotion, plus a few named recommendation modules.
  * Hot-search rows stay unless marked as promoted; groups holding a profile header are never removed.
  * Unknown paths, API errors, non-JSON bodies and unexpected shapes pass unchanged.
+ * Splash-ad calls on uve.weibo.com are the exception: their ads are postponed to 2037, anything unrecognised becomes {}.
  * Self-test: a routed path opened with ?personal_filter_selftest=1 (e.g. in Safari) answers a fixed JSON naming VERSION.
  */
 (function () {
   'use strict';
   var MAX_BODY = 3145728;
-  var VERSION = '2026-10-24';
+  var VERSION = '2026-10-24.2';
   var SELF_TEST = /[?&]personal_filter_selftest=1(?:[&#]|$)/;
 
   function isObj(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
@@ -322,6 +323,84 @@
     return true;
   }
 
+  // Splash ads. The app keeps a batch of them from uve.weibo.com and shows them even while those calls are refused,
+  // so their answers are rewritten instead: every ad becomes valid only on one day in 2037 and may show zero times,
+  // and the app overwrites its cache with that. The field names are those used by public Weibo splash scripts.
+  var LATER = 2145801600; // 2037-12-31 00:00:00 UTC+8, still below 2^31
+  var LATER_DAY = '2037-12-31';
+
+  // Applies fn to every ad object in list; false when list is not an array.
+  function eachAd(list, fn) {
+    if (!Array.isArray(list)) return false;
+    list.forEach(function (ad) { if (isObj(ad)) fn(ad); });
+    return true;
+  }
+
+  // bootpreload: { ads: [{ start_time, end_time, daily_display_cnt, total_display_cnt, display_duration, creatives }] }.
+  function splashPreload(o) {
+    return eachAd(o.ads, function (ad) {
+      ad.start_time = LATER;
+      ad.end_time = LATER + 86399;
+      ad.daily_display_cnt = 0;
+      ad.total_display_cnt = 0;
+      ad.display_duration = 0;
+      eachAd(ad.creatives, function (c) { c.start_time = LATER; c.end_time = LATER + 86399; });
+    });
+  }
+
+  // sdkad.php: { show_push_splash_ad, ads: [{ begintime, endtime, displaynum, allowdaydisplaynum }] } followed by "OK".
+  function splashSdk(o) {
+    if (!Array.isArray(o.ads)) return false;
+    o.show_push_splash_ad = false;
+    return eachAd(o.ads, function (ad) {
+      ad.begintime = LATER_DAY + ' 00:00:00';
+      ad.endtime = LATER_DAY + ' 23:59:59';
+      ad.displaynum = 0;
+      ad.allowdaydisplaynum = 0;
+    });
+  }
+
+  // wbpullad.lua: { cached_ad: { ads: [{ start_date, end_date, show_count, duration }] } }.
+  function splashPull(o) {
+    return isObj(o.cached_ad) && eachAd(o.cached_ad.ads, function (ad) {
+      ad.start_date = LATER;
+      ad.end_date = LATER + 86399;
+      ad.show_count = 0;
+      ad.duration = 0;
+    });
+  }
+
+  // Splash calls by host and exact path; data/weibo.json routes the same calls to this script.
+  var SPLASH = {
+    'bootpreload.uve.weibo.com': [/^v\d+\/ad\/preload$/, splashPreload],
+    'sdkapp.uve.weibo.com': [/^interface\/sdk\/sdkad\.php$/, splashSdk],
+    'wbapp.uve.weibo.com': [/^wbapplua\/wbpullad\.lua$/, splashPull]
+  };
+
+  function selfTest(path) {
+    return { body: JSON.stringify({ personal_filter: 'weibo', ok: true, version: VERSION, path: path }) };
+  }
+
+  function succeeded() {
+    var status = String($response.status || $response.statusCode || '200');
+    return /^(?:200(?:$|\s)|HTTP\/\S+ 200(?:$|\s))/.test(status);
+  }
+
+  // Unlike the API routes, nothing unrecognised passes here: an answer this cannot rewrite becomes {}, as if refused.
+  function splash(url, host, path) {
+    var route = Object.prototype.hasOwnProperty.call(SPLASH, host) && SPLASH[host][0].test(path) ? SPLASH[host] : null;
+    if (!route) return {};
+    if (SELF_TEST.test(url)) return selfTest(host + '/' + path);
+    var body = succeeded() && typeof $response.body === 'string' && $response.body.length <= MAX_BODY ? $response.body : '';
+    var end = body.lastIndexOf('}');
+    var tail = body.slice(end + 1);
+    var obj = null;
+    if (end > -1 && /^\s*\w{0,8}\s*$/.test(tail)) {
+      try { obj = JSON.parse(body.slice(0, end + 1)); } catch (_) { obj = null; }
+    }
+    return isObj(obj) && route[1](obj) ? { body: JSON.stringify(obj) + tail } : { body: '{}' };
+  }
+
   // Exact paths under https://api.weibo.cn/2/; data/weibo.json routes the same paths to this script.
   var ROUTES = {
     'statuses/friends/timeline': timeline, 'statuses/friends_timeline': timeline,
@@ -349,13 +428,14 @@
   function main() {
     if (typeof $request !== 'object' || typeof $response !== 'object') return {};
     var url = String($request.url || '');
+    var s = /^https?:\/\/([a-z]+\.uve\.weibo\.com)\/([^?#]*)(?:[?#]|$)/.exec(url);
+    if (s) return splash(url, s[1], s[2]);
     var m = /^https:\/\/api\.weibo\.cn\/2\/([^?#]+)(?:[?#]|$)/.exec(url);
     var handler = m && Object.prototype.hasOwnProperty.call(ROUTES, m[1]) ? ROUTES[m[1]] : null;
     if (!handler) return {};
     // The app never sends this marker; whatever Weibo answered, the owner sees that this version runs on the phone.
-    if (SELF_TEST.test(url)) return { body: JSON.stringify({ personal_filter: 'weibo', ok: true, version: VERSION, path: m[1] }) };
-    var status = String($response.status || $response.statusCode || '200');
-    if (!/^(?:200(?:$|\s)|HTTP\/\S+ 200(?:$|\s))/.test(status)) return {};
+    if (SELF_TEST.test(url)) return selfTest(m[1]);
+    if (!succeeded()) return {};
     var body = $response.body;
     if (typeof body !== 'string' || body.length > MAX_BODY) return {};
     var obj;

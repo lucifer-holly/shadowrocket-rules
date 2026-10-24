@@ -1,5 +1,5 @@
 #!name=去广告⑤ 微博完整版（实验，需证书）
-#!desc=删除微博 App 信息流、评论区、热搜、视频流里标了广告或推广的内容和推荐卡片，热搜保留；需 HTTPS 解密与本机证书模块；微博异常时先关闭本模块
+#!desc=去掉微博 App 的开屏广告，删除信息流、评论区、热搜、视频流里标了广告或推广的内容和推荐卡片，热搜保留；需 HTTPS 解密与本机证书模块；微博异常时先关闭本模块
 #!category=去广告
 #!system=ios
 # SPDX-License-Identifier: GPL-3.0-only; see LICENSE and THIRD_PARTY_NOTICES.md
@@ -16,12 +16,14 @@
 ^https://api\.weibo\.cn/2/ad/preload(?:\?|$) - reject-dict
 ^https://api\.weibo\.cn/2/push/active(?:\?|$) - reject-dict
 ^https://api\.weibo\.cn/2/client/addlog_batch(?:\?|$) - reject-dict
+^https?://(?:bootpreload\.uve\.weibo\.com/(?!v\d+/ad/preload(?:\?|$))|bootrealtime\.uve\.weibo\.com/|sdkapp\.uve\.weibo\.com/(?!interface/sdk/sdkad\.php(?:\?|$))|wbapp\.uve\.weibo\.com/(?!wbapplua/wbpullad\.lua(?:\?|$))) - reject-dict
 
 [Script]
-weibo-feed = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/friends/timeline|statuses/friends_timeline|statuses/unread_friends_timeline|statuses/unread_hot_timeline|groups/timeline|statuses/container_timeline|statuses/container_timeline_unread|statuses/container_timeline_hot|statuses/container_timeline_topicpage|profile/container_timeline|profile/me)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.dfbf364befd1cab34b3ddcf6bc36b6e5d537c387f96475931f0f9e84fba73087.js
-weibo-detail = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/extend|statuses/container_detail|statuses/container_detail_comment|statuses/container_detail_mix|statuses/container_detail_forward|statuses/repost_timeline|comments/build_comments|comments/mix_comments)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.dfbf364befd1cab34b3ddcf6bc36b6e5d537c387f96475931f0f9e84fba73087.js
-weibo-search = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:page|cardlist|flowpage|searchall|search/finder|search/container_timeline|search/container_discover)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.dfbf364befd1cab34b3ddcf6bc36b6e5d537c387f96475931f0f9e84fba73087.js
-weibo-video = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:video/tiny_stream_video_list|video/tiny_stream_mid_detail|video/full_screen_stream|video/community_tab|video/remind_info|statuses/video_mixtimeline|messageflow|checkin/show)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.dfbf364befd1cab34b3ddcf6bc36b6e5d537c387f96475931f0f9e84fba73087.js
+weibo-feed = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/friends/timeline|statuses/friends_timeline|statuses/unread_friends_timeline|statuses/unread_hot_timeline|groups/timeline|statuses/container_timeline|statuses/container_timeline_unread|statuses/container_timeline_hot|statuses/container_timeline_topicpage|profile/container_timeline|profile/me)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.f920a02b8766e036133a876741e0191599f5db71eb281537b235c2f8cd725369.js
+weibo-detail = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:statuses/extend|statuses/container_detail|statuses/container_detail_comment|statuses/container_detail_mix|statuses/container_detail_forward|statuses/repost_timeline|comments/build_comments|comments/mix_comments)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.f920a02b8766e036133a876741e0191599f5db71eb281537b235c2f8cd725369.js
+weibo-search = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:page|cardlist|flowpage|searchall|search/finder|search/container_timeline|search/container_discover)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.f920a02b8766e036133a876741e0191599f5db71eb281537b235c2f8cd725369.js
+weibo-video = type=http-response,pattern=^https://api\.weibo\.cn/2/(?:video/tiny_stream_video_list|video/tiny_stream_mid_detail|video/full_screen_stream|video/community_tab|video/remind_info|statuses/video_mixtimeline|messageflow|checkin/show)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.f920a02b8766e036133a876741e0191599f5db71eb281537b235c2f8cd725369.js
+weibo-splash = type=http-response,pattern=^https?://(?:bootpreload\.uve\.weibo\.com/v\d+/ad/preload|sdkapp\.uve\.weibo\.com/interface/sdk/sdkad\.php|wbapp\.uve\.weibo\.com/wbapplua/wbpullad\.lua)(?:\?|$),requires-body=true,max-size=3145728,timeout=10,script-path=https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/scripts/weibo.f920a02b8766e036133a876741e0191599f5db71eb281537b235c2f8cd725369.js
 
 [MITM]
-hostname = %APPEND% api.weibo.cn
+hostname = %APPEND% api.weibo.cn, bootpreload.uve.weibo.com, bootrealtime.uve.weibo.com, sdkapp.uve.weibo.com, wbapp.uve.weibo.com

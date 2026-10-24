@@ -53,11 +53,15 @@ class IntegrationTests(unittest.TestCase):
     def test_weibo_hosts_from_device_log(self):
         # Hosts Weibo Lite 7.2 (2026-10-22 log) and the full app (2026-10-23/24 logs) contacted on cold starts and page opens.
         # The splash came back on 10-24 while adstrategy's /v1/strategy/first_show passed, so the whole ad business domain is blocked.
-        for h in ['bootpreload.uve.weibo.com','adstrategy.biz.weibo.com','vs.biz.weibo.com','brandvideo.biz.weibo.com','kadmimage.biz.weibo.com',
-                  'sdkaction.biz.weibo.com','sdkclick.biz.weibo.com','sdkmonitor.biz.weibo.com','u1.img.mobile.sina.cn']:
+        for h in ['adstrategy.biz.weibo.com','vs.biz.weibo.com','brandvideo.biz.weibo.com','kadmimage.biz.weibo.com',
+                  'sdkaction.biz.weibo.com','sdkclick.biz.weibo.com','sdkmonitor.biz.weibo.com','u1.img.mobile.sina.cn',
+                  'fastimage.uve.weibo.com','adimg.uve.weibo.com','click.uve.weibo.com','datacollection.uve.weibo.com']:
             with self.subTest(blocked=h):self.assertTrue(is_blocked(h,self.rules))
         for h in ['api.weibo.cn','weibointl.api.weibo.cn','h5.sinaimg.cn','d.sinaimg.cn','tvax3.sinaimg.cn','wx1.sinaimg.cn','f.video.weibocdn.com','m.weibo.cn','weibo.com']:
             with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
+        # Refusing the splash hosts left cached splash ads playing (2026-10-24 log); module ⑤ rewrites them instead.
+        for h in read_json(ROOT/'data/weibo.json')['splash']['hosts']:
+            with self.subTest(rewritten_by_weibo_module=h):self.assertFalse(is_blocked(h,self.rules))
         hosts=[h for app in self.apps.values() for r in app['rules'] for h in r['hosts']]
         self.assertFalse([h for h in hosts if h.endswith('biz.weibo.com')], 'no module rewrites a host that ① already blocks')
     def test_huya_hosts_from_device_log(self):

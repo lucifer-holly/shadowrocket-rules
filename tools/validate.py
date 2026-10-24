@@ -6,7 +6,7 @@ import os
 import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain,within
-from build import run, imported_app_ads, blocking_inputs, weibo_routes, YOUTUBE_ROUTE
+from build import run, imported_app_ads, blocking_inputs, weibo_routes, weibo_splash, YOUTUBE_ROUTE
 from profiles import sections as routing_sections
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
@@ -103,8 +103,20 @@ def check_weibo(spec, policy, blocklists):
         if not any(r.search(url+'?gsid=example') for r in routes) or any(r.search(url+'/extra') for r in routes):
             raise ValueError('Weibo script route is not exact: '+path)
         if any(r.search(url+'?gsid=example') for r in rewrites):raise ValueError('rewrite shadows Weibo script: '+path)
+    # Splash hosts: the script gets the listed calls, the reject-dict pattern gets every other request, nothing passes.
+    splash=spec['splash']
+    script,refused=(re.compile(p) for p in weibo_splash(spec))
+    hosts=set(splash['hosts'])
+    if not splash['reason'] or not hosts<=set(spec['mitm']) or not all(h.endswith('.uve.weibo.com') for h in hosts):
+        raise ValueError('Weibo splash hosts must be decrypted uve.weibo.com hosts with a reason')
+    if len({c['host'] for c in splash['calls']})!=len(splash['calls']) or not {c['host'] for c in splash['calls']}<=hosts:
+        raise ValueError('Weibo splash calls need one listed host each')
+    for url in [u for c in splash['calls'] for u in c['positive']]:
+        if not script.search(url) or refused.search(url):raise ValueError('Weibo splash call sample fails: '+url)
+    for url in splash['refused']+[f'{s}://{h}/{p}' for h in hosts for s in ('http','https') for p in ('','x?y=1')]:
+        if script.search(url) or not refused.search(url):raise ValueError('Weibo splash request neither refused nor rewritten: '+url)
     for url in spec['negative']+policy['critical_url_probes']:
-        if any(r.search(url) for r in routes+rewrites):raise ValueError('Weibo module matches a protected URL: '+url)
+        if any(r.search(url) for r in routes+rewrites+[script,refused]):raise ValueError('Weibo module matches a protected URL: '+url)
     for host in spec['mitm']:
         domain(host)
         if any(is_blocked(host,listed) for listed in blocklists):raise ValueError('domain block shadows Weibo module: '+host)

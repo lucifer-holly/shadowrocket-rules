@@ -1,6 +1,6 @@
 {
-  "description": "Weibo iOS app (full version) module. Only api.weibo.cn is decrypted. rewrites answer pure promotion calls with an empty JSON object; scripts lists the exact paths under https://api.weibo.cn/2/ that scripts/weibo.js filters (its ROUTES table must list the same paths). negative: URLs no rewrite or script may match (login, messages, posting, follow, profile basics).",
-  "mitm": ["api.weibo.cn"],
+  "description": "Weibo iOS app (full version) module. Decrypts api.weibo.cn and the four splash-ad hosts listed in splash. rewrites answer pure promotion calls with an empty JSON object; scripts lists the exact paths under https://api.weibo.cn/2/ that scripts/weibo.js filters (its ROUTES table must list the same paths). splash: the splash-ad calls the script rewrites (its SPLASH table must list the same calls); every other request to those hosts is answered with an empty JSON object. negative: URLs no rewrite or script may match (login, messages, posting, follow, profile basics).",
+  "mitm": ["api.weibo.cn", "bootpreload.uve.weibo.com", "bootrealtime.uve.weibo.com", "sdkapp.uve.weibo.com", "wbapp.uve.weibo.com"],
   "rewrites": [
     {"pattern": "^https://api\\.weibo\\.cn/2/(?:!/)?live/media_homelist(?:\\?|$)", "action": "reject-dict", "reason": "首页顶部的直播条；2026-10-24 日志里的地址没有 !/", "positive": ["https://api.weibo.cn/2/!/live/media_homelist?gsid=example", "https://api.weibo.cn/2/live/media_homelist?gsid=example"]},
     {"pattern": "^https://api\\.weibo\\.cn/2/push/daily(?:\\?|$)", "action": "reject-dict", "reason": "首页左上角每天弹出的提示", "positive": ["https://api.weibo.cn/2/push/daily?gsid=example"]},
@@ -28,6 +28,25 @@
       "video/tiny_stream_video_list", "video/tiny_stream_mid_detail", "video/full_screen_stream", "video/community_tab",
       "video/remind_info", "statuses/video_mixtimeline", "messageflow", "checkin/show"]}
   ],
+  "splash": {
+    "reason": "开屏广告：微博把一批开屏广告存在手机里，这几台主机被拦时照样播放（2026-10-24 日志：7 次冷启动全被拦，开屏每次都换，广告组件仍上报展示）。脚本改写下面三个接口的返回，把每条广告改到 2037 年才生效、展示次数清零，App 每次同步都用它覆盖缓存；这几台主机上的其他请求一律回空 JSON。接口和字段名参考 iKeLee、墨鱼（ddgksf2013）、zmqcherish 的公开微博规则",
+    "hosts": ["bootpreload.uve.weibo.com", "bootrealtime.uve.weibo.com", "sdkapp.uve.weibo.com", "wbapp.uve.weibo.com"],
+    "calls": [
+      {"host": "bootpreload.uve.weibo.com", "path": "v\\d+/ad/preload", "positive": ["https://bootpreload.uve.weibo.com/v1/ad/preload?uid=example", "https://bootpreload.uve.weibo.com/v2/ad/preload"]},
+      {"host": "sdkapp.uve.weibo.com", "path": "interface/sdk/sdkad\\.php", "positive": ["https://sdkapp.uve.weibo.com/interface/sdk/sdkad.php?wm=example", "http://sdkapp.uve.weibo.com/interface/sdk/sdkad.php"]},
+      {"host": "wbapp.uve.weibo.com", "path": "wbapplua/wbpullad\\.lua", "positive": ["https://wbapp.uve.weibo.com/wbapplua/wbpullad.lua?wm=example"]}
+    ],
+    "refused": [
+      "https://bootrealtime.uve.weibo.com/v2/ad/realtime?x=1",
+      "https://bootrealtime.uve.weibo.com/v3/ad/realtime",
+      "https://sdkapp.uve.weibo.com/interface/sdk/sdkconfig.php",
+      "https://sdkapp.uve.weibo.com/interface/sdk/get-lbs-cell-info.php?x=1",
+      "https://wbapp.uve.weibo.com/preload/get_ad",
+      "https://bootpreload.uve.weibo.com/v1/ad/preloadx",
+      "https://sdkapp.uve.weibo.com/interface/sdk/sdkad.php/extra",
+      "http://wbapp.uve.weibo.com/wbapplua/other.lua"
+    ]
+  },
   "negative": [
     "https://api.weibo.cn/2/account/login",
     "https://api.weibo.cn/2/direct_messages/conversation?uid=1",

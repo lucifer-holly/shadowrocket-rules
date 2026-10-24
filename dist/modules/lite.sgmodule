@@ -4143,6 +4143,7 @@ DOMAIN-SUFFIX,adimages.go.com,REJECT
 DOMAIN-SUFFIX,adimages.sina.com.hk,REJECT
 DOMAIN-SUFFIX,adimg-d01.moneycontrol.com,REJECT
 DOMAIN-SUFFIX,adimg.mobile.sina.cn,REJECT
+DOMAIN-SUFFIX,adimg.uve.weibo.com,REJECT
 DOMAIN-SUFFIX,adimg3.search.naver.net,REJECT
 DOMAIN-SUFFIX,adimpact.com,REJECT
 DOMAIN-SUFFIX,adinall.com,REJECT
@@ -17802,6 +17803,7 @@ DOMAIN-SUFFIX,click.toggle-vpn.org,REJECT
 DOMAIN-SUFFIX,click.togglevpn.app,REJECT
 DOMAIN-SUFFIX,click.togglevpn.org,REJECT
 DOMAIN-SUFFIX,click.tz.simba.taobao.com,REJECT
+DOMAIN-SUFFIX,click.uve.weibo.com,REJECT
 DOMAIN-SUFFIX,click.vpntoggle.app,REJECT
 DOMAIN-SUFFIX,click.vpntoggle.net,REJECT
 DOMAIN-SUFFIX,click1n.soufun.com,REJECT
@@ -20862,6 +20864,7 @@ DOMAIN-SUFFIX,datacapture.dropsolid.com,REJECT
 DOMAIN-SUFFIX,datacollect.cisco.com,REJECT
 DOMAIN-SUFFIX,datacollection.adelaideuni.edu.au,REJECT
 DOMAIN-SUFFIX,datacollection.beymen.com,REJECT
+DOMAIN-SUFFIX,datacollection.uve.weibo.com,REJECT
 DOMAIN-SUFFIX,datacollector-dra.dt.dbankcloud.cn,REJECT
 DOMAIN-SUFFIX,datacollector-dre.dt.dbankcloud.cn,REJECT
 DOMAIN-SUFFIX,datactively.com,REJECT
@@ -24908,6 +24911,7 @@ DOMAIN-SUFFIX,fastfinch.co,REJECT
 DOMAIN-SUFFIX,fastframe.com.br,REJECT
 DOMAIN-SUFFIX,fastidiousenvoy.com,REJECT
 DOMAIN-SUFFIX,fastiiainless.com,REJECT
+DOMAIN-SUFFIX,fastimage.uve.weibo.com,REJECT
 DOMAIN-SUFFIX,fastly-insights.com,REJECT
 DOMAIN-SUFFIX,fastonlineusers.com,REJECT
 DOMAIN-SUFFIX,fastred.biz,REJECT
@@ -65601,7 +65605,6 @@ DOMAIN-SUFFIX,uuzkcflc.com,REJECT
 DOMAIN-SUFFIX,uuzu.com,REJECT
 DOMAIN-SUFFIX,uv.glucinasatori.com,REJECT
 DOMAIN-SUFFIX,uvdgcnmlszjfa.site,REJECT
-DOMAIN-SUFFIX,uve.weibo.com,REJECT
 DOMAIN-SUFFIX,uvexac-attr.appsflyersdk.com,REJECT
 DOMAIN-SUFFIX,uvexac-cdn-settings.appsflyersdk.com,REJECT
 DOMAIN-SUFFIX,uvexac-dynamic-report-api.appsflyersdk.com,REJECT

@@ -14,8 +14,8 @@
 | `data/routing.json`、`tools/profiles.py` | 其余代理/直连分组、已改走代理的旧海外直连名单，以及主配置构建 |
 | `data/script-routes.json` | 原创响应过滤器的 3 个限定入口 |
 | `scripts/response-cleaner.js` | 原创 JSON 过滤代码，不访问网络、存储或凭据 |
-| `data/weibo.json` | 微博完整版模块（去广告⑤）：唯一的解密主机、直接回空 JSON 的推广接口、脚本处理的接口路径，以及任何规则都不许匹配的登录/私信/发布地址 |
-| `scripts/weibo.js` | 原创微博 JSON 过滤代码；接口表 `ROUTES` 与 `data/weibo.json` 的路径一一对应，测试会核对 |
+| `data/weibo.json` | 微博完整版模块（去广告⑤）：解密主机、直接回空 JSON 的推广接口、脚本处理的接口路径、开屏广告主机和接口（`splash`），以及任何规则都不许匹配的登录/私信/发布地址 |
+| `scripts/weibo.js` | 原创微博 JSON 过滤代码；接口表 `ROUTES`、开屏表 `SPLASH` 与 `data/weibo.json` 一一对应，测试会核对 |
 | `sources/scripts.lock.json` | 当前脚本审核指纹和历史脚本保留清单 |
 | `data/extra-domains.json` | 自己加的广告域名，进入 base/lite；每条写明原因 |
 | `data/allowlist.json` | 从广告库中移除的域名例外；不输出 DIRECT，不改变路由 |

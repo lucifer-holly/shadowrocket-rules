@@ -141,6 +141,26 @@
       "reason": "混合 API 使用路径级规则；保留非广告请求"
     },
     {
+      "domain": "bootpreload.uve.weibo.com",
+      "scope": "host",
+      "reason": "微博开屏广告的预加载接口：去广告⑤解密并改写返回，让 App 覆盖手机里缓存的开屏广告；被①拦掉就改写不了，缓存的广告会一直播放（2026-10-24 日志）"
+    },
+    {
+      "domain": "bootrealtime.uve.weibo.com",
+      "scope": "host",
+      "reason": "微博开屏广告的实时接口：去广告⑤解密后一律回空 JSON；和另外 3 台开屏主机一起交给⑤处理"
+    },
+    {
+      "domain": "sdkapp.uve.weibo.com",
+      "scope": "host",
+      "reason": "微博开屏广告的 sdkad.php 接口：去广告⑤解密并改写返回，其他请求回空 JSON；被①拦掉就改写不了缓存"
+    },
+    {
+      "domain": "wbapp.uve.weibo.com",
+      "scope": "host",
+      "reason": "微博开屏广告的 wbpullad.lua 接口（返回里有缓存广告列表 cached_ad）：去广告⑤解密并改写，其他请求回空 JSON；被①拦掉就改写不了缓存"
+    },
+    {
       "domain": "api.pinduoduo.com",
       "scope": "host",
       "reason": "混合 API 使用路径级规则；保留非广告请求"

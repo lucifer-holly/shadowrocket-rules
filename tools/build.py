@@ -130,16 +130,25 @@ def weibo_routes(spec):
             for group in spec['scripts']]
 
 
+def weibo_splash(spec):
+    """Splash-ad calls the script rewrites, and one reject-dict pattern for every other request to those hosts."""
+    calls = {c['host']: c['path'] for c in spec['splash']['calls']}
+    script = '^https?://(?:' + '|'.join(re.escape(h) + '/' + p for h, p in calls.items()) + ')(?:\\?|$)'
+    others = [re.escape(h) + '/' + (f'(?!{calls[h]}(?:\\?|$))' if h in calls else '') for h in spec['splash']['hosts']]
+    return script, '^https?://(?:' + '|'.join(others) + ')'
+
+
 def weibo_outputs(root, base, item):
     spec = read_json(root/'data/weibo.json')
     rel, text = reviewed_script(root, item, 'weibo')
+    splash_script, splash_refused = weibo_splash(spec)
     # Weibo timelines can reach a few hundred KB; larger bodies pass unchanged.
     scripts = [f'weibo-{ident} = type=http-response,pattern={pattern},requires-body=true,max-size=3145728,timeout=10,'
-               f'script-path={base}/{rel}' for ident, pattern in weibo_routes(spec)]
-    rewrites = [f"{r['pattern']} - {r['action']}" for r in spec['rewrites']]
+               f'script-path={base}/{rel}' for ident, pattern in weibo_routes(spec) + [('splash', splash_script)]]
+    rewrites = [f"{r['pattern']} - {r['action']}" for r in spec['rewrites']] + [f'{splash_refused} - reject-dict']
     module_text = module('去广告⑤ 微博完整版（实验，需证书）', [
         ('URL Rewrite', rewrites), ('Script', scripts), ('MITM', ['hostname = %APPEND% ' + ', '.join(spec['mitm'])])],
-        '删除微博 App 信息流、评论区、热搜、视频流里标了广告或推广的内容和推荐卡片，热搜保留；需 HTTPS 解密与本机证书模块；微博异常时先关闭本模块')
+        '去掉微博 App 的开屏广告，删除信息流、评论区、热搜、视频流里标了广告或推广的内容和推荐卡片，热搜保留；需 HTTPS 解密与本机证书模块；微博异常时先关闭本模块')
     return {rel: text, 'dist/modules/weibo.sgmodule': module_text}
 
 
