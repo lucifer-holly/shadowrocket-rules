@@ -1,7 +1,7 @@
 {
   "app_modules": 14,
-  "base_rules": 149038,
-  "covered_by_parent": 10775,
+  "base_rules": 150393,
+  "covered_by_parent": 11017,
   "device_verified": false,
   "exceptions": [
     {
@@ -23,6 +23,10 @@
     {
       "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
       "rule": "DOMAIN-SUFFIX,analytics.jobs.netflix.net"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,analytics.netflix.com"
     },
     {
       "reason": "Apple 登录、系统服务、App Store",
@@ -177,6 +181,10 @@
       "rule": "DOMAIN-SUFFIX,metrics.mzstatic.com"
     },
     {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,metrics.netflix.com"
+    },
+    {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,notes-analytics-events.apple.com"
     },
@@ -258,7 +266,7 @@
       "rewrites": 1112
     }
   },
-  "lite_rules": 72165,
+  "lite_rules": 73917,
   "observed_mitm_hosts": [
     "anchorpost.msstatic.com",
     "diy-assets.msstatic.com",
@@ -269,14 +277,14 @@
     "s1-static.msstatic.com",
     "v-huya-img2.msstatic.com"
   ],
-  "protected_removed": 60,
+  "protected_removed": 62,
   "response_routes": 3,
   "source_counts": {
     "anti-ad": 105192,
-    "hagezi-light": 71343,
+    "hagezi-light": 73103,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 159873,
+  "unique_before_policy": 161472,
   "url_rewrites": 18,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
