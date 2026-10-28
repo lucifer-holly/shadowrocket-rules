@@ -12,8 +12,9 @@ GENERAL = [
     'skip-proxy = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, localhost, *.local, captive.apple.com',
     'tun-excluded-routes = 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.0.0.0/24, 192.0.2.0/24, 192.88.99.0/24, 192.168.0.0/16, 198.51.100.0/24, 203.0.113.0/24, 224.0.0.0/4, 255.255.255.255/32, 239.255.255.250/32',
     'dns-server = system', 'fallback-dns-server = system',
-    # IPv6 on, IPv4 first: prefer-ipv6 = false uses A records whenever a host has one, so IPv4-only Wi-Fi keeps working.
-    'ipv6 = true', 'prefer-ipv6 = false', 'dns-direct-system = false',
+    # IPv6 first: AAAA answers win where the network has IPv6, and IPv4 is used where it has none (checked on the Mac,
+    # 2026-10-28). Over IPv6 the dual-stack server was as fast as over IPv4, and twice as fast on a mobile hotspot.
+    'ipv6 = true', 'prefer-ipv6 = true', 'dns-direct-system = false',
     'icmp-auto-reply = true', 'always-reject-url-rewrite = false',
     'private-ip-answer = true', 'dns-direct-fallback-proxy = false',
     'udp-policy-not-supported-behaviour = REJECT',
@@ -21,6 +22,22 @@ GENERAL = [
 ]
 URL_REWRITE = ["'^https?://(www.)?g.cn($|/.*)' 'https://www.google.com$2' 302",
                "'^https?://(www.)?google.cn($|/.*)' 'https://www.google.com$2' 302"]
+# Rules never reach the node picked on the home screen: everything the data marks PROXY goes to this fallback group,
+# which uses the first working member in order. Members are generic names the owner gives the two nodes on each
+# device (dual-stack server first, CDN server second); real node names stay out of this public file.
+PROXY_GROUP = '自动切换'
+PROXY_MEMBERS = ('主线', '备用')
+PROXY_GROUP_LINE = (f"{PROXY_GROUP} = fallback,{','.join(PROXY_MEMBERS)},"
+                    'url=http://www.gstatic.com/generate_204,interval=600,timeout=5,select=0')
+
+
+def outbound(row):
+    """A rule row as published: the PROXY policy becomes the fallback group."""
+    parts = row.split(',')
+    slot = 1 if parts[0] == 'FINAL' else 2
+    if len(parts) > slot and parts[slot] == 'PROXY':
+        parts[slot] = PROXY_GROUP
+    return ','.join(parts)
 
 
 def rule_list(path, policy):
@@ -69,7 +86,7 @@ def sections(root):
     # Drop exact repeats so an explicit legacy rule and a curated group never emit the same line twice.
     emitted, out = set(), []
     for title, rows in result:
-        rows = [r for r in rows if not (r in emitted or emitted.add(r))]
+        rows = [outbound(r) for r in rows if not (r in emitted or emitted.add(r))]
         out.append((title, rows))
     return out
 
@@ -79,9 +96,11 @@ def profile(root, base):
         '#!name=分流主配置（手机 + Mac 共用）',
         '#!desc=iPhone/iPad/Mac 共用分流；国内直连、国外代理；手机去广告另加模块',
         '# SPDX-License-Identifier: GPL-3.0-only',
-        '# 公开配置：不含节点、账号、证书或私人服务器地址。首页继续选择自己的节点，路由选「配置」。',
+        '# 公开配置：不含节点、账号、证书或私人服务器地址。节点留在设备上，路由选「配置」。',
+        f'# 代理流量走「{PROXY_GROUP}」分组：先用名为「{PROXY_MEMBERS[0]}」的节点，不可用时换「{PROXY_MEMBERS[1]}」；两台设备上的节点都要改成这两个名字。',
         '# 远程更新会覆盖本地修改；HTTPS 解密证书请放在手机本地的证书模块里。',
-        '', '[General]', *GENERAL, f'update-url = {base}/dist/config/main.conf', '', '[Rule]']
+        '', '[General]', *GENERAL, f'update-url = {base}/dist/config/main.conf',
+        '', '[Proxy Group]', PROXY_GROUP_LINE, '', '[Rule]']
     for title, rules in sections(root):
         if rules:
             rows += [f'# {title}', *rules, '']
