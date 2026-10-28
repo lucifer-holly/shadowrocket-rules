@@ -7,7 +7,7 @@ import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain,within
 from build import run, imported_app_ads, blocking_inputs, weibo_routes, weibo_splash, YOUTUBE_ROUTE
-from profiles import sections as routing_sections, PROXY_GROUP, PROXY_GROUP_LINE
+from profiles import sections as routing_sections
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
 
@@ -18,9 +18,9 @@ def check_script(text):
 
 
 def check_public_profile(text, base, root=ROOT):
-    allowed_sections = {'General', 'Proxy Group', 'Rule', 'Host', 'URL Rewrite'}
+    allowed_sections = {'General', 'Rule', 'Host', 'URL Rewrite'}
     section = None
-    active, groups = [], []
+    active = []
     update_url = f'update-url = {base}/dist/config/main.conf'
     for raw in text.splitlines():
         line = raw.strip()
@@ -35,8 +35,6 @@ def check_public_profile(text, base, root=ROOT):
             raise ValueError('profile update URL must point to this repository')
         if section == 'URL Rewrite' and not re.fullmatch(r"'\^https\?://\S+' 'https://\S+' 30[27]", line):
             raise ValueError('public profile may only carry plain redirects')
-        if section == 'Proxy Group':
-            groups.append(line)
         if section != 'Rule':
             continue
         active.append(line)
@@ -45,12 +43,7 @@ def check_public_profile(text, base, root=ROOT):
             raise ValueError('public profile contains a routable DIRECT address; keep private servers out of the repository')
         if fields[0] in {'RULE-SET', 'DOMAIN-SET', 'SCRIPT'} or any(f.strip().startswith('REJECT') for f in fields[2:]):
             raise ValueError('shared routing profile must be self-contained and must not block or run scripts')
-        if 'PROXY' in fields[1:3]:
-            raise ValueError('proxied rules must use the fallback group, not the home-screen node: '+line[:80])
-    # The only group is the reviewed fallback over the two generic member names: no node names, no other groups.
-    if groups != [PROXY_GROUP_LINE]:
-        raise ValueError('public profile may only carry the reviewed fallback group')
-    if not active or active[-1] != f'FINAL,{PROXY_GROUP}' or 'DST-PORT,22,DIRECT' not in active or 'GEOIP,CN,DIRECT' not in active:
+    if not active or active[-1] != 'FINAL,PROXY' or 'DST-PORT,22,DIRECT' not in active or 'GEOIP,CN,DIRECT' not in active:
         raise ValueError('missing fallback, mainland IP or standard SSH direct rule')
     if update_url not in text.splitlines():
         raise ValueError('missing persistent configuration update URL')
