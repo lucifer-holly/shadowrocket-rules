@@ -1,7 +1,7 @@
 {
   "app_modules": 14,
-  "base_rules": 150393,
-  "covered_by_parent": 11017,
+  "base_rules": 146320,
+  "covered_by_parent": 11124,
   "device_verified": false,
   "exceptions": [
     {
@@ -99,6 +99,10 @@
     {
       "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,drupalmetrics.ppg.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,events-analytics.apple.com"
     },
     {
       "reason": "Netflix 游戏（Solitaire）启动时唯一被拦的请求，拦掉后配置模式下打不开（2026-10-24 设备日志）；这是崩溃上报，放行不影响去广告",
@@ -266,7 +270,7 @@
       "rewrites": 1112
     }
   },
-  "lite_rules": 73917,
+  "lite_rules": 75090,
   "observed_mitm_hosts": [
     "anchorpost.msstatic.com",
     "diy-assets.msstatic.com",
@@ -277,14 +281,14 @@
     "s1-static.msstatic.com",
     "v-huya-img2.msstatic.com"
   ],
-  "protected_removed": 62,
+  "protected_removed": 63,
   "response_routes": 3,
   "source_counts": {
-    "anti-ad": 105192,
-    "hagezi-light": 73103,
+    "anti-ad": 100686,
+    "hagezi-light": 74278,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 161472,
+  "unique_before_policy": 157507,
   "url_rewrites": 18,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34

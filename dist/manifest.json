@@ -19,13 +19,13 @@
     "dist/modules/apps/xianyu.sgmodule": "b76ac34a85eb56fcf52f3c250beecc71c43471819e032fdc95a511cea6828843",
     "dist/modules/apps/xiaohongshu.sgmodule": "39555ecded1a4d3b1be69c2ab95a1ae0fa94d17860ca52f1dd9dfa9efab4406e",
     "dist/modules/apps/zhihu.sgmodule": "9121a92f08f96854b1f2edf52c419f384a0e5ab4f919c117b7f656d427e55ba8",
-    "dist/modules/base.sgmodule": "9a5ba2332619aa01fcba4c2781b8752b2caf0e61e9637509d2c6f22a0d3faf21",
-    "dist/modules/lite.sgmodule": "b324dfea04beff5329f7ac2e095ffd0265bd1aaad3b581722ff2534c46c1a714",
+    "dist/modules/base.sgmodule": "1521f25bbf19314049246ed0b2e4d2e3a7900871aa172893cb2df1190aa1394c",
+    "dist/modules/lite.sgmodule": "5e79d6cd2b63aba3cf1f4f62b7a60bef2f4b1fecbb937db387043caf16d5f9a8",
     "dist/modules/response-cleaner.sgmodule": "c9e964656b5e87543d9e06f5ccf87a87ed2c47aceda1acbdce64f586fcc5d5ba",
     "dist/modules/weibo.sgmodule": "4c8a60b6ebf990709837120ca2a8667299ca1fbcffd7ad8b32ef88d25d4c60e4",
     "dist/modules/youtube.sgmodule": "82f641f613dd7d1aa70a2c561aaaa97ca1edc934a6fe99e8356f168cf7169f2c",
-    "dist/rules/base.list": "bd9ecb9ebefe22fc2f2046ec51f1bdb25f3609c8ba4e0d9056c8b0b32793c631",
-    "dist/rules/lite.list": "c088436e8a49d289b891cd57b7690ce1c2be0939bffc0ec768f7c5f64f9109e0",
+    "dist/rules/base.list": "137d9c8bd77a95a4b473ed46b833294b6695c561704f83d17437481412e02f21",
+    "dist/rules/lite.list": "20583697532b4b1ded55a31d84612499356ce19730acb109888cb146ad5f82a5",
     "dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js": "6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9",
     "dist/scripts/response-cleaner.abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc.js": "abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc",
     "dist/scripts/response-cleaner.cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc.js": "cc166aa1430f8b2577af0b32922a24793239dd3617ed815b90115b14f7b1b9dc",
@@ -42,12 +42,12 @@
   "repository": "lucifer-holly/shadowrocket-rules",
   "sources": {
     "anti-ad": {
-      "bytes": 3484497,
+      "bytes": 3332908,
       "license_sha256": "e38459549a64f11ecf1477053768ef89eb2939a9aa5573f51a31461086357a34",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-10-26T10:07:38+00:00",
-      "sha256": "2d5379215b0e32151a00d6af4effed14359aaa8eb0ee11acf6eff53cf6b50668",
-      "source_timestamp": "2026-10-26T05:00:59+00:00",
+      "observed_at": "2026-10-29T10:53:44+00:00",
+      "sha256": "8d36968ae38f3bbf8e2ed6dda061293430250676a575832887ba094c54d19cf4",
+      "source_timestamp": "2026-10-29T06:44:02+00:00",
       "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-surge.txt"
     },
     "fmz-blockads": {
@@ -60,12 +60,12 @@
       "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/plugin/blockAds.plugin"
     },
     "hagezi-light": {
-      "bytes": 1547988,
+      "bytes": 1575249,
       "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-10-28T10:35:21+00:00",
-      "sha256": "40d3230f935c6f1e437fa2d7dfda1e01c333ad52b1dfa647fa53007830e2eb03",
-      "source_timestamp": "2026-10-28T09:26:00+00:00",
+      "observed_at": "2026-10-29T10:53:44+00:00",
+      "sha256": "f68c0dd0b263d41469bc874586d6202cc34ce94639e6fa79b711c6a90fab90b0",
+      "source_timestamp": "2026-10-29T09:41:00+00:00",
       "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/light-onlydomains.txt"
     }
   }
