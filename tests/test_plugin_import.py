@@ -1,3 +1,4 @@
+import datetime as dt
 import fnmatch
 import re
 import sys
@@ -6,9 +7,9 @@ import unittest
 from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from common import ROOT, load_policy, optimize, is_blocked
+from common import ROOT, load_policy, optimize, is_blocked, read_json
 from plugin_import import parse_plugin, select, items, https_hosts
-from build import imported_app_ads, blocking_inputs
+from build import imported_app_ads, blocking_inputs, observed_hosts, app_sections
 
 SAMPLE = r'''#!name=sample
 #!date=2026-10-01 08:00:00
@@ -137,7 +138,49 @@ class RealSnapshotTests(unittest.TestCase):
                 self.assertFalse(is_blocked(host, self.out['domains']))
                 for pattern, _ in self.out['rewrites']:
                     self.assertNotIn(host, https_hosts(pattern)[0])
-        self.assertIn('# 只解密、不拦截', self.module)
+        if self.out['observed']:
+            self.assertIn('# 只解密、不拦截', self.module)
+        else:
+            self.assertNotIn('# 只解密、不拦截', self.module)
+
+    def test_observed_hosts_stop_decrypting_after_their_date(self):
+        # docs/STATUS.md: the Huya troubleshooting hosts go by 2026-11-05 at the latest; the build enforces it.
+        overrides = read_json(ROOT / 'data/app-ads-overrides.json')
+        listed = sorted(item['host'] for item in overrides['observe_hosts'])
+        for item in overrides['observe_hosts']:
+            with self.subTest(host=item['host']):
+                self.assertLessEqual(item['until'], '2026-11-05')
+        last_day = imported_app_ads(ROOT, self.policy, today=dt.date(2026, 11, 5))
+        after = imported_app_ads(ROOT, self.policy, today=dt.date(2026, 11, 6))
+        self.assertEqual(last_day['observed'], listed)
+        self.assertEqual((after['observed'], after['observe_expired']), ([], listed))
+        mitm = dict(app_sections(read_json(ROOT / 'data/apps.json'), after))['MITM']
+        self.assertFalse(any(line.startswith('# 只解密') for line in mitm))
+        decrypted = mitm[-1].split('= %APPEND% ')[1].split(', ')
+        for host in listed:
+            with self.subTest(expired=host):
+                self.assertNotIn(host, decrypted)
+        # Investigation over on 2026-10-30: paths seen in the 10-22 logs, or no traffic since decryption began.
+        for host in ['hd.huya.com', 'diy-front.cdn.huya.com', 'diy-assets.msstatic.com']:
+            with self.subTest(dropped=host):
+                self.assertNotIn(host, self.out['mitm'])
+                self.assertNotIn(host, listed)
+
+    def test_observe_entries_need_a_reason_and_a_near_until_date(self):
+        today = dt.date(2026, 10, 30)
+        entry = {'host': 'img.example.com', 'reason': 'locate the splash image', 'until': '2026-11-05'}
+        self.assertEqual(observed_hosts({'exclude_hosts': [], 'observe_hosts': [entry]}, today),
+                         ({'img.example.com': dt.date(2026, 11, 5)}, []))
+        self.assertEqual(observed_hosts({'exclude_hosts': [], 'observe_hosts': [entry]}, dt.date(2026, 11, 6)),
+                         ({}, ['img.example.com']))
+        for change in [{'until': None}, {'until': 'soon'}, {'until': '2026-11-21'}, {'reason': ''}]:
+            with self.subTest(change=change):
+                with self.assertRaises(ValueError):
+                    observed_hosts({'exclude_hosts': [], 'observe_hosts': [dict(entry, **change)]}, today)
+        without_date = {k: v for k, v in entry.items() if k != 'until'}
+        for overrides in [{'exclude_hosts': [], 'observe_hosts': [without_date]}, {'exclude_hosts': ['example.com'], 'observe_hosts': [entry]}]:
+            with self.assertRaises(ValueError):
+                observed_hosts(overrides, today)
 
     def test_static_domain_rules_live_in_the_domain_modules_only(self):
         # ② carries app-specific rules only; every plugin domain and IP rule is enforced by both variants of ①.

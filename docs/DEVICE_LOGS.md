@@ -66,7 +66,7 @@ python3 tools/devicelog.py 日志.db --host 'example|examplecdn' --ua 'ExampleAp
 |---|---|
 | 几乎全是 `ROUTING,…` | 让主人把全局路由改回「配置」 |
 | 启动前几秒有 DIRECT 主机，名字或路径像广告素材（ad、ssp、dsp、splash、material…） | 整个主机都是广告：加进 `data/extra-domains.json`（写 `DOMAIN-SUFFIX`） |
-| 广告和正常内容在同一个主机上 | 按路径拦：`data/apps.json`；路径看不到时，把主机加进 `data/app-ads-overrides.json` 的 `observe_hosts` 临时解密，下一份日志就能看到完整地址 |
+| 广告和正常内容在同一个主机上 | 按路径拦：`data/apps.json`；路径看不到时，把主机加进 `data/app-ads-overrides.json` 的 `observe_hosts` 临时解密（写 `until`，最多 21 天），下一份日志就能看到完整地址；地址看到了就撤 |
 | App 自己的功能请求被 REJECT（消息长连接、内容接口） | `data/allowlist.json`；如果是自动导入的规则误伤，用 `app-ads-overrides.json` 的 `exclude_hosts` / `exclude_patterns` |
 | App 的请求只剩 `IP:443`、看不到它的域名，规则写对了也不生效 | App 绕过了域名。先找它启动时的调度请求（阿里系是明文的 `/amdc/mobileDispatch`），在 `data/apps.json` 的 `connection_rules` 里按网址和 User-Agent 只拦这个 App 的 |
 | 规则已经写了，日志里却没生效 | 手机可能还是旧模块：手动更新模块，断开再连接 VPN；GitHub raw 链接有约 5 分钟缓存 |

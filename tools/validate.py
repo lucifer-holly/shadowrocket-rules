@@ -238,7 +238,11 @@ def validate(root=ROOT):
                 rel=m[1][len(base)+1:]
                 if rel not in manifest:raise ValueError('script dependency is missing')
     scan_public(root)
-    return {'base_rules':len(rules),'modules':len(list((root/'dist/modules').rglob('*.sgmodule'))),'device_verified':False}
+    result={'base_rules':len(rules),'modules':len(list((root/'dist/modules').rglob('*.sgmodule'))),'device_verified':False}
+    # Decrypt-only troubleshooting hosts: shown on every run; past their date the build has already stopped decrypting them.
+    if imported['observed']:result['observed_until']=imported['observe_until']
+    if imported['observe_expired']:result['expired_observe_hosts_to_delete']=imported['observe_expired']
+    return result
 
 if __name__=='__main__':
     print('PASS '+str(validate())+'; this is not an iOS device test.')

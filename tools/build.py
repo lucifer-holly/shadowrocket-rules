@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
-"""Deterministic offline build from hashed local snapshots. Never fetches or executes JS."""
+"""Deterministic offline build from hashed local snapshots. Never fetches or executes JS.
+
+The only input besides files is the UTC date: decrypt-only troubleshooting hosts stop after their until date.
+"""
 import argparse
+import datetime as dt
 import re
 from pathlib import Path
 from common import ROOT, read_json, json_text, sha256, load_inputs, load_policy, optimize, repo_base, domain
@@ -44,23 +48,46 @@ def app_sections(apps, imported=None):
         hosts.update(imported['mitm'])
     mitm = ['hostname = %APPEND% ' + ', '.join(sorted(hosts))]
     if imported and imported['observed']:
-        mitm.insert(0, '# 只解密、不拦截（排查用，日志里能看到完整地址）：' + ', '.join(imported['observed']))
+        mitm.insert(0, f"# 只解密、不拦截（排查用，日志里能看到完整地址；最迟 {imported['observe_until']} 之后自动停止）："
+                    + ', '.join(imported['observed']))
     return [('Rule', rules), ('URL Rewrite', rewrites), ('MITM', mitm)]
 
 
-def imported_app_ads(root, policy):
+OBSERVE_MAX_DAYS = 21
+
+
+def observed_hosts(overrides, today=None):
+    """Decrypt-only hosts still before their until date, and those past it, which the build no longer decrypts.
+
+    They make the device log show full URLs while an ad endpoint is located; nothing is blocked there. Every entry
+    must say until when (at most OBSERVE_MAX_DAYS ahead), so a forgotten entry stops on its own (dates in UTC).
+    """
+    today = today or dt.datetime.now(dt.timezone.utc).date()
+    active, expired = {}, []
+    for item in overrides.get('observe_hosts', []):
+        host = domain(item['host'])
+        if not item['reason'] or any(host == h or host.endswith('.' + h) for h in overrides['exclude_hosts']):
+            raise ValueError('observed host needs a reason and must not be an excluded host: ' + host)
+        try:
+            until = dt.date.fromisoformat(item.get('until') or '')
+        except (TypeError, ValueError):
+            raise ValueError('observed host needs an until date (YYYY-MM-DD): ' + host) from None
+        if (until - today).days > OBSERVE_MAX_DAYS:
+            raise ValueError(f'observed host may stay at most {OBSERVE_MAX_DAYS} days: ' + host)
+        if until >= today:
+            active[host] = until
+        else:
+            expired.append(host)
+    return active, sorted(expired)
+
+
+def imported_app_ads(root, policy, today=None):
     """Static subset of every tracked app-ad plugin, merged; each snapshot hash is verified first."""
     lock = read_json(root/'sources/upstreams.lock.json')['sources']
     overrides = read_json(root/'data/app-ads-overrides.json')
     for host in overrides['exclude_hosts']:
         domain(host)
-    # Decrypt-only hosts make the device log show full URLs while an ad endpoint is located; nothing is blocked there.
-    observed = set()
-    for item in overrides.get('observe_hosts', []):
-        host = domain(item['host'])
-        if not item['reason'] or any(host == h or host.endswith('.' + h) for h in overrides['exclude_hosts']):
-            raise ValueError('observed host needs a reason and must not be an excluded host: ' + host)
-        observed.add(host)
+    observed, expired = observed_hosts(overrides, today)
     merged = {'domains': set(), 'networks': set(), 'rewrites': {}, 'mitm': set(), 'report': {}}
     for source in read_json(root/'sources/upstreams.json')['sources']:
         if source.get('role') != 'app-ads':
@@ -77,8 +104,9 @@ def imported_app_ads(root, policy):
     if not merged['report']:
         raise ValueError('app-ad plugin source missing')
     return {'domains': sorted(merged['domains']), 'networks': sorted(merged['networks']),
-            'rewrites': list(merged['rewrites'].items()), 'mitm': sorted(merged['mitm'] | observed),
-            'observed': sorted(observed), 'report': merged['report']}
+            'rewrites': list(merged['rewrites'].items()), 'mitm': sorted(merged['mitm'] | set(observed)),
+            'observed': sorted(observed), 'observe_until': max(observed.values()).isoformat() if observed else None,
+            'observe_expired': expired, 'report': merged['report']}
 
 
 def blocking_inputs(root=ROOT, subset=None, policy=None, imported=None):
@@ -205,6 +233,7 @@ def outputs(root=ROOT):
               'covered_by_parent':compressed,'base_rules':len(merged),'lite_rules':len(light),
               'app_modules':len(apps),'url_rewrites':sum(len(x['rules']) for x in apps.values()),
               'imported_app_ads':imported['report'],'observed_mitm_hosts':imported['observed'],
+              'observe_until':imported['observe_until'],'expired_observe_hosts':imported['observe_expired'],
               'response_routes':len(routes),
               'weibo_script_paths':sum(len(g['paths']) for g in weibo['scripts']),'weibo_rewrites':len(weibo['rewrites']),
               'device_verified':False,
