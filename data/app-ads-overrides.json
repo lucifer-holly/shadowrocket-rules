@@ -2,5 +2,21 @@
   "description": "Owner opt-outs for automatically imported app-ad rules. exclude_hosts: no imported block, rewrite or decryption on these hosts and their subdomains (use when an app breaks). exclude_patterns: exact imported rewrite patterns to drop. Own rules in data/apps.json are not affected. observe_hosts: decrypt only, never block or rewrite, so the device log shows full URLs while an ad endpoint is being located; each entry carries until (YYYY-MM-DD, at most 21 days ahead) and the build stops decrypting it after that day; remove the entry once the rule is written.",
   "exclude_hosts": [],
   "exclude_patterns": [],
-  "observe_hosts": []
+  "observe_hosts": [
+    {
+      "host": "hd.huya.com",
+      "reason": "虎牙「每日签到」疑似网页弹窗：2026-10-30 20:23 日志里启动后约 20 秒打开了一个网页（加载动画 diy-assets.msstatic.com/yaoguo/new-loading.webp），虎牙的网页主机 hd/zt/www.huya.com 都没解密，看不到是哪个页面；看到签到页地址、写好按路径的规则后删除",
+      "until": "2026-11-06"
+    },
+    {
+      "host": "zt.huya.com",
+      "reason": "虎牙「每日签到」疑似网页弹窗：2026-10-30 20:23 日志里启动后约 20 秒打开了一个网页（加载动画 diy-assets.msstatic.com/yaoguo/new-loading.webp），虎牙的网页主机 hd/zt/www.huya.com 都没解密，看不到是哪个页面；看到签到页地址、写好按路径的规则后删除",
+      "until": "2026-11-06"
+    },
+    {
+      "host": "www.huya.com",
+      "reason": "虎牙「每日签到」疑似网页弹窗：2026-10-30 20:23 日志里启动后约 20 秒打开了一个网页（加载动画 diy-assets.msstatic.com/yaoguo/new-loading.webp），虎牙的网页主机 hd/zt/www.huya.com 都没解密，看不到是哪个页面；看到签到页地址、写好按路径的规则后删除",
+      "until": "2026-11-06"
+    }
+  ]
 }

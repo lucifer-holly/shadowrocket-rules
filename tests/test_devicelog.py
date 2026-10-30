@@ -83,14 +83,14 @@ class DeviceLogTests(unittest.TestCase):
             code = devicelog.main([str(db), '--app', 'huya', '--check'])
         self.assertEqual(code, 0)
         self.assertIn('business-qnpcdn.msstatic.com: base 拦截', out.getvalue())
-        # Observation of hd.huya.com ended on 2026-10-30; it is never blocked either (activity and possibly top-up pages).
-        self.assertIn('hd.huya.com: 未拦截、未解密', out.getvalue())
-        # The image hosts are decrypt-only until their until date, then plain again.
+        # Troubleshooting hosts are decrypt-only until their until date, then plain again; neither is ever blocked
+        # (hd.huya.com carries activity and possibly top-up pages).
         from common import ROOT, load_policy
         from build import imported_app_ads
         observed = imported_app_ads(ROOT, load_policy())['observed']
-        expected = '只解密（排查用）' if 'huyaimg.msstatic.com' in observed else '未拦截、未解密'
-        self.assertIn('huyaimg.msstatic.com: ' + expected, out.getvalue())
+        for host in ['hd.huya.com', 'huyaimg.msstatic.com']:
+            expected = '只解密（排查用）' if host in observed else '未拦截、未解密'
+            self.assertIn(f'{host}: {expected}', out.getvalue())
 
     def test_rule_check_handles_apps_that_connect_by_ip(self):
         db = Path(self.tmp.name) / 'xianyu.db'

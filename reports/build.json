@@ -272,8 +272,12 @@
     }
   },
   "lite_rules": 77366,
-  "observe_until": null,
-  "observed_mitm_hosts": [],
+  "observe_until": "2026-11-06",
+  "observed_mitm_hosts": [
+    "hd.huya.com",
+    "www.huya.com",
+    "zt.huya.com"
+  ],
   "protected_removed": 63,
   "response_routes": 3,
   "source_counts": {

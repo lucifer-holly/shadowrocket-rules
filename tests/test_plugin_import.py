@@ -144,15 +144,13 @@ class RealSnapshotTests(unittest.TestCase):
             self.assertNotIn('# 只解密、不拦截', self.module)
 
     def test_observed_hosts_stop_decrypting_after_their_date(self):
-        # docs/STATUS.md: the Huya troubleshooting hosts go by 2026-11-05 at the latest; the build enforces it.
+        # Whatever is listed is decrypted through its until date and not a day longer; the build enforces it.
         overrides = read_json(ROOT / 'data/app-ads-overrides.json')
         listed = sorted(item['host'] for item in overrides['observe_hosts'])
-        for item in overrides['observe_hosts']:
-            with self.subTest(host=item['host']):
-                self.assertLessEqual(item['until'], '2026-11-05')
-        last_day = imported_app_ads(ROOT, self.policy, today=dt.date(2026, 11, 5))
-        after = imported_app_ads(ROOT, self.policy, today=dt.date(2026, 11, 6))
-        self.assertEqual(last_day['observed'], listed)
+        dates = [dt.date.fromisoformat(item['until']) for item in overrides['observe_hosts']] or [dt.date(2026, 11, 6)]
+        first_day = imported_app_ads(ROOT, self.policy, today=min(dates))
+        after = imported_app_ads(ROOT, self.policy, today=max(dates) + dt.timedelta(days=1))
+        self.assertEqual(first_day['observed'], listed)
         self.assertEqual((after['observed'], after['observe_expired']), ([], listed))
         mitm = dict(app_sections(read_json(ROOT / 'data/apps.json'), after))['MITM']
         self.assertFalse(any(line.startswith('# 只解密') for line in mitm))
@@ -160,10 +158,10 @@ class RealSnapshotTests(unittest.TestCase):
         for host in listed:
             with self.subTest(expired=host):
                 self.assertNotIn(host, decrypted)
-        # Huya observation is over (2026-10-30/31): paths seen in the 10-22 logs, no traffic, or the splash gone.
-        # hd.huya.com and diy-front stay undecrypted; diy-assets is decrypted only for its /hyys/activity/ image rule.
+        # Huya hosts whose observation ended on 2026-10-30: paths seen in the 10-22 logs, or the splash gone.
+        # diy-assets stays decrypted only for its /hyys/activity/ image rule.
         module_mitm = next(l for l in self.module.splitlines() if l.startswith('hostname = %APPEND% ')).split('= %APPEND% ')[1].split(', ')
-        for host in ['hd.huya.com', 'diy-front.cdn.huya.com', 'diy-assets.msstatic.com', 'fileserver.cdn.huya.com',
+        for host in ['diy-front.cdn.huya.com', 'diy-assets.msstatic.com', 'fileserver.cdn.huya.com',
                      's1-static.msstatic.com', 'v-huya-img2.msstatic.com', 'anchorpost.msstatic.com', 'huyaimg.msstatic.com']:
             with self.subTest(dropped=host):
                 self.assertNotIn(host, self.out['mitm'])
