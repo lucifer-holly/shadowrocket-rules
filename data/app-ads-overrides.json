@@ -2,31 +2,5 @@
   "description": "Owner opt-outs for automatically imported app-ad rules. exclude_hosts: no imported block, rewrite or decryption on these hosts and their subdomains (use when an app breaks). exclude_patterns: exact imported rewrite patterns to drop. Own rules in data/apps.json are not affected. observe_hosts: decrypt only, never block or rewrite, so the device log shows full URLs while an ad endpoint is being located; each entry carries until (YYYY-MM-DD, at most 21 days ahead) and the build stops decrypting it after that day; remove the entry once the rule is written.",
   "exclude_hosts": [],
   "exclude_patterns": [],
-  "observe_hosts": [
-    {
-      "host": "fileserver.cdn.huya.com",
-      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现。10-22 加入后还没有带虎牙的日志，没观察到结果；等主人重装测试或一份冷启动日志，查清开屏素材来源后删除",
-      "until": "2026-11-05"
-    },
-    {
-      "host": "s1-static.msstatic.com",
-      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现。10-22 加入后还没有带虎牙的日志，没观察到结果；等主人重装测试或一份冷启动日志，查清开屏素材来源后删除",
-      "until": "2026-11-05"
-    },
-    {
-      "host": "v-huya-img2.msstatic.com",
-      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现。10-22 加入后还没有带虎牙的日志，没观察到结果；等主人重装测试或一份冷启动日志，查清开屏素材来源后删除",
-      "until": "2026-11-05"
-    },
-    {
-      "host": "anchorpost.msstatic.com",
-      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现。10-22 加入后还没有带虎牙的日志，没观察到结果；等主人重装测试或一份冷启动日志，查清开屏素材来源后删除",
-      "until": "2026-11-05"
-    },
-    {
-      "host": "huyaimg.msstatic.com",
-      "reason": "虎牙冷启动前 3 秒连接的图片/文件主机；开屏素材主地址和 P2P 节点都已拦截后开屏仍出现。10-22 加入后还没有带虎牙的日志，没观察到结果；等主人重装测试或一份冷启动日志，查清开屏素材来源后删除",
-      "until": "2026-11-05"
-    }
-  ]
+  "observe_hosts": []
 }

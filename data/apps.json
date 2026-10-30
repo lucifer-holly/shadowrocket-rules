@@ -292,5 +292,19 @@
         "action": "reject-dict"
       }
     ]
+  },
+  "huya": {
+    "name": "虎牙",
+    "status": "experimental-unverified-on-device",
+    "risk": "low",
+    "source": "2026-10-22 16:51 device log of Huya 13.5 with diy-assets.msstatic.com decrypted: activity ranking-panel images loaded about 13 s after launch; the owner still saw an activity popup on 2026-10-30. That the popup uses these images is not confirmed; only decorative images under /hyys/activity/ are answered with an empty image",
+    "rules": [
+      {
+        "pattern": "^https://diy-assets\\.msstatic\\.com/hyys/activity/",
+        "hosts": ["diy-assets.msstatic.com"],
+        "positive": ["https://diy-assets.msstatic.com/hyys/activity/261019rank_panel_bg.png", "https://diy-assets.msstatic.com/hyys/activity/261019tab_banner.png", "https://diy-assets.msstatic.com/hyys/activity/rank_avatar_1.png"],
+        "action": "reject-img"
+      }
+    ]
   }
 }

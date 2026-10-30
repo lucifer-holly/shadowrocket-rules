@@ -160,11 +160,15 @@ class RealSnapshotTests(unittest.TestCase):
         for host in listed:
             with self.subTest(expired=host):
                 self.assertNotIn(host, decrypted)
-        # Investigation over on 2026-10-30: paths seen in the 10-22 logs, or no traffic since decryption began.
-        for host in ['hd.huya.com', 'diy-front.cdn.huya.com', 'diy-assets.msstatic.com']:
+        # Huya observation is over (2026-10-30/31): paths seen in the 10-22 logs, no traffic, or the splash gone.
+        # hd.huya.com and diy-front stay undecrypted; diy-assets is decrypted only for its /hyys/activity/ image rule.
+        module_mitm = next(l for l in self.module.splitlines() if l.startswith('hostname = %APPEND% ')).split('= %APPEND% ')[1].split(', ')
+        for host in ['hd.huya.com', 'diy-front.cdn.huya.com', 'diy-assets.msstatic.com', 'fileserver.cdn.huya.com',
+                     's1-static.msstatic.com', 'v-huya-img2.msstatic.com', 'anchorpost.msstatic.com', 'huyaimg.msstatic.com']:
             with self.subTest(dropped=host):
                 self.assertNotIn(host, self.out['mitm'])
                 self.assertNotIn(host, listed)
+                self.assertEqual(host in module_mitm, host == 'diy-assets.msstatic.com')
 
     def test_observe_entries_need_a_reason_and_a_near_until_date(self):
         today = dt.date(2026, 10, 30)

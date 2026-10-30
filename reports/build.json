@@ -1,5 +1,5 @@
 {
-  "app_modules": 14,
+  "app_modules": 15,
   "base_rules": 148361,
   "covered_by_parent": 11223,
   "device_verified": false,
@@ -272,14 +272,8 @@
     }
   },
   "lite_rules": 77366,
-  "observe_until": "2026-11-05",
-  "observed_mitm_hosts": [
-    "anchorpost.msstatic.com",
-    "fileserver.cdn.huya.com",
-    "huyaimg.msstatic.com",
-    "s1-static.msstatic.com",
-    "v-huya-img2.msstatic.com"
-  ],
+  "observe_until": null,
+  "observed_mitm_hosts": [],
   "protected_removed": 63,
   "response_routes": 3,
   "source_counts": {
@@ -288,7 +282,7 @@
     "plugin_domains": 2584
   },
   "unique_before_policy": 159647,
-  "url_rewrites": 18,
+  "url_rewrites": 19,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
 }

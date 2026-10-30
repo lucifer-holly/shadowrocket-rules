@@ -71,6 +71,18 @@ class IntegrationTests(unittest.TestCase):
         self.assertTrue(is_blocked('business.msstatic.com',app))
         for h in ['live-cover.msstatic.com','tx-live-cover.msstatic.com','huyaimg.msstatic.com','anchorpost.msstatic.com','s1-static.msstatic.com','cdnws.api.huya.com','wsapi.huya.com','wswup.cdn.huya.com','hs.p2p.huya.com','fileserver.cdn.huya.com','p2td-cv.cdn.huya.com','hd.huya.com','diy-front.cdn.huya.com','diy-assets.msstatic.com']:
             with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules) or is_blocked(h,app))
+    def test_huya_activity_images_only(self):
+        # 2026-10-22 16:51 log: the activity ranking panel loaded from /hyys/activity/; the 我-page icons, the payment
+        # script and live covers on the same and nearby hosts must keep loading.
+        [rule]=self.apps['huya']['rules']
+        self.assertEqual((rule['action'],rule['hosts']),('reject-img',['diy-assets.msstatic.com']))
+        for url in ['https://diy-assets.msstatic.com/hyys/activity/261019title_bg.png','https://diy-assets.msstatic.com/hyys/activity/rank_avatar_3.png']:
+            with self.subTest(blocked=url):self.assertRegex(url,rule['pattern'])
+        for url in ['https://diy-assets.msstatic.com/2026mall2.0/0120formal-diamond-icon/iconx3/coupon_normal.png',
+                    'https://diy-assets.msstatic.com/yaoguo/midas.js','https://diy-assets.msstatic.com/hyys/activityx/a.png',
+                    'http://live-cover.msstatic.com/huyalive/1-1-1-1-10057-A-0-1/20261022165028.jpg',
+                    'https://diy-front.cdn.huya.com/zt/frontpage/16/huyaprivacy2.html','https://hd.huya.com/h5/activity/index.html']:
+            with self.subTest(kept=url):self.assertIsNone(re.search(rule['pattern'],url))
     def test_xianyu_dispatch_rule_from_device_log(self):
         # 闲鱼 7.x (2026-10-23 log): an allowed AMDC dispatch made it connect straight to IP addresses,
         # out of reach of every hostname rule. Only its own plain-HTTP dispatch is refused.

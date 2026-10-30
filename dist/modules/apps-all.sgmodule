@@ -40,6 +40,8 @@ AND,((URL-REGEX,^http://[0-9.:]+/amdc/mobileDispatch),(USER-AGENT,%E9%97%B2%E9%B
 ^https://switch\.jumpvg\.com/jump/ad/ - reject-dict
 ^https://switch\.jumpvg\.com/jump/recommend/ad_conf(?:\?|$) - reject-dict
 ^https://switch\.jumpvg\.com/jump/notice/popup(?:\?|$) - reject-dict
+# 虎牙 (huya); 真机效果未验证
+^https://diy-assets\.msstatic\.com/hyys/activity/ - reject-img
 
 [MITM]
-hostname = %APPEND% acs.m.goofish.com, acs.m.taobao.com, amap-aos-info-nogw.amap.com, api.bilibili.com, api.gotokeep.com, api.m.jd.com, api.pinduoduo.com, api.yangkeduo.com, api.zhihu.com, cn-acs.m.cainiao.com, edith.xiaohongshu.com, g-acs.m.goofish.com, m*.amap.com, m.ctrip.com, sqt.meituan.com, sso.ifanr.com, switch.jumpvg.com
+hostname = %APPEND% acs.m.goofish.com, acs.m.taobao.com, amap-aos-info-nogw.amap.com, api.bilibili.com, api.gotokeep.com, api.m.jd.com, api.pinduoduo.com, api.yangkeduo.com, api.zhihu.com, cn-acs.m.cainiao.com, diy-assets.msstatic.com, edith.xiaohongshu.com, g-acs.m.goofish.com, m*.amap.com, m.ctrip.com, sqt.meituan.com, sso.ifanr.com, switch.jumpvg.com
