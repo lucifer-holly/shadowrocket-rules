@@ -1,7 +1,7 @@
 {
   "app_modules": 15,
-  "base_rules": 148361,
-  "covered_by_parent": 11223,
+  "base_rules": 149476,
+  "covered_by_parent": 11196,
   "device_verified": false,
   "exceptions": [
     {
@@ -271,7 +271,7 @@
       "rewrites": 1112
     }
   },
-  "lite_rules": 77366,
+  "lite_rules": 78661,
   "observe_until": "2026-11-06",
   "observed_mitm_hosts": [
     "hd.huya.com",
@@ -281,11 +281,11 @@
   "protected_removed": 63,
   "response_routes": 3,
   "source_counts": {
-    "anti-ad": 100686,
-    "hagezi-light": 76556,
+    "anti-ad": 100682,
+    "hagezi-light": 77852,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 159647,
+  "unique_before_policy": 160735,
   "url_rewrites": 19,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
