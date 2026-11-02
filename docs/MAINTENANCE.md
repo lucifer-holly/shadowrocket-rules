@@ -9,7 +9,7 @@
 | `vendor/`、`licenses/` | 可离线重建的原始快照和许可；`fmz-blockads.plugin` 是整份插件快照，构建时只解析静态部分 |
 | `tools/plugin_import.py` | 从 fmz 插件快照提取静态 REJECT 域名/IP（构建时并入去广告①，与其他域名库一起去重）与 `reject` 系列重写（进 app-ads），按需收窄解密主机；从不导入脚本 |
 | `data/apps.json` | 15 个实验 App 模块的端点、解密主机、正样例和来源；`connection_rules` 是少数按网址和 User-Agent 拦的明文请求 |
-| `data/manual-direct.list` | 旧配置开头的手工直连例外，原样保留在主配置最前面（只排在拒绝 QUIC 的那一条之后）；不写私人服务器 IP/私人域名 |
+| `data/manual-direct.list` | 旧配置开头的手工直连例外，原样保留在主配置最前面；不写私人服务器 IP/私人域名 |
 | `data/legacy-proxy.list` | 旧配置全部 257 条显式 PROXY 规则，原样、原顺序，排在国内直连之前 |
 | `data/routing.json`、`tools/profiles.py` | 其余代理/直连分组、已改走代理的旧海外直连名单，以及主配置构建 |
 | `data/script-routes.json` | 原创响应过滤器的 3 个限定入口 |

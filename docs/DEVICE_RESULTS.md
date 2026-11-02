@@ -36,3 +36,4 @@
 | 2026-10-30 | iPhone / iOS 27 | 虎牙 | — | 当天最新 | 开屏 | 没有了 | 活动弹窗、未成年模式弹窗仍在 | 主人反馈，没有截图和日志；随后撤掉 5 个观察主机，按路径拦 `diy-assets.msstatic.com/hyys/activity/` 的图片，待验证 |
 | 2026-10-30 | iPhone / iOS 27 | 虎牙 13.5 | — | 撤掉观察主机、拦 `/hyys/activity/` 之后 | 启动 | 开屏没有，活动弹窗没有，还有「每日签到」 | — | 20:23 日志：开屏 SDK 配置 `business.msstatic.com/dsp/public/sdkconfig.xml`、穿山甲和优量汇广告 SDK 的请求全被拦；没有 `/hyys/activity/` 的请求；约 20 秒时打开了一个网页，地址看不到 |
 | 2026-11-02 | iPhone、Mac | — | 移动流量 | 主配置 `dns-server = system` | 节点 | 能测延迟但用不了 | Wi-Fi 下正常 | 交接说明：运营商 DNS 对部分代理服务器的域名超时，阿里 DNS 正常返回；本地改成 `223.5.5.5, 119.29.29.29` 后恢复，`prefer-ipv6 = true` 时「主线」和其他节点都正常；同日主配置改成这两个 DNS |
+| 2026-11-02 | iPhone | — | — | 主配置第一条 `AND,((PROTOCOL,UDP),(DST-PORT,443)),REJECT-NO-DROP` | 网页、视频 | 可以用 | — | 主人反馈「现在可以用」；同日改成 `[General]` 的 `block-quic = all`（效果相同、不占规则），待验证 |

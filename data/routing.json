@@ -1,5 +1,5 @@
 {
-  "description": "Curated public routing for the shared main configuration. Order in the generated [Rule]: the QUIC refusal (profiles.QUIC_BLOCK), manual-direct.list, legacy-proxy.list, PROXY groups, DIRECT groups, asn_direct, .cn, LAN, GEOIP,CN, FINAL. Personal server addresses and private domains are deliberately excluded.",
+  "description": "Curated public routing for the shared main configuration. Order in the generated [Rule]: manual-direct.list, legacy-proxy.list, PROXY groups, DIRECT groups, asn_direct, .cn, LAN, GEOIP,CN, FINAL. Personal server addresses and private domains are deliberately excluded.",
   "groups": [
     {
       "name": "WRDS 网页、数据库与研究接口",

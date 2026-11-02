@@ -5,7 +5,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from common import ROOT, repo_base, read_json, load_policy, optimize, is_blocked
 from build import blocking_inputs
-from profiles import profile, route_for_test, rule_list, sections, QUIC_BLOCK
+from profiles import profile, route_for_test, rule_list, sections
 from validate import check_public_profile
 
 
@@ -47,17 +47,8 @@ class SharedProfileTests(unittest.TestCase):
             with self.subTest(rule=row):
                 self.assertEqual(self.route(host, **kwargs), 'PROXY')
 
-    def test_quic_refused_before_every_proxy_rule(self):
-        # Owner's request 2026-11-02: refuse QUIC on the device; the server drops UDP 443 anyway.
-        self.assertEqual(self.rules[0], QUIC_BLOCK)
-        for host in ['www.google.com', 'www.youtube.com', 'claude.ai', 'unlisted.example', 'www.bilibili.com']:
-            with self.subTest(host=host):
-                self.assertEqual(self.route(host, 443, protocol='udp', country='US'), 'REJECT-NO-DROP')
-                self.assertNotEqual(self.route(host, 443, country='US'), 'REJECT-NO-DROP')
-        self.assertEqual(self.route('www.google.com', 8443, protocol='udp', country='US'), 'PROXY')
-
-    def test_manual_direct_exceptions_follow_the_quic_refusal(self):
-        self.assertEqual(self.rules[1:1 + len(self.manual)], self.manual)
+    def test_manual_direct_exceptions_stay_first(self):
+        self.assertEqual(self.rules[:len(self.manual)], self.manual)
         for host in ['update.code.visualstudio.com', 'vscode.download.prss.microsoft.com',
                      'www.tsinghua.edu.cn', 'meeting.tencentmeeting.cn', 'mail.yeah.net', 'www.xiaohongshu.com']:
             with self.subTest(host=host):
@@ -133,14 +124,19 @@ class SharedProfileTests(unittest.TestCase):
                self.text + '\n[MITM]\nhostname = *\n',
                self.text.replace('GEOIP,CN,DIRECT', 'RULE-SET,https://example.com/r.list,DIRECT\nGEOIP,CN,DIRECT'),
                self.text.replace(self.legacy[-1] + '\n', '').replace('FINAL,PROXY', self.legacy[-1] + '\nFINAL,PROXY'),
-               # Only the reviewed QUIC line may reject, it must stay first, and it must not disappear.
-               self.text.replace('DST-PORT,22,DIRECT', 'DST-PORT,22,DIRECT\nDOMAIN,ads.example.com,REJECT'),
-               self.text.replace(QUIC_BLOCK + '\n', '', 1).replace('FINAL,PROXY', QUIC_BLOCK + '\nFINAL,PROXY'),
-               self.text.replace(QUIC_BLOCK + '\n', '', 1),
-               self.text.replace(QUIC_BLOCK, QUIC_BLOCK.replace('REJECT-NO-DROP', 'REJECT'))]
+               # QUIC is refused by block-quic, never by a rule: the 2026-11-02 rule form is not allowed back.
+               self.text.replace('[Rule]\n', '[Rule]\nAND,((PROTOCOL,UDP),(DST-PORT,443)),REJECT-NO-DROP\n', 1),
+               self.text.replace('DST-PORT,22,DIRECT', 'DST-PORT,22,DIRECT\nDOMAIN,ads.example.com,REJECT')]
         for changed in bad:
             with self.assertRaises(ValueError):
                 check_public_profile(changed, self.base)
+
+    def test_quic_refused_by_the_general_option(self):
+        # Owner's request 2026-11-02: refuse all UDP 443 on the device (direct and proxied) so apps go straight to TCP;
+        # the server drops it anyway. The built-in option does it, so no rule rejects anything.
+        general = self.text.split('[General]\n')[1].split('\n\n')[0].splitlines()
+        self.assertEqual([line for line in general if line.startswith('block-quic')], ['block-quic = all'])
+        self.assertFalse([r for r in self.rules if 'REJECT' in r or r.startswith(('AND,', 'OR,', 'NOT,'))])
 
     def test_domestic_dns_with_system_fallback(self):
         # The carrier DNS timed out for proxy servers' names on mobile data; AliDNS first, DNSPod second, system last.
