@@ -11,7 +11,10 @@ GENERAL = [
     'bypass-system = true',
     'skip-proxy = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, localhost, *.local, captive.apple.com',
     'tun-excluded-routes = 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.0.0.0/24, 192.0.2.0/24, 192.88.99.0/24, 192.168.0.0/16, 198.51.100.0/24, 203.0.113.0/24, 224.0.0.0/4, 255.255.255.255/32, 239.255.255.250/32',
-    'dns-server = system', 'fallback-dns-server = system',
+    # AliDNS, then Tencent DNSPod: on mobile data the carrier's DNS timed out for some proxy servers' names, so nodes
+    # answered latency tests but carried nothing; these two resolved them (owner's phone and Mac, 2026-11). Domestic
+    # resolvers only: foreign ones are easily interfered with on the direct path. The system DNS stays the fallback.
+    'dns-server = 223.5.5.5, 119.29.29.29', 'fallback-dns-server = system',
     # IPv6 first: AAAA answers win where the network has IPv6, IPv4 is used where it has none. Server logs confirmed
     # both on 2026-10-28 (the dual-stack node went over IPv6 on IPv6 broadband, over IPv4 with the Mac's IPv6 off).
     'ipv6 = true', 'prefer-ipv6 = true', 'dns-direct-system = false',

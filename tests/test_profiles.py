@@ -128,6 +128,14 @@ class SharedProfileTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 check_public_profile(changed, self.base)
 
+    def test_domestic_dns_with_system_fallback(self):
+        # The carrier DNS timed out for proxy servers' names on mobile data; AliDNS first, DNSPod second, system last.
+        self.assertIn('\ndns-server = 223.5.5.5, 119.29.29.29\n', self.text)
+        self.assertIn('\nfallback-dns-server = system\n', self.text)
+        general = self.text.split('[General]\n')[1].split('\n\n')[0]
+        for foreign in ['1.1.1.1', '8.8.8.8', '8.8.4.4', '9.9.9.9', '208.67.222.222']:
+            self.assertNotIn(foreign, general)
+
     def test_ipv6_enabled_and_preferred(self):
         # AAAA answers first where the network has IPv6; networks without it fall back to IPv4 (server logs, 2026-10-28).
         self.assertIn('\nipv6 = true\n', self.text)
