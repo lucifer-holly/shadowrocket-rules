@@ -7,7 +7,7 @@ import re
 from urllib.parse import urlsplit
 from common import ROOT,read_json,sha256,repo_base,load_inputs,load_policy,optimize,is_blocked,domain,within
 from build import run, imported_app_ads, blocking_inputs, weibo_routes, weibo_splash, YOUTUBE_ROUTE
-from profiles import sections as routing_sections
+from profiles import sections as routing_sections, QUIC_BLOCK
 
 FORBIDDEN_JS = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|require|import)\b|\$(?:httpClient|task|persistentStore|prefs|notification|notify)')
 
@@ -38,11 +38,15 @@ def check_public_profile(text, base, root=ROOT):
         if section != 'Rule':
             continue
         active.append(line)
+        if line == QUIC_BLOCK:
+            continue
         fields = line.split(',')
         if fields[0] in {'IP-CIDR', 'IP-CIDR6'} and fields[2] == 'DIRECT' and ipaddress.ip_network(fields[1], strict=False).is_global:
             raise ValueError('public profile contains a routable DIRECT address; keep private servers out of the repository')
         if fields[0] in {'RULE-SET', 'DOMAIN-SET', 'SCRIPT'} or any(f.strip().startswith('REJECT') for f in fields[2:]):
             raise ValueError('shared routing profile must be self-contained and must not block or run scripts')
+    if active.count(QUIC_BLOCK) != 1 or active[0] != QUIC_BLOCK:
+        raise ValueError('the QUIC refusal must be the first rule, exactly once; no other rule may reject')
     if not active or active[-1] != 'FINAL,PROXY' or 'DST-PORT,22,DIRECT' not in active or 'GEOIP,CN,DIRECT' not in active:
         raise ValueError('missing fallback, mainland IP or standard SSH direct rule')
     if update_url not in text.splitlines():

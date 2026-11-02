@@ -1,12 +1,18 @@
 """Build the shared, self-contained main configuration from public routing data."""
 import ipaddress
 import fnmatch
+import re
 from common import domain, read_json, within
 
 LAN_ROUTES = ('127.0.0.0/8', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '169.254.0.0/16', '::1/128', 'fc00::/7', 'fe80::/10')
 # The original configuration's LAN rules, kept verbatim (they resolve domains that point at LAN hosts).
 ORIGINAL_LAN = ('192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '127.0.0.0/8')
 RULE_TYPES = {'DOMAIN', 'DOMAIN-SUFFIX', 'DOMAIN-KEYWORD', 'USER-AGENT', 'IP-CIDR', 'IP-CIDR6', 'DST-PORT'}
+# The one REJECT the shared profile carries (owner's request, 2026-11-02): refuse every QUIC / HTTP/3 attempt (UDP 443)
+# on the device so browsers and apps go straight to TCP. The owner's server drops UDP 443 anyway (since 2026-10-28), so
+# otherwise each new connection first spends a QUIC attempt that cannot succeed. It is the first rule so it wins
+# before any proxied rule; tools/validate.py allows exactly this line and no other REJECT.
+QUIC_BLOCK = 'AND,((PROTOCOL,UDP),(DST-PORT,443)),REJECT-NO-DROP'
 GENERAL = [
     'bypass-system = true',
     'skip-proxy = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, localhost, *.local, captive.apple.com',
@@ -85,7 +91,8 @@ def profile(root, base):
         '# SPDX-License-Identifier: GPL-3.0-only',
         '# 公开配置：不含节点、账号、证书或私人服务器地址。首页继续选择自己的节点，路由选「配置」。',
         '# 远程更新会覆盖本地修改；HTTPS 解密证书请放在手机本地的证书模块里。',
-        '', '[General]', *GENERAL, f'update-url = {base}/dist/config/main.conf', '', '[Rule]']
+        '', '[General]', *GENERAL, f'update-url = {base}/dist/config/main.conf', '', '[Rule]',
+        '# 拒绝所有 QUIC（UDP 443），浏览器和 App 直接走 TCP；服务器本来就丢弃 UDP 443', QUIC_BLOCK, '']
     for title, rules in sections(root):
         if rules:
             rows += [f'# {title}', *rules, '']
@@ -93,7 +100,7 @@ def profile(root, base):
     return '\n'.join(rows)
 
 
-def route_for_test(text, host, port=443, destination_ip=None, country=None, user_agent='', asn=None):
+def route_for_test(text, host, port=443, destination_ip=None, country=None, user_agent='', asn=None, protocol='tcp'):
     """Small static policy evaluator, not a Shadowrocket or DNS emulator."""
     section = None
     address = ipaddress.ip_address(destination_ip) if destination_ip else None
@@ -127,6 +134,13 @@ def route_for_test(text, host, port=443, destination_ip=None, country=None, user
         kind = parts[0]
         if kind == 'FINAL':
             return parts[1]
+        if kind == 'AND':
+            inner, _, policy = line[len('AND,'):].rpartition(',')
+            subs = re.findall(r'\(([A-Z-]+),([^()]+)\)', inner)
+            if subs and all(protocol.upper() == value.upper() if sub == 'PROTOCOL' else matches([sub, value])
+                            for sub, value in subs):
+                return policy
+            continue
         if matches(parts):
             return parts[2]
     raise ValueError('profile lacks FINAL')
