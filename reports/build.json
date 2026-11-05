@@ -1,7 +1,7 @@
 {
   "app_modules": 15,
-  "base_rules": 151524,
-  "covered_by_parent": 11587,
+  "base_rules": 151937,
+  "covered_by_parent": 11597,
   "device_verified": false,
   "exceptions": [
     {
@@ -285,11 +285,11 @@
   "protected_removed": 64,
   "response_routes": 3,
   "source_counts": {
-    "anti-ad": 101785,
+    "anti-ad": 102440,
     "hagezi-light": 80509,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 163175,
+  "unique_before_policy": 163598,
   "url_rewrites": 19,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
