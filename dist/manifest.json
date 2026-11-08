@@ -20,12 +20,12 @@
     "dist/modules/apps/xianyu.sgmodule": "b76ac34a85eb56fcf52f3c250beecc71c43471819e032fdc95a511cea6828843",
     "dist/modules/apps/xiaohongshu.sgmodule": "39555ecded1a4d3b1be69c2ab95a1ae0fa94d17860ca52f1dd9dfa9efab4406e",
     "dist/modules/apps/zhihu.sgmodule": "9121a92f08f96854b1f2edf52c419f384a0e5ab4f919c117b7f656d427e55ba8",
-    "dist/modules/base.sgmodule": "0d8c29302d6a1d1b006f279b86d687ef9edea49ab5d0ec96bcfe33e9778070c2",
+    "dist/modules/base.sgmodule": "bedd3c674c998430c20f02af19d63d5850e84838dcac6f17ebdb9821772041f6",
     "dist/modules/lite.sgmodule": "28ced7b6f1b5c011c2da6e01e01caeb50933595a57923b704c133d0a4824f5c6",
     "dist/modules/response-cleaner.sgmodule": "c9e964656b5e87543d9e06f5ccf87a87ed2c47aceda1acbdce64f586fcc5d5ba",
     "dist/modules/weibo.sgmodule": "4c8a60b6ebf990709837120ca2a8667299ca1fbcffd7ad8b32ef88d25d4c60e4",
     "dist/modules/youtube.sgmodule": "82f641f613dd7d1aa70a2c561aaaa97ca1edc934a6fe99e8356f168cf7169f2c",
-    "dist/rules/base.list": "4bead0aa53da43e579b1c41aa91fe56291c7eb4bdd0c0752a84b7fe90cea4724",
+    "dist/rules/base.list": "d08b4dac5cfdde0ae7f5839bd8776cdeba6df760e37d72554d0b6ec7a15ef841",
     "dist/rules/lite.list": "eea6acc849b6a48765d2d0884506f34494f27bc10c2a1f9ced6ad977dc50a6df",
     "dist/scripts/response-cleaner.6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9.js": "6b20dcae66dabac8f0768336668b4c3153d2f81cd156b20e730d88b672b829c9",
     "dist/scripts/response-cleaner.abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc.js": "abcb8c4c7163d760017cbfda6efb7deedd4f41c9b8f347488461df5085933ddc",
@@ -43,12 +43,12 @@
   "repository": "lucifer-holly/shadowrocket-rules",
   "sources": {
     "anti-ad": {
-      "bytes": 3391410,
+      "bytes": 3412275,
       "license_sha256": "e38459549a64f11ecf1477053768ef89eb2939a9aa5573f51a31461086357a34",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-11-05T12:20:38+00:00",
-      "sha256": "af287fa147deb8a1d15ff5ef9dd709e55630290cebfc189eb19cf5d037bdf019",
-      "source_timestamp": "2026-11-05T07:49:37+00:00",
+      "observed_at": "2026-11-08T11:16:55+00:00",
+      "sha256": "64e7403db1eb7df5fe46da60acd8c0c1b98d91453958fa5b3c85e0e7716682a6",
+      "source_timestamp": "2026-11-08T06:07:35+00:00",
       "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-surge.txt"
     },
     "fmz-blockads": {
