@@ -281,11 +281,7 @@
       "rule": "DOMAIN-SUFFIX,widgets.itunes.apple.com"
     }
   ],
-  "expired_observe_hosts": [
-    "hd.huya.com",
-    "www.huya.com",
-    "zt.huya.com"
-  ],
+  "expired_observe_hosts": [],
   "imported_app_ads": {
     "fmz-blockads": {
       "domains": 2584,
