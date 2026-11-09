@@ -1,7 +1,7 @@
 {
   "app_modules": 15,
-  "base_rules": 152562,
-  "covered_by_parent": 11596,
+  "base_rules": 158062,
+  "covered_by_parent": 13382,
   "device_verified": false,
   "exceptions": [
     {
@@ -50,7 +50,15 @@
     },
     {
       "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,axm-telemetry.apple.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
       "rule": "DOMAIN-SUFFIX,banners.itunes.apple.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,beacon.dradis.netflix.com"
     },
     {
       "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
@@ -67,6 +75,10 @@
     {
       "reason": "支付",
       "rule": "DOMAIN-SUFFIX,c6.paypal.com"
+    },
+    {
+      "reason": "Apple 登录、系统服务、App Store",
+      "rule": "DOMAIN-SUFFIX,client-analytics-ingress.apay.apple.com"
     },
     {
       "reason": "支付宝支付",
@@ -87,6 +99,10 @@
     {
       "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
       "rule": "DOMAIN-SUFFIX,customerevents.dradis.netflix.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,customerevents.eu-west-1.internal.dradis.netflix.com"
     },
     {
       "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
@@ -167,6 +183,10 @@
     {
       "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
       "rule": "DOMAIN-SUFFIX,logs.dradis.netflix.com"
+    },
+    {
+      "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
+      "rule": "DOMAIN-SUFFIX,logs.eu-west-1.internal.dradis.netflix.com"
     },
     {
       "reason": "Netflix 自己的域名（网页、接口、图片、视频、事件上报）；主人在配置模式下完全打不开 Netflix（2026-10-24），①曾拦 customerevents.netflix.com 和 logs.netflix.com，整棵放行，去广告规则不碰 Netflix",
@@ -279,17 +299,17 @@
       "rewrites": 1112
     }
   },
-  "lite_rules": 81308,
+  "lite_rules": 89125,
   "observe_until": null,
   "observed_mitm_hosts": [],
-  "protected_removed": 64,
+  "protected_removed": 69,
   "response_routes": 3,
   "source_counts": {
     "anti-ad": 103068,
-    "hagezi-light": 80509,
+    "hagezi-light": 88382,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 164222,
+  "unique_before_policy": 171513,
   "url_rewrites": 19,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
