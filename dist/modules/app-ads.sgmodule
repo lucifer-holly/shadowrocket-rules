@@ -19,7 +19,7 @@ AND,((URL-REGEX,^http://[0-9.:]+/amdc/mobileDispatch),(USER-AGENT,%E9%97%B2%E9%B
 # 知乎 (zhihu); 真机效果未验证
 ^https?://api\.zhihu\.com/commercial_api/(?:launch_v\d+|real_time_launch_v\d+)(?:/|\?|$) - reject-dict
 # 闲鱼 (xianyu); 真机效果未验证
-^https?://(?:g-)?acs\.m\.goofish\.com/gw/mtop\.taobao\.idlecommerce\.splash(?:/|\?|$) - reject-dict
+^https?://(?:g-)?acs\.m\.goofish\.com/gw/mtop\.taobao\.idlecommerce\.splash(?:\.ads)?(?:/|\?|$) - reject-dict
 # 高德地图 (amap); 真机效果未验证
 ^https?://amap-aos-info-nogw\.amap\.com/ws/aos/alimama/splash_screen_rt(?:\?|$) - reject-dict
 ^https?://m\d+\.amap\.com/ws/shield/dsp/app/startup/init(?:\?|$) - reject-dict

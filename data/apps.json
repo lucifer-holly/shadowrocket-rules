@@ -96,13 +96,15 @@
     "source": "user-supplied initial repository; re-scoped endpoints",
     "rules": [
       {
-        "pattern": "^https?://(?:g-)?acs\\.m\\.goofish\\.com/gw/mtop\\.taobao\\.idlecommerce\\.splash(?:/|\\?|$)",
+        "pattern": "^https?://(?:g-)?acs\\.m\\.goofish\\.com/gw/mtop\\.taobao\\.idlecommerce\\.splash(?:\\.ads)?(?:/|\\?|$)",
         "hosts": [
           "acs.m.goofish.com",
           "g-acs.m.goofish.com"
         ],
         "positive": [
-          "https://acs.m.goofish.com/gw/mtop.taobao.idlecommerce.splash/1.0/"
+          "https://acs.m.goofish.com/gw/mtop.taobao.idlecommerce.splash/1.0/",
+          "https://acs.m.goofish.com/gw/mtop.taobao.idlecommerce.splash.ads/1.0/",
+          "https://g-acs.m.goofish.com/gw/mtop.taobao.idlecommerce.splash.ads/1.0/"
         ],
         "action": "reject-dict"
       }

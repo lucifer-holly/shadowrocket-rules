@@ -83,6 +83,19 @@ class IntegrationTests(unittest.TestCase):
                     'http://live-cover.msstatic.com/huyalive/1-1-1-1-10057-A-0-1/20261022165028.jpg',
                     'https://diy-front.cdn.huya.com/zt/frontpage/16/huyaprivacy2.html','https://hd.huya.com/h5/activity/index.html']:
             with self.subTest(kept=url):self.assertIsNone(re.search(rule['pattern'],url))
+    def test_xianyu_splash_call_refused_on_both_gateways(self):
+        # Both Xianyu gateways are decrypted, but until 2026-11-09 the splash ad call idlecommerce.splash.ads was refused
+        # on acs only (fmz200's rule) and went through on g-acs; the owner still saw an occasional splash.
+        section=(ROOT/'dist/modules/app-ads.sgmodule').read_text(encoding='utf-8').split('[URL Rewrite]\n')[1].split('\n[')[0]
+        rewrites=[line.rsplit(' - ',1) for line in section.splitlines() if ' - ' in line and not line.startswith('#')]
+        refused=lambda url:any(re.search(p,url) and a.startswith('reject') for p,a in rewrites)
+        for host in ['acs.m.goofish.com','g-acs.m.goofish.com']:
+            for api in ['mtop.taobao.idlecommerce.splash.ads/1.0/','mtop.taobao.idlecommerce.splash/1.0/']:
+                with self.subTest(refused=host+'/'+api):self.assertTrue(refused(f'https://{host}/gw/{api}'))
+            # Home feed, search, nearby and the config call seen in the 2026-10-24 log keep working.
+            for api in ['mtop.taobao.idlehome.home.nextfresh/1.0/','mtop.taobao.idlemtopsearch.search/1.0/',
+                        'mtop.taobao.idle.local.home/1.0/','mtop.taobao.idle.rule.config/2.0']:
+                with self.subTest(kept=host+'/'+api):self.assertFalse(refused(f'https://{host}/gw/{api}'))
     def test_xianyu_dispatch_rule_from_device_log(self):
         # 闲鱼 7.x (2026-10-23 log): an allowed AMDC dispatch made it connect straight to IP addresses,
         # out of reach of every hostname rule. Only its own plain-HTTP dispatch is refused.
