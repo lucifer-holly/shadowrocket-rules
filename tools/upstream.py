@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Download data-only upstream updates; a source that fails any check keeps its old snapshot."""
+"""Download data-only upstream updates; a source that fails any check keeps its old snapshot.
+
+A candidate that changes more than the churn limit is applied only with --accept-churn SOURCE:SHA256 after review."""
 import argparse
 import concurrent.futures
 import datetime as dt
@@ -69,12 +71,18 @@ def validate_candidate(source, old, body, license_body, policy, now):
     return rules, stamp
 
 
-def update(root=ROOT, check=False, fetcher=fetch, now=None):
+def update(root=ROOT, check=False, fetcher=fetch, now=None, accept=None):
+    """accept maps a source id to the SHA-256 of a candidate a person has reviewed: that exact file may exceed the churn
+    limit, and no other check is waived. The scheduled workflow never passes it."""
     now = now or dt.datetime.now(dt.timezone.utc)
     policy = load_policy(root)
     sources = read_json(root/'sources/upstreams.json')['sources']
     lock = read_json(root/'sources/upstreams.lock.json')
-    proposals, errors, rows, changes = {}, [], [], []
+    accept = dict(accept or {})
+    for sid, digest in accept.items():
+        if sid not in {s['id'] for s in sources} or not re.fullmatch(r'[0-9a-f]{64}', digest):
+            raise ValueError('--accept-churn needs SOURCE:SHA256, a configured source and the full hash of the reviewed candidate')
+    proposals, errors, rows, changes, blocked = {}, [], [], [], []
     jobs = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         for source in sources:
@@ -89,17 +97,31 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
                 if sha256(previous)!=old['sha256']:
                     raise ValueError('local baseline hash mismatch')
                 old_rules=parse_rules(previous,source['format'])
-                delta=rules.symmetric_difference(old_rules)
-                if len(delta)/max(len(old_rules),1)>policy['max_source_change_ratio']:
-                    raise ValueError('rule churn exceeds configured threshold; manual review required')
-                different=sha256(body)!=old['sha256']
-                rows.append(f'| {sid} | '+('变更候选' if different else '一致')+f' | {len(rules)} | {len(rules-old_rules)} / {len(old_rules-rules)} |')
+                added,removed=rules-old_rules,old_rules-rules
+                # Measured against the last accepted snapshot, not the previous upstream release.
+                ratio=(len(added)+len(removed))/max(len(old_rules),1)
+                digest=sha256(body)
+                reviewed=accept.get(sid)
+                if reviewed is not None and reviewed!=digest:
+                    # Upstream published again after the review: accept nothing that was not looked at.
+                    raise ValueError(f'reviewed candidate {reviewed[:12]} is not the downloaded file {digest[:12]}; review the new one')
+                if ratio>policy['max_source_change_ratio'] and reviewed is None:
+                    raise ChurnBlocked({'source':sid,'sha256':digest,'source_timestamp':stamp.isoformat(),'previous_rules':len(old_rules),
+                                        'rules':len(rules),'added':len(added),'removed':len(removed),'change_ratio':round(ratio,4)},
+                                       policy['max_source_change_ratio'])
+                different=digest!=old['sha256']
+                state=('人工审核后接受' if reviewed else '变更候选') if different else '一致'
+                rows.append(f'| {sid} | {state} | {len(rules)} | {len(added)} / {len(removed)} |')
                 if different:
                     proposals[source['snapshot']]=body
-                    entry=dict(old);entry.update(sha256=sha256(body),bytes=len(body),observed_at=now.isoformat(timespec='seconds'),source_timestamp=stamp.isoformat())
+                    entry=dict(old);entry.update(sha256=digest,bytes=len(body),observed_at=now.isoformat(timespec='seconds'),source_timestamp=stamp.isoformat())
                     lock['sources'][sid]=entry
-                    changes.append({'source':sid,'change_ratio':round(len(delta)/max(len(old_rules),1),4),
-                                'added':[','.join(x) for x in sorted(rules-old_rules)],'removed':[','.join(x) for x in sorted(old_rules-rules)]})
+                    changes.append({'source':sid,'change_ratio':round(ratio,4),**({'accepted_after_review':True} if reviewed else {}),
+                                'added':[','.join(x) for x in sorted(added)],'removed':[','.join(x) for x in sorted(removed)]})
+            except ChurnBlocked as exc:
+                blocked.append(exc.info)
+                errors.append(f'{sid}: {type(exc).__name__}: {str(exc)[:180]}')
+                rows.append(f"| {sid} | 变化过大，保留旧版（待人工审核） | {exc.info['rules']} | {exc.info['added']} / {exc.info['removed']} |")
             except Exception as exc:
                 # Do not write remote body/tracebacks/URLs into logs.
                 errors.append(f'{sid}: {type(exc).__name__}: {str(exc)[:180]}')
@@ -118,11 +140,14 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
         '通过检查的来源自动更新；未通过的来源保留旧快照，其余来源照常更新。','',
         '| 来源 | 状态 | 规则数 | 新增 / 删除 |','|---|---|---:|---:|',*rows,'',
         *(['以下来源被安全检查拦截，继续使用旧快照：',*['- '+e for e in errors]] if errors else ['所有数据源预检通过。']),
+        *(['','变化超过阈值的候选（人工审核后只能接受这一份，方法见 docs/MAINTENANCE.md「增删超过 20%」）：',
+           *[f"- {b['source']}：变化 {b['change_ratio']:.1%}（新增 {b['added']}，删除 {b['removed']}，原有 {b['previous_rules']} 条），"
+             f"上游生成于 {b['source_timestamp']}，SHA-256 `{b['sha256']}`" for b in blocked]] if blocked else []),
         '', '详细增删见同目录 update.json；提交记录的文件差异显示完整快照变化。',''])
     # Reports always go to ignored cache; a failed source never replaces its snapshot.
     cache=root/'.cache';cache.mkdir(exist_ok=True)
     (cache/'update.md').write_text(report,encoding='utf-8')
-    (cache/'update.json').write_text(json_text({'errors':errors,'changes':changes,'reviews':reviews}),encoding='utf-8')
+    (cache/'update.json').write_text(json_text({'errors':errors,'changes':changes,'reviews':reviews,'blocked':blocked}),encoding='utf-8')
     if proposals and not check:
         proposals['sources/upstreams.lock.json']=json_text(lock).encode()
         # Network/format/license checks finish before filesystem mutation.
@@ -136,7 +161,7 @@ def update(root=ROOT, check=False, fetcher=fetch, now=None):
             finally:
                 if os.path.exists(temp):os.unlink(temp)
         (root/'reports/update.md').write_text(report,encoding='utf-8')
-        (root/'reports/update.json').write_text(json_text({'errors':errors,'changes':changes}),encoding='utf-8')
+        (root/'reports/update.json').write_text(json_text({'errors':errors,'changes':changes,'blocked':blocked}),encoding='utf-8')
     if errors:
         raise PartialFailure('upstream sources blocked: '+', '.join(e.split(':')[0] for e in errors)+'; see .cache/update.md')
     return bool(proposals)
@@ -146,10 +171,21 @@ class PartialFailure(ValueError):
     """Some sources failed their checks and kept their old snapshots; healthy sources were still applied."""
 
 
+class ChurnBlocked(ValueError):
+    """The candidate passed every other check but differs too much from the accepted snapshot; a person reviews it first."""
+    def __init__(self, info, limit):
+        self.info = info
+        super().__init__(f"rule churn {info['change_ratio']:.1%} (+{info['added']}/-{info['removed']} against "
+                         f"{info['previous_rules']} accepted rules) exceeds {limit:.0%}; manual review required")
+
+
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true')
+    p.add_argument('--accept-churn',action='append',default=[],metavar='SOURCE:SHA256',
+                   help='after a person has reviewed exactly this candidate, let it exceed the churn limit; every other check still applies')
+    a=p.parse_args()
     try:
-        changed=update(check=a.check)
+        changed=update(check=a.check,accept=dict(x.partition(':')[::2] for x in a.accept_churn))
         print('Upstream data changed; '+('check only.' if a.check else 'snapshots updated.')) if changed else print('No upstream data change.')
     except PartialFailure as exc:
         # Exit 3: publish what passed, then alert about the blocked sources.

@@ -254,4 +254,96 @@ class UpdaterTests(unittest.TestCase):
         change=read_json(self.root/'reports/update.json')['changes'][0]
         self.assertEqual(change['change_ratio'],0.5)
 
+    # Churn review (hagezi-light, 2026-11-05..08): a blocked source names its numbers, a person accepts one exact file.
+    BIG=b'#VER=20261021000000\nDOMAIN,new.one.com\nDOMAIN,new.two.com\n'  # both rules replaced: 200% churn
+    def two_sources(self):
+        second=dict(self.s,id='second',repository='example/second',snapshot='vendor/second.txt')
+        self.write('sources/upstreams.json',{'sources':[self.s,second]})
+        lock=read_json(self.root/'sources/upstreams.lock.json')
+        lock['sources']['second']=dict(lock['sources']['test'])
+        self.write('sources/upstreams.lock.json',lock)
+        (self.root/'vendor/second.txt').write_bytes(self.body)
+    def accept(self,f,accept):return upstream.update(self.root,False,f,self.now,accept=accept)
+    def test_churn_block_reports_the_numbers_and_the_candidate_hash(self):
+        with self.assertRaises(upstream.PartialFailure):self.update(self.fetcher(self.BIG))
+        self.assertEqual(read_json(self.root/'.cache/update.json')['blocked'],[{'source':'test','sha256':sha256(self.BIG),
+            'source_timestamp':'2026-10-21T00:00:00+00:00','previous_rules':2,'rules':2,'added':2,'removed':2,'change_ratio':2.0}])
+        report=(self.root/'.cache/update.md').read_text(encoding='utf-8')
+        self.assertIn('ChurnBlocked: rule churn 200.0% (+2/-2 against 2 accepted rules) exceeds 60%',report)
+        self.assertIn('| test | 变化过大，保留旧版（待人工审核） | 2 | 2 / 2 |',report)
+        self.assertIn(sha256(self.BIG),report)
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.body)
+    def test_churn_blocked_source_keeps_its_snapshot_while_a_healthy_source_updates(self):
+        self.two_sources()
+        newer=self.body+b'DOMAIN-SUFFIX,ads.three.com\n'
+        def mixed(url):
+            if url.endswith('/LICENSE'):return self.lic
+            return newer if '/second/' in url else self.BIG
+        before=read_json(self.root/'sources/upstreams.lock.json')['sources']['test']
+        with self.assertRaises(upstream.PartialFailure) as caught:self.update(mixed)
+        self.assertEqual(str(caught.exception),'upstream sources blocked: test; see .cache/update.md')
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.body)
+        self.assertEqual((self.root/'vendor/second.txt').read_bytes(),newer)
+        locked=read_json(self.root/'sources/upstreams.lock.json')['sources']
+        self.assertEqual(locked['test'],before)
+        self.assertEqual(locked['second']['sha256'],sha256(newer))
+        published=read_json(self.root/'reports/update.json')
+        self.assertEqual([c['source'] for c in published['changes']],['second'])
+        self.assertEqual([b['source'] for b in published['blocked']],['test'])
+    def test_reviewed_candidate_is_accepted_only_as_that_exact_file(self):
+        with self.assertRaises(ValueError):self.accept(self.fetcher(self.BIG),{'test':sha256(self.BIG+b'#')})
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.body)
+        self.assertTrue(self.accept(self.fetcher(self.BIG),{'test':sha256(self.BIG)}))
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.BIG)
+        self.assertEqual(read_json(self.root/'sources/upstreams.lock.json')['sources']['test']['sha256'],sha256(self.BIG))
+        change=read_json(self.root/'reports/update.json')['changes'][0]
+        self.assertEqual((change['accepted_after_review'],change['change_ratio']),(True,2.0))
+        self.assertIn('| test | 人工审核后接受 | 2 | 2 / 2 |',(self.root/'reports/update.md').read_text(encoding='utf-8'))
+        # The accepted file is the new baseline: an ordinary change after it passes with no review.
+        self.assertTrue(self.update(self.fetcher(self.BIG+b'DOMAIN,new.three.com\n')))
+    def test_review_waives_the_churn_check_and_nothing_else(self):
+        many=b'#VER=20261021000000\n'+b''.join(b'DOMAIN,n%d.example.com\n'%i for i in range(11))  # max_rules is 10
+        for body,lic in [(self.BIG,b'changed license'),(b'#VER=20200101000000\nDOMAIN,new.one.com\n',self.lic),
+                         (many,self.lic),(b'<html>Error</html>',self.lic)]:
+            with self.subTest(body=body[:40]),self.assertRaises(ValueError):self.accept(self.fetcher(body,lic),{'test':sha256(body)})
+            self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.body)
+    def test_review_applies_to_the_named_source_only(self):
+        self.two_sources()
+        with self.assertRaises(upstream.PartialFailure):self.accept(self.fetcher(self.BIG),{'test':sha256(self.BIG)})
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.BIG)
+        self.assertEqual((self.root/'vendor/second.txt').read_bytes(),self.body)
+        self.assertEqual([b['source'] for b in read_json(self.root/'.cache/update.json')['blocked']],['second'])
+    def test_review_needs_a_configured_source_and_a_full_hash(self):
+        for accept in [{'missing':sha256(self.BIG)},{'test':'abc'},{'test':sha256(self.BIG).upper()},{'test':''}]:
+            with self.subTest(accept=accept),self.assertRaises(ValueError):self.accept(self.fetcher(self.BIG),accept)
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),self.body)
+        self.assertFalse((self.root/'.cache').exists())  # refused before downloading or writing anything
+    def test_incident_2026_11_upstream_restructure(self):
+        # The hagezi-light incident at 1/1000 scale under the production limit of 20%: the restructured list sat 26% away from
+        # the accepted snapshot and a 7-hour glitch 69% away; both stay blocked, though the glitch was within the rule-count
+        # bounds. Once a person accepts the reviewed steady-state file, the next ordinary release passes on its own.
+        self.write('data/policy.json',{'never_block_suffixes':[],'max_source_age_days':14,'max_source_change_ratio':0.2})
+        self.write('sources/upstreams.json',{'sources':[dict(self.s,format='suffix-domains',min_rules=50,max_rules=200)]})
+        def release(day,names):return (f'# Last modified: {day:02d} Nov 2026 09:00 UTC\n'+''.join(n+'\n' for n in names)).encode()
+        old=[f'old{i}.example.com' for i in range(80)]
+        accepted=release(3,old)
+        (self.root/'vendor/rules.txt').write_bytes(accepted)
+        self.write('sources/upstreams.lock.json',{'sources':{'test':{'sha256':sha256(accepted),'license_sha256':sha256(self.lic)}}})
+        self.now=dt.datetime(2026,11,9,tzinfo=dt.timezone.utc)
+        steady=release(8,old[6:]+[f'new{i}.example.com' for i in range(15)])
+        glitch=release(7,old+[f'glitch{i}.example.com' for i in range(55)])
+        for body in [steady,glitch]:
+            with self.subTest(body=body[:60]),self.assertRaises(upstream.PartialFailure):self.update(self.fetcher(body))
+            self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),accepted)
+        self.assertTrue(self.accept(self.fetcher(steady),{'test':sha256(steady)}))
+        nextday=release(9,old[6:]+[f'new{i}.example.com' for i in range(16)])
+        self.assertTrue(self.update(self.fetcher(nextday)))
+        self.assertEqual((self.root/'vendor/rules.txt').read_bytes(),nextday)
+    def test_daily_workflow_never_waives_the_churn_limit(self):
+        # Accepting a large change is a person's decision about one reviewed file, and the limit applies to every source.
+        workflow=(ROOT/'.github/workflows/update.yml').read_text(encoding='utf-8')
+        self.assertNotIn('accept-churn',workflow)
+        self.assertIn('python3 tools/upstream.py || upstream_rc=$?',workflow)
+        self.assertEqual(read_json(ROOT/'data/policy.json')['max_source_change_ratio'],0.2)
+
 if __name__=='__main__':unittest.main()
