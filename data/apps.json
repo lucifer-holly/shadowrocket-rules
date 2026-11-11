@@ -308,5 +308,19 @@
         "action": "reject-img"
       }
     ]
+  },
+  "cmcc": {
+    "name": "中国移动",
+    "status": "experimental-unverified-on-device",
+    "risk": "medium",
+    "source": "2026-11-11 16:41 device log of 中国移动 12.5.5; client.app.coc.10086.cn is already decrypted for fmz200's rules, which refuse the splash init startInit. The same start asked for the home-page popup list, toast rules and pages, retention pages and the floating live window; these five calls are answered with an empty JSON object. Whether the owner saw any of them is not confirmed. Login, balance, package and home-content calls of that start are left alone",
+    "rules": [
+      {
+        "pattern": "^https://client\\.app\\.coc\\.10086\\.cn/biz-orange/(?:DN/homepagePopup/getSortInfo|DN/toast/getToastRule|DH/toast/august/getPages|DN/detainment/august/getPages|DA/liveSuspension/getPageCode)(?:\\?|$)",
+        "hosts": ["client.app.coc.10086.cn"],
+        "positive": ["https://client.app.coc.10086.cn/biz-orange/DN/homepagePopup/getSortInfo", "https://client.app.coc.10086.cn/biz-orange/DN/toast/getToastRule", "https://client.app.coc.10086.cn/biz-orange/DH/toast/august/getPages", "https://client.app.coc.10086.cn/biz-orange/DN/detainment/august/getPages", "https://client.app.coc.10086.cn/biz-orange/DA/liveSuspension/getPageCode"],
+        "action": "reject-dict"
+      }
+    ]
   }
 }

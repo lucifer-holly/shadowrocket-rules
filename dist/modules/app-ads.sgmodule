@@ -42,6 +42,8 @@ AND,((URL-REGEX,^http://[0-9.:]+/amdc/mobileDispatch),(USER-AGENT,%E9%97%B2%E9%B
 ^https://switch\.jumpvg\.com/jump/notice/popup(?:\?|$) - reject-dict
 # 虎牙 (huya); 真机效果未验证
 ^https://diy-assets\.msstatic\.com/hyys/activity/ - reject-img
+# 中国移动 (cmcc); 真机效果未验证
+^https://client\.app\.coc\.10086\.cn/biz-orange/(?:DN/homepagePopup/getSortInfo|DN/toast/getToastRule|DH/toast/august/getPages|DN/detainment/august/getPages|DA/liveSuspension/getPageCode)(?:\?|$) - reject-dict
 # 自动跟踪的第三方插件静态拒绝规则（见 THIRD_PARTY_NOTICES.md）；未导入脚本
 ^https?:\/\/gab\.122\.gov\.cn\/eapp\/m\/sysquery\/adver$ - reject
 ^https?:\/\/api\.21jingji\.com\/ad\/ - reject

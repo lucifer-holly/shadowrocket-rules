@@ -1,5 +1,5 @@
 {
-  "app_modules": 15,
+  "app_modules": 16,
   "base_rules": 158319,
   "covered_by_parent": 13520,
   "device_verified": false,
@@ -306,7 +306,7 @@
     "plugin_domains": 2584
   },
   "unique_before_policy": 171908,
-  "url_rewrites": 19,
+  "url_rewrites": 20,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
 }
