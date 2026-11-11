@@ -14,5 +14,6 @@
   {"type":"DOMAIN-SUFFIX","domain":"dsp.edm.weibo.cn","reason":"微博广告 DSP（Demand-Side Platform，需求方平台）"},
   {"type":"DOMAIN-SUFFIX","domain":"adpinpai.video.weibocdn.com","reason":"微博品牌广告视频；主配置里 weibocdn.com 直连，所以写 DOMAIN-SUFFIX"},
   {"type":"DOMAIN","domain":"imageadv.ccb.com","reason":"建设银行 App 的广告图片，明文 HTTP 的 /adpic/…/ad/ 路径；启动后营销弹窗的图片（2026-10-23 设备日志）"},
-  {"type":"DOMAIN","domain":"adv.ccb.com","reason":"建设银行 App 的广告服务器，启动时与广告图片同时连接；只拦这一台，登录和交易主机不碰（2026-10-23 设备日志）"}
+  {"type":"DOMAIN","domain":"adv.ccb.com","reason":"建设银行 App 的广告服务器，启动时与广告图片同时连接；只拦这一台，登录和交易主机不碰（2026-10-23 设备日志）"},
+  {"type":"DOMAIN-SUFFIX","domain":"appgoadhd.189.cn","reason":"中国电信 App 的广告服务（同一组主机按「appgo＋用途＋机房」命名：appgologin 登录、appfuwu 服务、appgoad 广告），开屏广告和进入后的活动弹窗还在时，启动约 2 秒后连了 17 次（2026-11-11 设备日志，没解密，只看得到域名）；只拦这一台，登录、服务、主接口和网页主机不碰。主配置里 .cn 直连，所以写 DOMAIN-SUFFIX"}
 ]}

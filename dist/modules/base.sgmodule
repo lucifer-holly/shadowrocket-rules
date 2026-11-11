@@ -22245,6 +22245,7 @@ DOMAIN-SUFFIX,appgax.optica-optima.com,REJECT
 DOMAIN-SUFFIX,appget.cn,REJECT
 DOMAIN-SUFFIX,appgiftwall.oss-us-west-1.aliyuncs.com,REJECT
 DOMAIN-SUFFIX,appgo.cn,REJECT
+DOMAIN-SUFFIX,appgoadhd.189.cn,REJECT
 DOMAIN-SUFFIX,apphost-whatsapp.com,REJECT
 DOMAIN-SUFFIX,apphub-whatsapp.com,REJECT
 DOMAIN-SUFFIX,appia.com,REJECT

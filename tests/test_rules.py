@@ -83,6 +83,24 @@ class IntegrationTests(unittest.TestCase):
                     'http://live-cover.msstatic.com/huyalive/1-1-1-1-10057-A-0-1/20261022165028.jpg',
                     'https://diy-front.cdn.huya.com/zt/frontpage/16/huyaprivacy2.html','https://hd.huya.com/h5/activity/index.html']:
             with self.subTest(kept=url):self.assertIsNone(re.search(rule['pattern'],url))
+    def test_carrier_apps_from_device_log(self):
+        # 2026-11-11 16:41 log. China Telecom: only domains are visible; its ad service is blocked by name and the login,
+        # service, main API, update, web and image hosts it opened at the same time keep working.
+        self.assertTrue(is_blocked('appgoadhd.189.cn',self.rules))
+        for h in ['appgohd.189.cn','appgologinsz.189.cn','appgologinhd.189.cn','appfuwuhd.189.cn','appupdates.189.cn',
+                  'w.189.cn','img.189.cn','capp.189.cn','client.app.coc.10086.cn','h.app.coc.10086.cn','res.app.coc.10086.cn',
+                  'clientaccess.10086.cn','push.it.10086.cn','wap.js.10086.cn']:
+            with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
+        # China Mobile: its API host is decrypted for fmz200's rules; the splash init is refused (seen refused in the log),
+        # while login, balance and the other calls of the same start pass.
+        section=(ROOT/'dist/modules/app-ads.sgmodule').read_text(encoding='utf-8').split('[URL Rewrite]\n')[1].split('\n[')[0]
+        rewrites=[line.rsplit(' - ',1) for line in section.splitlines() if ' - ' in line and not line.startswith('#')]
+        refused=lambda path:any(re.search(p,'https://client.app.coc.10086.cn/'+path) for p,_ in rewrites)
+        self.assertTrue(refused('biz-orange/DN/init/startInit'))
+        for path in ['biz-orange/LN/uamrandcodelogin/autoLogin','biz-orange/LN/checkUIDAction/checkUID','biz-orange/SHS/balance/getBalanceRule',
+                     'biz-orange/SHS/meterAssets/query','leadeon-abilityopen-biz/BN/obtainToken/getBigNetToken','biz-orange/DN/init/getNavigation',
+                     'biz-orange/DN/multipleInterfaces/aggregationData']:
+            with self.subTest(passes=path):self.assertFalse(refused(path))
     def test_xianyu_splash_call_refused_on_both_gateways(self):
         # Both Xianyu gateways are decrypted, but until 2026-11-09 the splash ad call idlecommerce.splash.ads was refused
         # on acs only (fmz200's rule) and went through on g-acs; the owner still saw an occasional splash.

@@ -28,6 +28,10 @@ APPS = {
     'ccb': (r'ccb\.com|ccb\.cn', r'ccb'),
     # Articles, their ad frames and ad media; Moments ads arrive unseen with the chat traffic (*.weixin.qq.com long/short links).
     'wechat': (r'weixin|wechat|wxs\.qq\.com|qpic\.cn|qlogo\.cn|servicewechat|daihuo\.qq\.com', r'MicroMessenger|WeChat'),
+    # Carrier apps (2026-11-11 log). 中国移动 embeds Migu, 和彩云 and the cmpassport number login; 中国电信 was all TLS,
+    # so only its *.189.cn hosts are known and the User-Agent pattern is the URL-encoded app name, not yet seen.
+    'cmcc': (r'10086|cmpassport|cmicapm|miguvideo|migu\.cn|mcloud\.139|yun\.139|mmarket', r'ChinaMobile'),
+    'chinatelecom': (r'189\.cn|21cn|id6\.me|ctyun', r'%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1|ChinaTelecom'),
 }
 EMPTY_EXPORT = ('导出的文件里没有记录表（通常只有 4 KB）：导出时新记录还在临时文件里。\n'
                 '让用户先关掉「启用日志记录」，断开 VPN，从后台划掉 Shadowrocket 再打开，然后导出最新的日志；'

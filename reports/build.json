@@ -1,6 +1,6 @@
 {
   "app_modules": 15,
-  "base_rules": 158318,
+  "base_rules": 158319,
   "covered_by_parent": 13520,
   "device_verified": false,
   "exceptions": [
@@ -295,7 +295,7 @@
       "rewrites": 1112
     }
   },
-  "lite_rules": 88814,
+  "lite_rules": 88815,
   "observe_until": null,
   "observed_mitm_hosts": [],
   "protected_removed": 69,
@@ -305,7 +305,7 @@
     "hagezi-light": 88073,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 171907,
+  "unique_before_policy": 171908,
   "url_rewrites": 19,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
