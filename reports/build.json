@@ -1,7 +1,7 @@
 {
   "app_modules": 16,
-  "base_rules": 156573,
-  "covered_by_parent": 13539,
+  "base_rules": 156984,
+  "covered_by_parent": 13565,
   "device_verified": false,
   "exceptions": [
     {
@@ -286,26 +286,26 @@
     "fmz-blockads": {
       "domains": 2584,
       "dropped_bad_example": 7,
-      "dropped_no_mitm": 166,
+      "dropped_no_mitm": 152,
       "dropped_override": 0,
       "dropped_probe": 0,
       "dropped_protected_domain": 20,
-      "mitm_hosts": 716,
+      "mitm_hosts": 725,
       "networks": 34,
-      "rewrites": 1112
+      "rewrites": 1126
     }
   },
-  "lite_rules": 89209,
+  "lite_rules": 89792,
   "observe_until": null,
   "observed_mitm_hosts": [],
   "protected_removed": 69,
   "response_routes": 3,
   "source_counts": {
     "anti-ad": 101636,
-    "hagezi-light": 88466,
+    "hagezi-light": 89051,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 170181,
+  "unique_before_policy": 170618,
   "url_rewrites": 20,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
