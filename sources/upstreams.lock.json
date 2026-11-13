@@ -19,12 +19,12 @@
       "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/plugin/blockAds.plugin"
     },
     "hagezi-light": {
-      "bytes": 1915220,
+      "bytes": 1930494,
       "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-11-12T12:42:36+00:00",
-      "sha256": "358ad4f8309f0dd5697ebd9c3677925d3271c7fa332ec352ec28b120212f8497",
-      "source_timestamp": "2026-11-12T08:26:00+00:00",
+      "observed_at": "2026-11-13T12:13:01+00:00",
+      "sha256": "ab1d85ecb2bdc4858df83917bf3816cd6407b443dc3222be80d5e25264209cd5",
+      "source_timestamp": "2026-11-13T08:31:00+00:00",
       "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/light-onlydomains.txt"
     }
   }
