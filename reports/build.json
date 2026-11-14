@@ -1,7 +1,7 @@
 {
   "app_modules": 16,
-  "base_rules": 157673,
-  "covered_by_parent": 13586,
+  "base_rules": 158698,
+  "covered_by_parent": 13621,
   "device_verified": false,
   "exceptions": [
     {
@@ -295,17 +295,17 @@
       "rewrites": 1126
     }
   },
-  "lite_rules": 90495,
+  "lite_rules": 91012,
   "observe_until": null,
   "observed_mitm_hosts": [],
   "protected_removed": 69,
   "response_routes": 3,
   "source_counts": {
-    "anti-ad": 101636,
-    "hagezi-light": 89754,
+    "anti-ad": 102656,
+    "hagezi-light": 90272,
     "plugin_domains": 2584
   },
-  "unique_before_policy": 171328,
+  "unique_before_policy": 172388,
   "url_rewrites": 20,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
