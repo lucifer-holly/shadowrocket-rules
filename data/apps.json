@@ -322,5 +322,19 @@
         "action": "reject-dict"
       }
     ]
+  },
+  "citic": {
+    "name": "中信银行",
+    "status": "experimental-unverified-on-device",
+    "risk": "high",
+    "source": "Banking host wap.citicbank.cn:6443 decrypted with the owner's consent (2026-11-17, the owner does not transfer with this app). The splash call follows fmz200's rule for the bank's former host wap.bank.ecitic.com:6443 (NMBFOServer/cbframework.do?act=CUBEPAGEDATA, reject-200); that the new host serves the same call has not been seen in a log yet, and whether Shadowrocket decrypts port 6443 for a bare hostname is to be checked in the next log",
+    "rules": [
+      {
+        "pattern": "^https?://wap\\.citicbank\\.cn(?::\\d+)?/NMBFOServer/cbframework\\.do\\?(?:[^#]*&)?act=CUBEPAGEDATA(?:&|$)",
+        "hosts": ["wap.citicbank.cn"],
+        "positive": ["https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA", "https://wap.citicbank.cn/NMBFOServer/cbframework.do?v=1&act=CUBEPAGEDATA&page=home"],
+        "action": "reject-200"
+      }
+    ]
   }
 }

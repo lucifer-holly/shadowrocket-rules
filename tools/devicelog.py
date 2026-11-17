@@ -23,7 +23,8 @@ APPS = {
     # 闲鱼's User-Agent is the URL-encoded app name; it also connects straight to IPs after the AMDC dispatch.
     'xianyu': (r'goofish|xianyu|idlefish', r'%E9%97%B2%E9%B1%BC|闲鱼|idlefish'),
     'jump': (r'vgjump|jumpvg', r'^Jump/'),
-    # Bank apps: hosts only; their decryption is limited to reviewed image hosts (data/policy.json mitm_exceptions).
+    # Bank apps: hosts only; their decryption is limited to the hosts reviewed one by one in data/policy.json
+    # mitm_exceptions (image hosts, and CITIC's banking host wap.citicbank.cn since 2026-11-17).
     'citic': (r'citicbank|ecitic', r'citic'),
     'ccb': (r'ccb\.com|ccb\.cn', r'ccb'),
     # Articles, their ad frames and ad media; Moments ads arrive unseen with the chat traffic (*.weixin.qq.com long/short links).

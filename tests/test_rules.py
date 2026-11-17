@@ -156,6 +156,24 @@ class IntegrationTests(unittest.TestCase):
             with self.subTest(blocked=h):self.assertTrue(is_blocked(h,self.rules))
         for h in ['wap.citicbank.cn','imcs.citicbank.com','wap.bank.ecitic.com','m.creditcard.ecitic.com','bank.ecitic.com','www.citicbank.com']:
             with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
+    def test_citic_banking_host_is_the_only_banking_host_decrypted(self):
+        # The owner agreed on 2026-11-17 to decrypt CITIC's banking host (no transfers with this app) so the splash call can
+        # be refused by path; every other bank and payment host stays undecrypted, and only the splash call is refused.
+        mitm=next(l for l in (ROOT/'dist/modules/app-ads.sgmodule').read_text().splitlines() if l.startswith('hostname = %APPEND% '))
+        hosts=mitm.split('= %APPEND% ')[1].split(', ')
+        self.assertIn('wap.citicbank.cn',hosts)
+        self.assertIn('wap.citicbank.cn',[x['host'] for x in load_policy()['mitm_exceptions']])
+        for h in ['wap.bank.ecitic.com','m.creditcard.ecitic.com','edata.bank.ecitic.com','autoload.bank.ecitic.com','www.citicbank.com']:
+            with self.subTest(not_decrypted=h):self.assertNotIn(h,hosts)
+        [rule]=self.apps['citic']['rules']
+        for url in ['https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA',
+                    'https://wap.citicbank.cn/NMBFOServer/cbframework.do?a=1&act=CUBEPAGEDATA']:
+            with self.subTest(refused=url):self.assertRegex(url,rule['pattern'])
+        for url in ['https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATAX',
+                    'https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=LOGIN',
+                    'https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=QUERYBALANCE&from=CUBEPAGEDATA',
+                    'https://wap.citicbank.cn:6443/NMBFOServer/other.do?act=CUBEPAGEDATA']:
+            with self.subTest(kept=url):self.assertIsNone(re.search(rule['pattern'],url))
     def test_jump_endpoints_from_device_log(self):
         # Jump 3.30 (2026-10-23 log, switch.jumpvg.com decrypted): only ad and popup calls are answered with {}.
         patterns=[r['pattern'] for r in self.apps['jump']['rules']]
