@@ -163,6 +163,8 @@ class IntegrationTests(unittest.TestCase):
         hosts=mitm.split('= %APPEND% ')[1].split(', ')
         self.assertIn('wap.citicbank.cn',hosts)
         self.assertIn('wap.citicbank.cn',[x['host'] for x in load_policy()['mitm_exceptions']])
+        rule5=next(l for l in (ROOT/'AGENTS.md').read_text(encoding='utf-8').splitlines() if l.startswith('5. '))
+        self.assertIn('`wap.citicbank.cn`',rule5)
         for h in ['wap.bank.ecitic.com','m.creditcard.ecitic.com','edata.bank.ecitic.com','autoload.bank.ecitic.com','www.citicbank.com']:
             with self.subTest(not_decrypted=h):self.assertNotIn(h,hosts)
         [rule]=self.apps['citic']['rules']
