@@ -17,7 +17,6 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | 主配置示例（优先保留原配置） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/adblock-example.conf |
 | 主配置合并片段 | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/config/adblock.fragment.conf |
 | 淘宝（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/taobao.sgmodule |
-| 京东（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/jd.sgmodule |
 | 小红书（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/xiaohongshu.sgmodule |
 | 美团（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/meituan.sgmodule |
 | 知乎（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/zhihu.sgmodule |
@@ -32,7 +31,6 @@ base / lite 二选一；app-ads / apps-all / 独立 App 模块三选一；respon
 | Jump（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/jump.sgmodule |
 | 虎牙（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/huya.sgmodule |
 | 中国移动（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/cmcc.sgmodule |
-| 中信银行（独立实验模块） | https://raw.githubusercontent.com/lucifer-holly/shadowrocket-rules/main/dist/modules/apps/citic.sgmodule |
 
 脚本只引用本仓库按内容哈希命名的文件；更新需要先审阅合并，再在手机更新模块/配置。
 模块内嵌域名表；不依赖手机另行拉取上游规则。规则集方式仅访问本仓库。

@@ -44,3 +44,5 @@
 | 2026-11-17 | iPhone / iOS 27 | 京东 | — | 当天最新 | 浏览 | 开着配置时卡 | — | 主人反馈，没有日志；静态检查京东流量都是直连，推测和②解密 `api.m.jd.com` 有关，待主人关掉②对比 |
 | 2026-11-17 | iPhone / iOS 27 | 中信银行 | — | 拦 `edata`/`autoload`、②解密 `wap.citicbank.cn`（不带端口）之后 | 开屏 | 广告还在 | 能正常打开 | 10:53 日志：`wap.citicbank.cn:6443` 仍未解密；`edata`、`autoload` 被拦；启动后连了 5 次旧主机 `wap.bank.ecitic.com:443`；同日改为解密它并写 `:6443`，待验证 |
 | 2026-11-17 | iPhone / iOS 27 | 京东 16.0.70 | — | 当天最新 | 浏览 | 确实卡 | — | 同一份日志：全部直连，没走代理；②解密 `api.m.jd.com` 88 次、`m.360buyimg.com` 16 次；待主人关掉②对比 |
+| 2026-11-17 | iPhone / iOS 27 | 中信银行 | — | ②解密 `wap.citicbank.cn:6443` 和 `wap.bank.ecitic.com` 之后 | 启动 | 直接不能用 | — | 11:09 日志：`https://wap.citicbank.cn:6443/NMBFOServer/a.do` 显示为完整网址，证实 Shadowrocket 认 `主机:端口`；App 重试 3 次后停下。主人要求撤回，同日删掉中信的全部规则和解密 |
+| 2026-11-17 | iPhone / iOS 27 | 京东 16.0.70 | — | 关掉② / 打开②并打开 HTTP/2 解密 | 浏览 | 关掉②不卡；开 HTTP/2 仍卡 | — | 主人对比；同日②不再解密 `api.m.jd.com`、`m.360buyimg.com`，待主人确认开着②也不卡 |

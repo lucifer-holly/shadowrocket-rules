@@ -17,24 +17,6 @@
       }
     ]
   },
-  "jd": {
-    "name": "京东",
-    "status": "experimental-unverified-on-device",
-    "risk": "medium",
-    "source": "user-supplied initial repository; re-scoped endpoints",
-    "rules": [
-      {
-        "pattern": "^https?://api\\.m\\.jd\\.com/client\\.action\\?(?:[^#]*&)?functionId=(?:xview2Config|queryMaterialAdverts)(?:&|$)",
-        "hosts": [
-          "api.m.jd.com"
-        ],
-        "positive": [
-          "https://api.m.jd.com/client.action?client=apple&functionId=xview2Config&body=demo"
-        ],
-        "action": "reject-200"
-      }
-    ]
-  },
   "xiaohongshu": {
     "name": "小红书",
     "status": "experimental-unverified-on-device",
@@ -320,21 +302,6 @@
         "hosts": ["client.app.coc.10086.cn"],
         "positive": ["https://client.app.coc.10086.cn/biz-orange/DN/homepagePopup/getSortInfo", "https://client.app.coc.10086.cn/biz-orange/DN/toast/getToastRule", "https://client.app.coc.10086.cn/biz-orange/DH/toast/august/getPages", "https://client.app.coc.10086.cn/biz-orange/DN/detainment/august/getPages", "https://client.app.coc.10086.cn/biz-orange/DA/liveSuspension/getPageCode"],
         "action": "reject-dict"
-      }
-    ]
-  },
-  "citic": {
-    "name": "中信银行",
-    "status": "experimental-unverified-on-device",
-    "risk": "high",
-    "source": "Banking hosts decrypted with the owner's consent (2026-11-17, the owner does not transfer with this app). The 10:53 log of that day shows wap.citicbank.cn on port 6443 still undecrypted with a bare hostname, so it is listed again as host:port, and the former host wap.bank.ecitic.com on port 443, opened five times a second after launch. The splash call follows fmz200's rule for wap.bank.ecitic.com (NMBFOServer/cbframework.do?act=CUBEPAGEDATA, reject-200); that either host still serves it has not been seen in a log yet",
-    "rules": [
-      {
-        "pattern": "^https?://(?:wap\\.citicbank\\.cn|wap\\.bank\\.ecitic\\.com)(?::\\d+)?/NMBFOServer/cbframework\\.do\\?(?:[^#]*&)?act=CUBEPAGEDATA(?:&|$)",
-        "hosts": ["wap.citicbank.cn", "wap.bank.ecitic.com"],
-        "mitm_ports": [6443],
-        "positive": ["https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA", "https://wap.citicbank.cn/NMBFOServer/cbframework.do?v=1&act=CUBEPAGEDATA&page=home", "https://wap.bank.ecitic.com/NMBFOServer/cbframework.do?act=CUBEPAGEDATA", "https://wap.bank.ecitic.com:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA"],
-        "action": "reject-200"
       }
     ]
   }

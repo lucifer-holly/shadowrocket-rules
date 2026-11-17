@@ -88,6 +88,8 @@ make test
 | 再跟踪一个去广告插件 | 在 `sources/upstreams.json` 加一项 `"format": "loon-plugin-static", "role": "app-ads"`，下载快照、写入 `upstreams.lock.json` 的哈希；构建会把它的静态域名并入去广告①、重写并入 app-ads |
 | 微博完整版又出现某种广告或推荐卡片 | 抓日志找到接口。路径已在 `data/weibo.json` 里，就改 `scripts/weibo.js` 里对应的处理函数；新接口同时加进 `data/weibo.json` 的 `scripts` 和脚本的 `ROUTES`。两种情况都在 `tests/fixtures/weibo.json` 加样例，并按下文更新脚本哈希与审核说明 |
 | 想在日志里看到某个主机的完整地址（找广告接口） | `data/app-ads-overrides.json` 的 `observe_hosts`：只解密，不拦截也不改写。每条必须写 `until`（`YYYY-MM-DD`，最多 21 天后），过了这天构建自动不再解密；规则写好或者看完地址后就删掉这一项，别等到期 |
+| 某个 App 开着②就卡或出错，要②完全不碰它的某台主机 | `data/app-ads-overrides.json` 的 `exclude_hosts`（不导入这台主机上的拦截、改写和解密），再删掉 `data/apps.json` 里这台主机的自写规则（例：京东 `api.m.jd.com`、`m.360buyimg.com`，2026-11-17） |
+| 规则所在的主机不走 443 端口 | `data/apps.json` 那条规则写 `mitm_ports`（如 `[6443]`），构建会在解密主机名里加 `主机:端口`。Shadowrocket 认这种写法（2026-11-17 设备日志证实）；不写端口时只解密 443 |
 | 永不解密或永不误拦的关键站点 | `data/policy.json` 的 `never_mitm_suffixes`、`critical_url_probes`。银行、支付的主域名都要写进 `never_mitm_suffixes` |
 | 某家银行的开屏图片放在单独的图片主机上，想让 fmz200 的规则拦它 | 先用日志确认这台主机只放图片（CDN、静态资源），不是登录、转账所在的主机，再把它连同理由写进 `data/policy.json` 的 `mitm_exceptions`；只能写单个主机，不能写通配 |
 

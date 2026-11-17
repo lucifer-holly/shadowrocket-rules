@@ -21,6 +21,8 @@
 | 拦截都生效了，开屏还是每次换着出现（例如微博的「摇一摇」开屏） | 日志里开屏相关的地址全被拦，广告 SDK 却仍在上报展示、下载广告图：是 App 里已经缓存的一批广告，拦截挡不住。删除 App 再装（选「删除 App」；「卸载 App」会保留 App 的数据），装好后先连上 Shadowrocket（配置模式）再打开 App。断开 Shadowrocket 或切到「代理」时打开这个 App，它会再缓存一批。微博从 2026-10-24 起不用重装：⑤改写它的开屏接口，下次启动同步时就把缓存的广告改成很久以后才生效 |
 | 断开 Shadowrocket 后 App 照样异常 | 不是规则造成的：断开后流量不经过 Shadowrocket，证书也不起作用。按 App 自身问题处理：检查 App 更新，清缓存，退出后重新登录；仍不行就重装，或用网页版登录同一账号，判断是 App 还是账号的问题 |
 | App 无法联网或登录 | 关闭该 App 模块及脚本，查看 TLS 错误。证书锁定无法通过扩大 MITM 解决 |
+| 开着去广告②某个 App 就卡，关掉②就流畅（京东，2026-11-17） | ②解密了这个 App 的主接口：京东一页几十个请求，日志里 81 次挤在同一秒，全部要在手机上解密再加密；打开「通过 HTTP/2 进行中间人攻击」也没改善。把这些主机加进 `data/app-ads-overrides.json` 的 `exclude_hosts`，并删掉 `data/apps.json` 里对应的自写规则，②就不再解密它们；代价是这个 App 的开屏广告可能回来 |
+| 银行 App 一解密网银主机就不能用（中信，2026-11-17） | 银行 App 有自己的安全校验（推测是证书锁定一类），解密后连接被 App 拒绝。银行的网银主机一律不解密（硬性规则 5）；只放图片的银行静态主机可以按例外解密 |
 | base 开启才异常 | 用 explain 查询目标域名，在 allowlist 加精确例外再重建；无需把整站强制直连 |
 | 只有某个接口异常 | 比较关闭对应 App 模块后是否恢复；空字典/空响应并非每个客户端都接受，移除路径比返回假成功更可靠 |
 | VPN 频繁断开 | 先换 lite，减少模块，检查客户端日志；未进行本项目的 iOS 内存基准测试 |
@@ -36,7 +38,7 @@
 
 ```sh
 python3 tools/explain.py doubleclick.net
-python3 tools/explain.py 'https://api.m.jd.com/client.action?functionId=xview2Config'
+python3 tools/explain.py 'https://switch.jumpvg.com/jump/getlaunchad/v2'
 ```
 
 ## 无法保证去除的广告

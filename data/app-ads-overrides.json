@@ -1,6 +1,9 @@
 {
   "description": "Owner opt-outs for automatically imported app-ad rules. exclude_hosts: no imported block, rewrite or decryption on these hosts and their subdomains (use when an app breaks). exclude_patterns: exact imported rewrite patterns to drop. Own rules in data/apps.json are not affected. observe_hosts: decrypt only, never block or rewrite, so the device log shows full URLs while an ad endpoint is being located; each entry carries until (YYYY-MM-DD, at most 21 days ahead) and the build stops decrypting it after that day; remove the entry once the rule is written.",
-  "exclude_hosts": [],
+  "exclude_hosts": [
+    "api.m.jd.com",
+    "m.360buyimg.com"
+  ],
   "exclude_patterns": [],
   "observe_hosts": []
 }

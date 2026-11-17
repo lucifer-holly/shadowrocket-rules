@@ -148,35 +148,34 @@ class IntegrationTests(unittest.TestCase):
         protected=load_policy()['never_mitm_suffixes']
         for s in ['ccb.com','ccb.cn','ccb.com.cn','citicbank.com','citicbank.cn','ecitic.com']:
             with self.subTest(protected=s):self.assertIn(s,protected)
-    def test_citic_banking_hosts_are_the_only_banking_hosts_decrypted(self):
-        # 中信银行, owner's consent 2026-11-17 (no transfers with this app): its two banking hosts are decrypted so the splash
-        # call can be refused by path. The 10:53 log showed wap.citicbank.cn on port 6443 still undecrypted with a bare
-        # hostname, so it is listed as host:port too; the former host wap.bank.ecitic.com answered on 443. Blocking the side
-        # hosts edata and autoload by name that morning did not stop the splash, so that trial is withdrawn. Every other bank
-        # and payment host stays undecrypted, and only the splash call is refused.
+    def test_citic_is_left_alone(self):
+        # 中信银行 (2026-11-17): with its banking host decrypted (wap.citicbank.cn:6443) the app retried three times and could
+        # not be used at all, so on the owner's word nothing of CITIC is decrypted, rewritten or blocked by this project any
+        # more, its image host included. Its banking hosts must stay reachable.
+        modules=[(ROOT/'dist/modules'/n).read_text(encoding='utf-8') for n in ['app-ads.sgmodule','apps-all.sgmodule','base.sgmodule']]
+        for text in modules:
+            self.assertFalse(re.search(r'citicbank|ecitic',text))
+        self.assertFalse([x for x in load_policy()['mitm_exceptions'] if re.search(r'citicbank|ecitic',x['host'])])
+        self.assertNotIn('citic',self.apps)
+        for h in ['wap.citicbank.cn','wap.bank.ecitic.com','edata.bank.ecitic.com','autoload.bank.ecitic.com','imcs.citicbank.com']:
+            with self.subTest(not_blocked=h):self.assertFalse(is_blocked(h,self.rules))
+    def test_jd_is_not_decrypted(self):
+        # 京东 16.0.70 (2026-11-17): sluggish with module ② on, smooth with it off, still sluggish with HTTP/2 decryption on;
+        # ② had decrypted api.m.jd.com (81 calls in one second) and the product-image host m.360buyimg.com. Neither is
+        # decrypted or rewritten now; module ① still blocks JD's ad and tracking hosts.
         mitm=next(l for l in (ROOT/'dist/modules/app-ads.sgmodule').read_text().splitlines() if l.startswith('hostname = %APPEND% '))
         hosts=mitm.split('= %APPEND% ')[1].split(', ')
-        exceptions=[x['host'] for x in load_policy()['mitm_exceptions']]
-        rule5=next(l for l in (ROOT/'AGENTS.md').read_text(encoding='utf-8').splitlines() if l.startswith('5. '))
-        for h in ['wap.citicbank.cn','wap.bank.ecitic.com']:
-            with self.subTest(decrypted=h):
-                self.assertIn(h,hosts);self.assertIn(h,exceptions);self.assertIn(f'`{h}`',rule5)
-        self.assertIn('wap.citicbank.cn:6443',hosts)
-        for h in ['m.creditcard.ecitic.com','edata.bank.ecitic.com','autoload.bank.ecitic.com','www.citicbank.com']:
+        for h in ['api.m.jd.com','m.360buyimg.com']:
             with self.subTest(not_decrypted=h):self.assertNotIn(h,hosts)
-        for h in ['wap.citicbank.cn','wap.bank.ecitic.com','imcs.citicbank.com','m.creditcard.ecitic.com']:
-            with self.subTest(not_blocked=h):self.assertFalse(is_blocked(h,self.rules))
-        [rule]=self.apps['citic']['rules']
-        for url in ['https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA',
-                    'https://wap.citicbank.cn/NMBFOServer/cbframework.do?a=1&act=CUBEPAGEDATA',
-                    'https://wap.bank.ecitic.com/NMBFOServer/cbframework.do?act=CUBEPAGEDATA']:
-            with self.subTest(refused=url):self.assertRegex(url,rule['pattern'])
-        for url in ['https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATAX',
-                    'https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=LOGIN',
-                    'https://wap.bank.ecitic.com/NMBFOServer/cbframework.do?act=QUERYBALANCE&from=CUBEPAGEDATA',
-                    'https://wap.citicbank.cn:6443/NMBFOServer/other.do?act=CUBEPAGEDATA',
-                    'https://m.creditcard.ecitic.com/NMBFOServer/cbframework.do?act=CUBEPAGEDATA']:
-            with self.subTest(kept=url):self.assertIsNone(re.search(rule['pattern'],url))
+        section=(ROOT/'dist/modules/app-ads.sgmodule').read_text(encoding='utf-8').split('[URL Rewrite]\n')[1].split('\n[')[0]
+        patterns=[line.rsplit(' - ',1)[0] for line in section.splitlines() if ' - ' in line and not line.startswith('#')]
+        for url in ['https://api.m.jd.com/client.action?functionId=start','https://api.m.jd.com/client.action?functionId=xview2Config',
+                    'https://m.360buyimg.com/babel/jfs/t1/123456/12/12345/123456/a.jpg']:
+            with self.subTest(not_rewritten=url):self.assertFalse(any(re.search(p,url) for p in patterns))
+        for h in ['ccc-x.jd.com','dsp-x.jd.com','ads-union.jd.com','img-x.jd.com']:
+            with self.subTest(blocked=h):self.assertTrue(is_blocked(h,self.rules))
+        for h in ['api.m.jd.com','m.360buyimg.com','img10.360buyimg.com','storage.360buyimg.com','sso.jd.com']:
+            with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
     def test_mitm_host_with_port(self):
         # host:port reaches a port other than 443; the host part passes the same protection check as any other entry.
         from validate import check_mitm_host
@@ -207,12 +206,6 @@ class IntegrationTests(unittest.TestCase):
                     h=h.replace('*','5')
                     for path in ['/login','/pay','/orders','/oauth/token','/api/sns/v3/note/feed','/gw/mtop.trade.order.create/1.0/']:
                         with self.subTest(host=h,path=path):self.assertIsNone(re.search(r['pattern'],'https://'+h+path))
-    def test_jd_query_order_and_boundaries(self):
-        p=self.apps['jd']['rules'][0]['pattern']
-        for q in ['functionId=xview2Config','a=1&functionId=xview2Config&x=2']:
-            self.assertRegex('https://api.m.jd.com/client.action?'+q,p)
-        for q in ['functionId=xview2ConfigExtra','otherfunctionId=xview2Config','functionId=login','next=functionId=xview2Config']:
-            self.assertIsNone(re.search(p,'https://api.m.jd.com/client.action?'+q))
     def test_host_and_path_suffixes_do_not_match(self):
         for app in self.apps.values():
             for r in app['rules']:
@@ -242,7 +235,7 @@ class IntegrationTests(unittest.TestCase):
         # A temporary copy tests the actual build validator, never modifies the delivery.
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)/'repo';shutil.copytree(ROOT,p,ignore=shutil.ignore_patterns('.git','.cache','__pycache__'))
-            (p/'dist/modules/apps/jd.sgmodule').write_text('tampered')
+            (p/'dist/modules/apps/huya.sgmodule').write_text('tampered')
             with self.assertRaises(ValueError):build.run(p,check=True)
 
 class UpdaterTests(unittest.TestCase):

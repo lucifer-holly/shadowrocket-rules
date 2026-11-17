@@ -1,5 +1,5 @@
 {
-  "app_modules": 17,
+  "app_modules": 15,
   "base_rules": 160817,
   "covered_by_parent": 13585,
   "device_verified": false,
@@ -286,13 +286,13 @@
     "fmz-blockads": {
       "domains": 2584,
       "dropped_bad_example": 7,
-      "dropped_no_mitm": 152,
-      "dropped_override": 0,
+      "dropped_no_mitm": 154,
+      "dropped_override": 3,
       "dropped_probe": 0,
       "dropped_protected_domain": 20,
-      "mitm_hosts": 725,
+      "mitm_hosts": 722,
       "networks": 34,
-      "rewrites": 1126
+      "rewrites": 1121
     }
   },
   "lite_rules": 92923,
@@ -306,7 +306,7 @@
     "plugin_domains": 2584
   },
   "unique_before_policy": 174471,
-  "url_rewrites": 21,
+  "url_rewrites": 19,
   "weibo_rewrites": 11,
   "weibo_script_paths": 34
 }
