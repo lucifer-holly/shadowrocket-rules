@@ -327,12 +327,13 @@
     "name": "中信银行",
     "status": "experimental-unverified-on-device",
     "risk": "high",
-    "source": "Banking host wap.citicbank.cn:6443 decrypted with the owner's consent (2026-11-17, the owner does not transfer with this app). The splash call follows fmz200's rule for the bank's former host wap.bank.ecitic.com:6443 (NMBFOServer/cbframework.do?act=CUBEPAGEDATA, reject-200); that the new host serves the same call has not been seen in a log yet, and whether Shadowrocket decrypts port 6443 for a bare hostname is to be checked in the next log",
+    "source": "Banking hosts decrypted with the owner's consent (2026-11-17, the owner does not transfer with this app). The 10:53 log of that day shows wap.citicbank.cn on port 6443 still undecrypted with a bare hostname, so it is listed again as host:port, and the former host wap.bank.ecitic.com on port 443, opened five times a second after launch. The splash call follows fmz200's rule for wap.bank.ecitic.com (NMBFOServer/cbframework.do?act=CUBEPAGEDATA, reject-200); that either host still serves it has not been seen in a log yet",
     "rules": [
       {
-        "pattern": "^https?://wap\\.citicbank\\.cn(?::\\d+)?/NMBFOServer/cbframework\\.do\\?(?:[^#]*&)?act=CUBEPAGEDATA(?:&|$)",
-        "hosts": ["wap.citicbank.cn"],
-        "positive": ["https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA", "https://wap.citicbank.cn/NMBFOServer/cbframework.do?v=1&act=CUBEPAGEDATA&page=home"],
+        "pattern": "^https?://(?:wap\\.citicbank\\.cn|wap\\.bank\\.ecitic\\.com)(?::\\d+)?/NMBFOServer/cbframework\\.do\\?(?:[^#]*&)?act=CUBEPAGEDATA(?:&|$)",
+        "hosts": ["wap.citicbank.cn", "wap.bank.ecitic.com"],
+        "mitm_ports": [6443],
+        "positive": ["https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA", "https://wap.citicbank.cn/NMBFOServer/cbframework.do?v=1&act=CUBEPAGEDATA&page=home", "https://wap.bank.ecitic.com/NMBFOServer/cbframework.do?act=CUBEPAGEDATA", "https://wap.bank.ecitic.com:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA"],
         "action": "reject-200"
       }
     ]

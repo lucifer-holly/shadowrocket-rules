@@ -40,6 +40,8 @@ def app_sections(apps, imported=None):
             if line not in seen:
                 rewrites.append(line); seen.add(line)
             hosts.update(rule['hosts'])
+            # A port other than 443 is decrypted only when listed as host:port (CITIC's banking host on 6443, 2026-11-17).
+            hosts.update(f'{h}:{p}' for h in rule['hosts'] for p in rule.get('mitm_ports', []))
         rules += [connection_rule(r) for r in app.get('connection_rules', [])]
     if imported:
         own = {line.split(' - ')[0] for line in seen}

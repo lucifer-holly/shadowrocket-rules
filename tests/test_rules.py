@@ -148,34 +148,43 @@ class IntegrationTests(unittest.TestCase):
         protected=load_policy()['never_mitm_suffixes']
         for s in ['ccb.com','ccb.cn','ccb.com.cn','citicbank.com','citicbank.cn','ecitic.com']:
             with self.subTest(protected=s):self.assertIn(s,protected)
-    def test_citic_trial_blocks_only_its_side_hosts(self):
-        # 中信银行 (logs 2026-10-23, 10-24, 11-17): every start opens wap.citicbank.cn and edata.bank.ecitic.com, once also
-        # autoload.bank.ecitic.com; none is decrypted. On the owner's request (2026-11-17) the two side hosts are blocked by
-        # name as a trial; the banking host, the reviewed image host and the credit-card hosts stay reachable.
-        for h in ['edata.bank.ecitic.com','autoload.bank.ecitic.com']:
-            with self.subTest(blocked=h):self.assertTrue(is_blocked(h,self.rules))
-        for h in ['wap.citicbank.cn','imcs.citicbank.com','wap.bank.ecitic.com','m.creditcard.ecitic.com','bank.ecitic.com','www.citicbank.com']:
-            with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
-    def test_citic_banking_host_is_the_only_banking_host_decrypted(self):
-        # The owner agreed on 2026-11-17 to decrypt CITIC's banking host (no transfers with this app) so the splash call can
-        # be refused by path; every other bank and payment host stays undecrypted, and only the splash call is refused.
+    def test_citic_banking_hosts_are_the_only_banking_hosts_decrypted(self):
+        # 中信银行, owner's consent 2026-11-17 (no transfers with this app): its two banking hosts are decrypted so the splash
+        # call can be refused by path. The 10:53 log showed wap.citicbank.cn on port 6443 still undecrypted with a bare
+        # hostname, so it is listed as host:port too; the former host wap.bank.ecitic.com answered on 443. Blocking the side
+        # hosts edata and autoload by name that morning did not stop the splash, so that trial is withdrawn. Every other bank
+        # and payment host stays undecrypted, and only the splash call is refused.
         mitm=next(l for l in (ROOT/'dist/modules/app-ads.sgmodule').read_text().splitlines() if l.startswith('hostname = %APPEND% '))
         hosts=mitm.split('= %APPEND% ')[1].split(', ')
-        self.assertIn('wap.citicbank.cn',hosts)
-        self.assertIn('wap.citicbank.cn',[x['host'] for x in load_policy()['mitm_exceptions']])
+        exceptions=[x['host'] for x in load_policy()['mitm_exceptions']]
         rule5=next(l for l in (ROOT/'AGENTS.md').read_text(encoding='utf-8').splitlines() if l.startswith('5. '))
-        self.assertIn('`wap.citicbank.cn`',rule5)
-        for h in ['wap.bank.ecitic.com','m.creditcard.ecitic.com','edata.bank.ecitic.com','autoload.bank.ecitic.com','www.citicbank.com']:
+        for h in ['wap.citicbank.cn','wap.bank.ecitic.com']:
+            with self.subTest(decrypted=h):
+                self.assertIn(h,hosts);self.assertIn(h,exceptions);self.assertIn(f'`{h}`',rule5)
+        self.assertIn('wap.citicbank.cn:6443',hosts)
+        for h in ['m.creditcard.ecitic.com','edata.bank.ecitic.com','autoload.bank.ecitic.com','www.citicbank.com']:
             with self.subTest(not_decrypted=h):self.assertNotIn(h,hosts)
+        for h in ['wap.citicbank.cn','wap.bank.ecitic.com','imcs.citicbank.com','m.creditcard.ecitic.com']:
+            with self.subTest(not_blocked=h):self.assertFalse(is_blocked(h,self.rules))
         [rule]=self.apps['citic']['rules']
         for url in ['https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATA',
-                    'https://wap.citicbank.cn/NMBFOServer/cbframework.do?a=1&act=CUBEPAGEDATA']:
+                    'https://wap.citicbank.cn/NMBFOServer/cbframework.do?a=1&act=CUBEPAGEDATA',
+                    'https://wap.bank.ecitic.com/NMBFOServer/cbframework.do?act=CUBEPAGEDATA']:
             with self.subTest(refused=url):self.assertRegex(url,rule['pattern'])
         for url in ['https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=CUBEPAGEDATAX',
                     'https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=LOGIN',
-                    'https://wap.citicbank.cn:6443/NMBFOServer/cbframework.do?act=QUERYBALANCE&from=CUBEPAGEDATA',
-                    'https://wap.citicbank.cn:6443/NMBFOServer/other.do?act=CUBEPAGEDATA']:
+                    'https://wap.bank.ecitic.com/NMBFOServer/cbframework.do?act=QUERYBALANCE&from=CUBEPAGEDATA',
+                    'https://wap.citicbank.cn:6443/NMBFOServer/other.do?act=CUBEPAGEDATA',
+                    'https://m.creditcard.ecitic.com/NMBFOServer/cbframework.do?act=CUBEPAGEDATA']:
             with self.subTest(kept=url):self.assertIsNone(re.search(rule['pattern'],url))
+    def test_mitm_host_with_port(self):
+        # host:port reaches a port other than 443; the host part passes the same protection check as any other entry.
+        from validate import check_mitm_host
+        check_mitm_host('wap.citicbank.cn:6443',['citicbank.cn'],['wap.citicbank.cn'])
+        check_mitm_host('api.example.com:8443',['citicbank.cn'])
+        for bad in ['m.citicbank.cn:6443','wap.citicbank.cn:443','wap.citicbank.cn:0','wap.citicbank.cn:70000',
+                    'wap.citicbank.cn:abc','wap.citicbank.cn:','1.2.3.4:6443']:
+            with self.subTest(bad=bad),self.assertRaises(ValueError):check_mitm_host(bad,['citicbank.cn'],['wap.citicbank.cn'])
     def test_jump_endpoints_from_device_log(self):
         # Jump 3.30 (2026-10-23 log, switch.jumpvg.com decrypted): only ad and popup calls are answered with {}.
         patterns=[r['pattern'] for r in self.apps['jump']['rules']]

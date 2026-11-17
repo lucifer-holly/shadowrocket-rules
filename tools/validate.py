@@ -66,6 +66,10 @@ def check_rewrite(line, probes):
 
 
 def check_mitm_host(host, never_mitm, exceptions=()):
+    if ':' in host:  # host:port, for a port other than 443; the host part is checked like any other entry
+        host, _, port = host.rpartition(':')
+        if not re.fullmatch(r'[1-9]\d{0,4}', port) or int(port) > 65535 or port == '443':
+            raise ValueError('MITM port must be written as host:port with a port other than 443: '+host+':'+port)
     if re.fullmatch(r'[\d.*]+', host) or host.count('*') > 1:
         raise ValueError('MITM host requires separate review: '+host)
     domain(host.replace('*', 'x1'))
@@ -172,6 +176,8 @@ def validate(root=ROOT):
                 domain(h.replace('*','1'))
                 if h.count('*')>1 or (h.count('*') and not h.startswith('m*.')):
                     raise ValueError('MITM wildcard requires separate review')
+            for port in rule.get('mitm_ports',[]):
+                if type(port) is not int or not 0<port<65536 or port==443:raise ValueError('MITM port must be a number other than 443')
             if pattern in patterns:raise ValueError('duplicate/conflicting rewrite')
             patterns.append(pattern)
         for rule in app.get('connection_rules',[]):check_connection_rule(rule)

@@ -6,7 +6,7 @@
 
 [URL Rewrite]
 # 中信银行 (citic); 真机效果未验证
-^https?://wap\.citicbank\.cn(?::\d+)?/NMBFOServer/cbframework\.do\?(?:[^#]*&)?act=CUBEPAGEDATA(?:&|$) - reject-200
+^https?://(?:wap\.citicbank\.cn|wap\.bank\.ecitic\.com)(?::\d+)?/NMBFOServer/cbframework\.do\?(?:[^#]*&)?act=CUBEPAGEDATA(?:&|$) - reject-200
 
 [MITM]
-hostname = %APPEND% wap.citicbank.cn
+hostname = %APPEND% wap.bank.ecitic.com, wap.bank.ecitic.com:6443, wap.citicbank.cn, wap.citicbank.cn:6443
