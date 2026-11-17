@@ -48,6 +48,7 @@ DOMAIN,app.biliapi.com,REJECT
 DOMAIN,app.biliapi.net,REJECT
 DOMAIN,appcloud.zhihu.com,REJECT
 DOMAIN,apple.comscoreresearch.com,REJECT
+DOMAIN,autoload.bank.ecitic.com,REJECT
 DOMAIN,business.msstatic.com,REJECT
 DOMAIN,cartoonapi.uc.cn,REJECT
 DOMAIN,cdn-new-ad.wtzw.com,REJECT
@@ -61,6 +62,7 @@ DOMAIN,da.bridgeturbo.com,REJECT
 DOMAIN,data-hoisin.coocaa.com,REJECT
 DOMAIN,ddfs-public.ddimg.mobi,REJECT
 DOMAIN,dflow.bz.mgtv.com,REJECT
+DOMAIN,edata.bank.ecitic.com,REJECT
 DOMAIN,emma-414870e223.huodonghezi.com,REJECT
 DOMAIN,emoji.uc.cn,REJECT
 DOMAIN,encounter.bz.mgtv.com,REJECT

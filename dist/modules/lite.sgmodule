@@ -74,6 +74,7 @@ DOMAIN,appcloud.zhihu.com,REJECT
 DOMAIN,appcloud2.in.zhihu.com,REJECT
 DOMAIN,apple.comscoreresearch.com,REJECT
 DOMAIN,asimgs.pplive.cn,REJECT
+DOMAIN,autoload.bank.ecitic.com,REJECT
 DOMAIN,bds.snssdk.com,REJECT
 DOMAIN,business.msstatic.com,REJECT
 DOMAIN,c1wx.lianwangtech.com,REJECT
@@ -97,6 +98,7 @@ DOMAIN,dflow.bz.mgtv.com,REJECT
 DOMAIN,dgstatic.jd.com,REJECT
 DOMAIN,dig.bdurl.net,REJECT
 DOMAIN,dns.jd.com,REJECT
+DOMAIN,edata.bank.ecitic.com,REJECT
 DOMAIN,emma-414870e223.huodonghezi.com,REJECT
 DOMAIN,emoji.uc.cn,REJECT
 DOMAIN,encounter.bz.mgtv.com,REJECT

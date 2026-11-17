@@ -148,6 +148,14 @@ class IntegrationTests(unittest.TestCase):
         protected=load_policy()['never_mitm_suffixes']
         for s in ['ccb.com','ccb.cn','ccb.com.cn','citicbank.com','citicbank.cn','ecitic.com']:
             with self.subTest(protected=s):self.assertIn(s,protected)
+    def test_citic_trial_blocks_only_its_side_hosts(self):
+        # 中信银行 (logs 2026-10-23, 10-24, 11-17): every start opens wap.citicbank.cn and edata.bank.ecitic.com, once also
+        # autoload.bank.ecitic.com; none is decrypted. On the owner's request (2026-11-17) the two side hosts are blocked by
+        # name as a trial; the banking host, the reviewed image host and the credit-card hosts stay reachable.
+        for h in ['edata.bank.ecitic.com','autoload.bank.ecitic.com']:
+            with self.subTest(blocked=h):self.assertTrue(is_blocked(h,self.rules))
+        for h in ['wap.citicbank.cn','imcs.citicbank.com','wap.bank.ecitic.com','m.creditcard.ecitic.com','bank.ecitic.com','www.citicbank.com']:
+            with self.subTest(allowed=h):self.assertFalse(is_blocked(h,self.rules))
     def test_jump_endpoints_from_device_log(self):
         # Jump 3.30 (2026-10-23 log, switch.jumpvg.com decrypted): only ad and popup calls are answered with {}.
         patterns=[r['pattern'] for r in self.apps['jump']['rules']]
