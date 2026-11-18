@@ -97,6 +97,44 @@ class PluginImportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_plugin(b'<html>404</html>')
 
+    # fmz200 switched its whole [Rewrite] section to Loon 3.5 expressions on 2026-11-16. The classic parser saw none of
+    # them, so the daily update reported 1,285 rewrites gone (32.8% churn) and rightly kept the old snapshot.
+    EXPRESSIONS = r'''#!name=sample
+#!date=2026-11-16 22:26:12
+[Rule]
+DOMAIN-SUFFIX, ads.example.com, REJECT
+[Rewrite]
+request if ${url} ~= /^http:\/\/.+\.gamersky\.com\/.+\/adSystem\/ad\/.+/i then reject_dict(200)
+request if ${url} ~= /^http:\/\/101\.42\.130\.147\/httpdns\/resolve\//i then reject(404)
+request if ${url} ~= /^https?:\/\/ad\.example\.com\/open/i then reject(200)
+request if ${url} ~= /^https?:\/\/img\.example\.com\/ad\//i then reject_img(200)
+request if ${url} ~= /^https?:\/\/list\.example\.com\/ads/ then reject_array(200)
+request if ${url} ~= /^https?:\/\/odd\.example\.com\/ad/i then reject(403)
+request if ${url} ~= /^https?:\/\/move\.example\.com\/old/i then redirect(302, "https://example.com/")
+request if ${url} ~= /ads\.example\.com/i then reject(404)
+response if ${url} ~= /^https:\/\/feed\.example\.com\/list/ then response.body.mock("json", `{}`, 200)
+response if ${url} == "https://feed.example.com/exact" then response.body.mock("text", "x", 200)
+[MITM]
+hostname = *.example.com
+'''
+
+    def test_loon_expression_rewrites_are_read_like_classic_ones(self):
+        data = parse_plugin(self.EXPRESSIONS.encode())
+        # Request-side rejections map to the classic actions; other codes, redirects, unanchored patterns and every
+        # response edit are left out, as their classic forms were.
+        self.assertEqual(data['rewrites'], {
+            r'^http:\/\/.+\.gamersky\.com\/.+\/adSystem\/ad\/.+': 'reject-dict',
+            r'^http:\/\/101\.42\.130\.147\/httpdns\/resolve\/': 'reject',
+            r'^https?:\/\/ad\.example\.com\/open': 'reject-200',
+            r'^https?:\/\/img\.example\.com\/ad\/': 'reject-img',
+            r'^https?:\/\/list\.example\.com\/ads': 'reject-array'})
+        # The same rules written the classic way compare equal, so a switch of syntax alone is no churn.
+        classic = ('#!name=sample\n#!date=2026-11-16 22:26:12\n[Rule]\nDOMAIN-SUFFIX, ads.example.com, REJECT\n[Rewrite]\n'
+                   + ''.join(f'{p} {a}\n' for p, a in data['rewrites'].items()) + '[MITM]\nhostname = *.example.com\n')
+        self.assertEqual(items(classic.encode()), items(self.EXPRESSIONS.encode()))
+        # The /i flag is not carried over: the regex stays case-sensitive, like the classic rule it replaced.
+        self.assertIsNone(re.search(r'^https?:\/\/ad\.example\.com\/open', 'HTTPS://AD.EXAMPLE.COM/OPEN'))
+
 
 class RealSnapshotTests(unittest.TestCase):
     @classmethod

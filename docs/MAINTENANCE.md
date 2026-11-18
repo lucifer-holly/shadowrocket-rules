@@ -71,7 +71,7 @@ make test
   2. 审核：对比上游最近几次发布，确认已经稳定、不是一次性的错误数据（上游的 `sources.md` 记录它用了哪些数据源）；看新增的规则会不会拦到主人常用的服务（`data/routing.json` 的分组、257 条代理规则、`data/allowlist.json`），`make build` 之后 `reports/build.json` 的 `exceptions` 列出被保护名单挡下的条目。
   3. 确认后运行 `python3 tools/upstream.py --accept-churn 来源:SHA-256`。只有下载到的文件正好是审核过的那一份才会接受：上游又发了新版就照旧拦下，需要重新审核。它只免掉增删幅度这一项，许可、时间、数量、格式检查照常。
   4. `make build && make test`，提交。之后的每日更新以这份为基准，正常的小幅变化会自动通过。
-- **格式变化或数量越界**：先看上游是否出错。确认是正常改版，就调整 `sources/upstreams.json` 的数量边界或解析格式，检查 diff 后提交。
+- **格式变化或数量越界**：先看上游是否出错。确认是正常改版，就调整 `sources/upstreams.json` 的数量边界或解析格式，检查 diff 后提交。上游改写法时，解析出的条数会骤减，表现为「增删超过 20%」（2026-11-17：fmz200 改用 Loon 的 `request if ${url} ~= /…/ then reject…(…)` 写法，删除 1,285 条、新增 1 条）。这时先对照新旧文件里同一条规则的写法，改 `tools/plugin_import.py` 让新写法也能识别，不要用 `--accept-churn` 接受一份解析不全的文件。
 - **长期失联**：继续使用已托管的快照，不把广告域名的 NXDOMAIN 当成删除理由；需要换源时核对许可与格式，建立快照与哈希后一起提交。
 
 每次自动提交都写入 `reports/update.md` 和 `reports/update.json`（增删明细），需要追查时看提交历史即可。极端情况下进程在多文件替换之间中断，下次哈希校验会拒绝构建并报警，检出上一有效提交即可恢复。

@@ -13,6 +13,15 @@ except ImportError:  # Python < 3.11
 REJECT_ACTIONS = ('reject', 'reject-200', 'reject-img', 'reject-dict', 'reject-array')
 EXAMPLE_CAP = 64
 
+# Loon 3.5 expression rewrites, which fmz200 switched its whole [Rewrite] section to on 2026-11-16, e.g.
+#   request if ${url} ~= /^https?:\/\/ad\.example\.com\//i then reject_dict(200)
+# Only request-side rejections are taken. Each call maps to the classic action the same regex carried in the previous
+# snapshot (checked rule by rule); other status codes, redirects, mocks, jq and response edits are not imported.
+# The regex stays case-sensitive, as the classic rules it replaced were.
+EXPRESSION_REWRITE = re.compile(r'request if \$\{url\} ~= /(?P<pattern>\^http.*)/(?P<flags>i?) then (?P<call>[a-z_]+\(\d+\))')
+EXPRESSION_ACTIONS = {'reject(404)': 'reject', 'reject(200)': 'reject-200', 'reject_dict(200)': 'reject-dict',
+                      'reject_img(200)': 'reject-img', 'reject_array(200)': 'reject-array'}
+
 
 # Two fill styles: if both give the same hosts, the host part of a pattern is fixed rather than variable.
 FILLS = ({'word': 'a', 'digit': '1', 'extra': 0}, {'word': 'z', 'digit': '7', 'extra': 2})
@@ -117,9 +126,13 @@ def parse_plugin(body):
             if network.prefixlen >= (24 if network.version == 4 else 64) and network.is_global:
                 networks.add(f'{fields[0]},{network},REJECT,no-resolve')
     for line in parts['[Rewrite]']:
-        tokens = line.split()
-        if len(tokens) == 3 and tokens[1] == '-':
-            tokens = [tokens[0], tokens[2]]
+        expression = EXPRESSION_REWRITE.fullmatch(line)
+        if expression:
+            tokens = [expression['pattern'], EXPRESSION_ACTIONS.get(expression['call'], '')]
+        else:
+            tokens = line.split()
+            if len(tokens) == 3 and tokens[1] == '-':
+                tokens = [tokens[0], tokens[2]]
         if len(tokens) != 2 or tokens[1] not in REJECT_ACTIONS or not tokens[0].startswith('^http'):
             continue
         try:
