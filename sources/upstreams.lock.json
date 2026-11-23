@@ -1,12 +1,12 @@
 {
   "sources": {
     "anti-ad": {
-      "bytes": 3398207,
+      "bytes": 3418444,
       "license_sha256": "e38459549a64f11ecf1477053768ef89eb2939a9aa5573f51a31461086357a34",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-11-20T12:54:09+00:00",
-      "sha256": "e955dc1f918bbeb6aea82a6ee0017bcfb585ce416fdb296eb8d428de7b1d13d6",
-      "source_timestamp": "2026-11-20T08:44:21+00:00",
+      "observed_at": "2026-11-23T14:38:19+00:00",
+      "sha256": "ca861f460fca2f01bdaddb0fd193445996af505ea6cda020b8c5d3644d947e21",
+      "source_timestamp": "2026-11-23T07:42:21+00:00",
       "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-surge.txt"
     },
     "fmz-blockads": {
