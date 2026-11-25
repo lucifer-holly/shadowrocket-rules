@@ -10,21 +10,21 @@
       "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-surge.txt"
     },
     "fmz-blockads": {
-      "bytes": 463986,
+      "bytes": 464785,
       "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-11-21T12:38:55+00:00",
-      "sha256": "e53a7c77a679a6d908c29b98a38d3e59bbeae520e41e4162b103faea1bb4b5ec",
-      "source_timestamp": "2026-11-16T22:26:12+08:00",
+      "observed_at": "2026-11-25T14:21:57+00:00",
+      "sha256": "67a1ca88b8534356a8c3e04fed291ba6b14a1f78aa7a2bb8e108621af0a83c6d",
+      "source_timestamp": "2026-11-25T21:36:18+08:00",
       "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/plugin/blockAds.plugin"
     },
     "hagezi-light": {
-      "bytes": 1855867,
+      "bytes": 1874368,
       "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
       "note": "Content-addressed snapshot; Git commit ID not resolved. Byte hashes are authoritative.",
-      "observed_at": "2026-11-24T14:52:25+00:00",
-      "sha256": "6aeb0ac4afdce0140fdf4737666ab10b5bc4b9dfdf00a376d07c19e5f08aacb3",
-      "source_timestamp": "2026-11-24T08:40:00+00:00",
+      "observed_at": "2026-11-25T14:21:57+00:00",
+      "sha256": "79eb40a6074455651c68bffaf04418a137b47c6d89dc5c80a811c3b69f84992d",
+      "source_timestamp": "2026-11-25T08:26:00+00:00",
       "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/light-onlydomains.txt"
     }
   }
