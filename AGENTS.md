@@ -18,7 +18,7 @@
 
 ## 硬性规则
 
-1. 公开仓库不放私人信息：节点、账号、证书、私钥、证书密码、私人域名、私人服务器 IP、节点名，以及日志里的查询参数和 token。本机证书模块只存在手机上。
+1. 公开仓库不放私人信息：节点、账号、证书、私钥、证书密码、私人域名、私人服务器 IP、节点名，以及日志里的查询参数和 token。本机证书模块只存在手机上；机场入口的 `[Host]` 映射和它需要的 `use-local-host-item-for-proxy = true` 只在手机和 Mac 的本机模块里（2026-11-27），主配置的 `[Host]` 只有 `localhost`。
 2. `data/legacy-proxy.list` 的 257 条代理规则原样、原顺序保留，排在国内直连之前。
 3. 主配置只负责分流，不放 REJECT、MITM、脚本、远程规则集。QUIC（Quick UDP Internet Connections，快速 UDP 互联网连接，也就是 HTTP/3）由 `[General]` 的 `block-quic = all` 在设备上全部屏蔽（2026-11-02 主人要求：服务器本来就丢弃 UDP 443，设备上先拦，App 直接走 TCP），不写成 REJECT 规则。
 4. 不自动导入未经审核的远程脚本；第三方脚本固定版本并记录审核（`sources/scripts.lock.json`）。

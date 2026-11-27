@@ -44,7 +44,7 @@ python3 tools/explain.py 'https://switch.jumpvg.com/jump/getlaunchad/v2'
 ## 无法保证去除的广告
 
 - **证书锁定（Certificate Pinning，证书绑定）**：App 不接受个人 CA 时无法读取 HTTPS 路径与响应；仍可拦广告专用域名，但不能整域拦截混合业务 API。
-- **HTTP/3（Hypertext Transfer Protocol version 3，超文本传输协议第 3 版）/QUIC**：实际能否解密取决于客户端及应用行为。必要时仅针对目标应用测试是否可回退 TCP；本项目不全局禁止 UDP/443，避免影响 DMIT 或其他应用。
+- **HTTP/3（Hypertext Transfer Protocol version 3，超文本传输协议第 3 版）/QUIC**：HTTPS 解密只处理 TCP 上的 TLS，走 QUIC（UDP）的请求看不到也改不了。2026-11-02 起主配置用 `block-quic = all` 在设备上屏蔽所有 UDP 443（见 [DEVICE_PROFILES](DEVICE_PROFILES.md#节点与-ipv6)），App 一般会退回 TCP，退回后才能解密；不肯退回的 App 会连不上，遇到时告诉维护者。
 - **自有解析/直连 IP**：域名规则可能失去可见性；本项目不盲目封禁公共 DNS、HTTPDNS 或共享 CDN IP。
 - **虎牙直播**：多数接口（`cdnws.api.huya.com`、`wsapi.huya.com`）是私有二进制格式，广告和内容从同一个接口返回，只能拦单独的广告素材地址和第三方广告 SDK；fmz200 也把它列为不能完全去广告的 App。每天首次启动时的未成年（青少年）模式提示由 App 本地弹出，规则去不掉。
 - **Protobuf / gRPC / 加密响应**：当前原创脚本只处理 JSON，不把二进制响应强行按字符串修改。

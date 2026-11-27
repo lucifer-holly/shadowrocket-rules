@@ -35,6 +35,10 @@ def check_public_profile(text, base, root=ROOT):
             raise ValueError('profile update URL must point to this repository')
         if section == 'URL Rewrite' and not re.fullmatch(r"'\^https\?://\S+' 'https://\S+' 30[27]", line):
             raise ValueError('public profile may only carry plain redirects')
+        # Devices turn use-local-host-item-for-proxy on (local module, 2026-11-27): a mapping here would also change
+        # where proxied connections go, and entry domains or server addresses are private.
+        if section == 'Host' and line != 'localhost = 127.0.0.1':
+            raise ValueError('public profile [Host] may only map localhost; entry mappings stay in a local module')
         if section != 'Rule':
             continue
         active.append(line)

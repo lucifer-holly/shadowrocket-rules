@@ -126,7 +126,10 @@ class SharedProfileTests(unittest.TestCase):
                self.text.replace(self.legacy[-1] + '\n', '').replace('FINAL,PROXY', self.legacy[-1] + '\nFINAL,PROXY'),
                # QUIC is refused by block-quic, never by a rule: the 2026-11-02 rule form is not allowed back.
                self.text.replace('[Rule]\n', '[Rule]\nAND,((PROTOCOL,UDP),(DST-PORT,443)),REJECT-NO-DROP\n', 1),
-               self.text.replace('DST-PORT,22,DIRECT', 'DST-PORT,22,DIRECT\nDOMAIN,ads.example.com,REJECT')]
+               self.text.replace('DST-PORT,22,DIRECT', 'DST-PORT,22,DIRECT\nDOMAIN,ads.example.com,REJECT'),
+               # Airport entry mappings stay in a local module on the device (2026-11-27); [Host] maps localhost only.
+               self.text.replace('localhost = 127.0.0.1', 'localhost = 127.0.0.1\nnode.example.org = entry.example.net'),
+               self.text.replace('localhost = 127.0.0.1', 'localhost = 127.0.0.1\nexample.com = 203.0.113.7')]
         for changed in bad:
             with self.assertRaises(ValueError):
                 check_public_profile(changed, self.base)

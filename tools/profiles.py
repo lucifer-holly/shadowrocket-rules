@@ -25,6 +25,9 @@ GENERAL = [
     # straight to TCP; the owner's server drops UDP 443 anyway (since 2026-10-28). This built-in option keeps [Rule] free
     # of REJECT; it replaced the equivalent first rule AND,((PROTOCOL,UDP),(DST-PORT,443)),REJECT-NO-DROP on 2026-11-02.
     'block-quic = all',
+    # Off here. The owner's phone and Mac turn it on in a local module that also maps the airport's entry domains to
+    # nearer entries (2026-11-27). Those domains are given to paying users only, so they never go into this public
+    # profile, and its [Host] maps nothing but localhost (validate.py), so the switch cannot reroute any shared rule.
     'use-local-host-item-for-proxy = false',
 ]
 URL_REWRITE = ["'^https?://(www.)?g.cn($|/.*)' 'https://www.google.com$2' 302",
